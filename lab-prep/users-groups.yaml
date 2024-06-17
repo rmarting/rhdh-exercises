@@ -18,7 +18,7 @@ spec:
     displayName: user2
     email: user2@example.com
   memberOf: [team-b]
----  
+---
 apiVersion: backstage.io/v1alpha1
 kind: Group
 metadata:
@@ -58,6 +58,15 @@ kind: System
 metadata:
   name: rhdh-system
   description: Internal Developer Portal for Developers
+spec:
+  owner: rhdh
+  domain: developers
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: sample-system
+  description: Sample system
 spec:
   owner: rhdh
   domain: developers
