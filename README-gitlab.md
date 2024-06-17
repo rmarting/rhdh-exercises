@@ -13,7 +13,7 @@ export basedomain=$(oc get ingresscontroller -n openshift-ingress-operator defau
 oc patch secret rhdh-secrets -n rhdh-gitlab -p '{"data":{"basedomain":"'"${basedomain}"'"}}'
 ```
 
-Enable custom and external application configuration adding this `configmap` and `secret` to the `developer-hub` manifest:
+Enable custom and external application configuration adding this ConfigMap and Secret to the `developer-hub` manifest:
 
 ```yaml
 spec:
@@ -189,7 +189,7 @@ Or execute:
 oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-3.yaml -n rhdh-gitlab
 ```
 
-Update the backstage manifest to use the new configmap for plugins:
+Update the backstage manifest to use the new ConfigMap for plugins:
 
 ```yaml
 spec:
@@ -307,10 +307,10 @@ oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-6.yaml -n rhdh-gitlab
 It is needed to restart the Red Hat Developer Hub deployment to load the new configuration from the ConfigMap. One
 way to restart can be:
 
-´´´sh
-oc scale --replicas=0 deployment/backstage-developer-hub
-oc scale --replicas=1 deployment/backstage-developer-hub
-´´´
+```sh
+oc scale --replicas=0 deployment/backstage-developer-hub -n rhdh-gitlab
+oc scale --replicas=1 deployment/backstage-developer-hub -n rhdh-gitlab
+```
 
 Verify the new Software Templates clicking in the `Create...` button.
 
@@ -322,8 +322,8 @@ from the `Sample Software Template from Backstage` template.
 Fulfil the parameters requested:
 
 - Name - an unique name of this new component
-- Description
-- Owner - Choose one from the list of options, or add one such as `team-a`, or `team-b`
+- Description (Optional)
+- Owner - Choose one from the list of options, or add one such as `team-a`, or `team-b` (Remove the `group:` or `user:` prefix)
 - Repository Location - Location of the GitLab server instance.
 
 To get the repository location run:
@@ -382,9 +382,9 @@ oc apply -f ./custom-app-config-gitlab/dynamic-plugins-7.yaml -n rhdh-gitlab
 It is needed to restart the Red Hat Developer Hub deployment to load the new configuration from the ConfigMap. One
 way to restart can be:
 
-´´´sh
-oc scale --replicas=0 deployment/backstage-developer-hub
-oc scale --replicas=1 deployment/backstage-developer-hub
-´´´
+```sh
+oc scale --replicas=0 deployment/backstage-developer-hub -n rhdh-gitlab
+oc scale --replicas=1 deployment/backstage-developer-hub -n rhdh-gitlab
+```
 
 Verify the `Quote` menu is listed, and a quote is showed in any component dashboard.
