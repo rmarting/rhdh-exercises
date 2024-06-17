@@ -14,6 +14,11 @@ spec:
       mountPath: /opt/app-root/src
     extraFiles:
       mountPath: /opt/app-root/src
+    extraEnvs:
+      # Disabling TLS verification
+      envs:
+        - name: NODE_TLS_REJECT_UNAUTHORIZED
+          value: '0'
     replicas: 1
     route:
       enabled: true

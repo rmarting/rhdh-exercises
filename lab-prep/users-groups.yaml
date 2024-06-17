@@ -43,4 +43,33 @@ spec:
     displayName: team-b
     email: team-b@example.com
   members: [user2]
-  children: []      
+  children: []
+---
+apiVersion: backstage.io/v1alpha1
+kind: Domain
+metadata:
+  name: developers
+  description: Everything about developers
+spec:
+  owner: rhdh
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: rhdh-system
+  description: Internal Developer Portal for Developers
+spec:
+  owner: rhdh
+  domain: developers
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: rhdh
+  description: Red Hat Developer Hub Group
+spec:
+  type: root
+  profile:
+    displayName: Red Hat Developer Hub Group
+    email: rhdh@example.com
+  children: []

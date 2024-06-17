@@ -30,6 +30,11 @@ data:
           apiBaseUrl: https://gitlab.${basedomain}/api/v4
           baseUrl: https://gitlab.${basedomain}
     catalog:
+      locations:
+        - type: url
+          target: https://github.com/rmarting/rhdh-exercises-software-templates/blob/main/templates.yaml
+          rules:
+            - allow: [Template]
       rules:
         - allow: [Component, System, Group, Resource, Location, Template, API, User, Domain, Type]
       providers:
@@ -57,3 +62,20 @@ data:
           users:
             - name: user:default/1
         policies-csv-file: /opt/app-root/src/rbac-policy.csv
+    # Tech Docs
+    enabled:
+      techdocs: true
+    techdocs:
+      builder: 'local' # 'external'
+      generator:
+        runIn: 'local'
+      publisher:
+        type: 'awsS3'
+        awsS3:
+          bucketName: ${BUCKET_NAME}
+          endpoint: ${BUCKET_URL}
+          s3ForcePathStyle: true
+          #region: ${AWS_REGION}
+          credentials:
+            accessKeyId: ${AWS_ACCESS_KEY_ID}
+            secretAccessKey: ${AWS_SECRET_ACCESS_KEY}

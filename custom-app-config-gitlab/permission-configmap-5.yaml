@@ -4,14 +4,14 @@ metadata:
   name: rbac-policy
 data:
   rbac-policy.csv: |
-    # admin role
+    # Admin role
     p, role:default/admins, catalog.location.read, read, allow
     p, role:default/admins, catalog.location.create, create, allow
     p, role:default/admins, catalog.location.delete, delete, allow
-    p, role:default/admins, catalog.entity.create, create, allow   
-    p, role:default/admins, catalog.entity.delete, delete, allow 
-    p, role:default/admins, catalog.entity.read, read, allow 
-    p, role:default/admins, catalog.entity.refresh, refresh, allow  
+    p, role:default/admins, catalog.entity.create, create, allow
+    p, role:default/admins, catalog.entity.delete, delete, allow
+    p, role:default/admins, catalog.entity.read, read, allow
+    p, role:default/admins, catalog.entity.refresh, refresh, allow
     p, role:default/admins, catalog-entity, read, update, delete, allow
     p, role:default/admins, scaffolder.action.execute, use, allow
     p, role:default/admins, scaffolder.template.parameter.read, read, allow
@@ -21,17 +21,30 @@ data:
     p, role:default/admins, policy-entity.update, update, allow
     p, role:default/admins, policy-entity.delete, delete,allow
     p, role:default/admins, kubernetes.proxy, use, allow
-    
+
     # this is not needed now with the new superUser setting
     # g, user:default/1, role:default/admins
 
+    # Team-A Role
     p, role:default/team-a, catalog-entity, read, allow
+    p, role:default/team-a, catalog.entity.create, create, allow
+    p, role:default/team-a, catalog.entity.read, read, allow
+    p, role:default/team-a, catalog.entity.refresh, refresh, allow
+    p, role:default/team-a, catalog-entity, read, update, delete, allow
     p, role:default/team-a, catalog.location.read, read, allow
+    p, role:default/team-a, catalog.location.create, create, allow
+    p, role:default/team-a, scaffolder.action.execute, use, allow
+    p, role:default/team-a, scaffolder.template.parameter.read, read, allow
+    p, role:default/team-a, scaffolder.template.step.read, read, allow
+
+    # Team-B Role
     p, role:default/team-b, catalog-entity, read, deny
 
+    # Groups
     g, group:default/team-a, role:default/team-a
     g, group:default/team-b, role:default/team-b
 
-    # these lines are not needed, the mapping is automatic
-    # g, user:default/2, role:default/team-a
-    # g, user:default/3, role:default/team-b
+    # these lines are not needed if the https://issues.redhat.com/browse/RHIDP-1713 issue is fixed
+    # as the mapping is automatic
+    g, user:default/2, role:default/team-a
+    g, user:default/3, role:default/team-b

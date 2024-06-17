@@ -1,8 +1,8 @@
-# rhdh-exercises
+# Red Hat Developer Hub Workshop integrated with GitLab
 
-## Mandatory settings 
+## Mandatory settings
 
-When Red Hat Developer Hub is installed via the operator there are some mandatory settings that need to be set.
+When Red Hat Developer Hub is installed via the operator there are some mandatory settings that need to be set:
 
 - create mandatory backend secret
 - add the `basedomain` to enable proper navigation and cors settings
@@ -13,7 +13,7 @@ export basedomain=$(oc get ingresscontroller -n openshift-ingress-operator defau
 oc patch secret rhdh-secrets -n rhdh-gitlab -p '{"data":{"basedomain":"'"${basedomain}"'"}}'
 ```
 
-Enable custom and external application configuration adding this `configmap` and `secret` to the rhdh manifest:
+Enable custom and external application configuration adding this `configmap` and `secret` to the `developer-hub` manifest:
 
 ```yaml
 spec:
@@ -23,24 +23,27 @@ spec:
       - name: app-config-rhdh
     extraEnvs:
       secrets:
-        - name: rhdh-secrets       
+        - name: rhdh-secrets
 ```
 
 or run this:
 
 ```sh
-oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap.yaml -n rhdh-gitlab
-oc apply -f ./custom-app-config-gitlab/rhdh-instance.yaml -n rhdh-gitlab
+oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-0.yaml -n rhdh-gitlab
+oc apply -f ./custom-app-config-gitlab/rhdh-instance-0.yaml -n rhdh-gitlab
 ```
 
-## Enable gitlab authentication
+## Enable GitLab authentication
 
 Create a [new application](https://backstage.io/docs/auth/gitlab/provider):
 
+- name: `rhdh-exercises`
 - the call back uri should look something like: `https://backstage-developer-hub-rhdh-gitlab.${OCP_CLUSTER_DOMAIN}/api/auth/gitlab/handler/frame`
 - set the correct permissions: `read_user`, `read_repository`, `write_repository`, `openid`, `profile`, `email`
 
-Create a secret with a app id and secret
+The applications are managed in the profile the user in the menu `Applications`.
+
+Create a secret with an app id and secret:
 
 ```yaml
 kind: Secret
@@ -54,13 +57,13 @@ stringData:
 type: Opaque
 ```
 
-You can create the `gitlab-secrets.yaml` inside of `custom-app-config-gitlab` folder an run:
+You can create the `gitlab-secrets.yaml` inside of `custom-app-config-gitlab` folder and run:
 
 ```sh
 oc apply -f ./custom-app-config-gitlab/gitlab-secrets.yaml -n rhdh-gitlab
 ```
 
-Modify app-config with environment variables from the new secret:
+Modify `app-config` with environment variables from the new secret:
 
 ```yaml
     app:
@@ -75,9 +78,9 @@ Modify app-config with environment variables from the new secret:
             clientSecret: ${AUTH_GITLAB_CLIENT_SECRET}
 ```
 
-Notice that we set the `signInPage` to gitlab, the default is github.
+Notice that we set the `signInPage` to `gitlab`, the default is `github`.
 
-To disable guest login set the environment to production add the new secret to the backstage manifests:
+To disable guest login set the `environment` to `production` add the new secret to the backstage manifests:
 
 ```yaml
 spec:
@@ -88,7 +91,7 @@ spec:
         - name: gitlab-secrets
 ```
 
-or execute:
+Or execute:
 
 ```sh
 oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-1.yaml -n rhdh-gitlab
@@ -97,10 +100,15 @@ oc apply -f ./custom-app-config-gitlab/rhdh-instance-1.yaml -n rhdh-gitlab
 
 Verify that you can login with GitLab.
 
-## Enable gitlab plugin integration
+## Enable GitLab plugin integration
 
-Create new PAT with [these permissions](https://backstage.io/docs/integrations/gitlab/locations) and add the
-PAT to the previously created `gitlab-secrets` secret:
+Create new Personal Access Token (aka PAT) in menu `Access Tokens` of the GitLab user profile :
+
+- name: `pat-rhdh-exercises`
+- expiration date: Disabled it or just one in the future
+- set the scopes: `api`, `read_repository`, `write_repository`
+
+Add the PAT to the previously created `gitlab-secrets` secret:
 
 ```yaml
 kind: Secret
@@ -115,7 +123,13 @@ stringData:
 type: Opaque
 ```
 
-Add the following to the app-config configmap:
+And apply changes:
+
+```sh
+oc apply -f ./custom-app-config-gitlab/gitlab-secrets.yaml -n rhdh-gitlab
+```
+
+Add the following to the `app-config-rhdh` ConfigMap:
 
 ```yaml
 kind: ConfigMap
@@ -131,8 +145,8 @@ data:
         - host: gitlab.${basedomain}
           token: ${GITLAB_TOKEN}
           apiBaseUrl: https://gitlab.${basedomain}/api/v4
-          baseUrl: https://gitlab.${basedomain}          
-```      
+          baseUrl: https://gitlab.${basedomain}
+```
 
 Or execute:
 
@@ -140,15 +154,15 @@ Or execute:
 oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-2.yaml -n rhdh-gitlab
 ```
 
-## Add gitlab autodiscovery
+## Add GitLab autodiscovery
 
-Create a new configmap with the needed dynamic plugin
+Create a new ConfigMap with the needed dynamic plugin:
 
 ```sh
 oc apply -f ./custom-app-config-gitlab/dynamic-plugins-3.yaml -n rhdh-gitlab
 ```
 
-Add this to the app config configmap:
+Add this to the app config ConfigMap:
 
 ```yaml
 catalog:
@@ -194,7 +208,7 @@ Verify that the `sample-service` component is in the application catalog.
 
 ## Enable users/teams autodiscovery
 
-Add this to the configmap:
+Add this to the ConfigMap:
 
 ```yaml
   catalog:
@@ -214,15 +228,15 @@ oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-4.yaml -n rhdh-gitlab
 ```
 
 **ATTENTION**: This step is broken due to this [issue](https://issues.redhat.com/browse/RHIDP-1713).
-We will emulate what the processor would have done by uploading the users-groups.yaml to backstage:
+We will emulate what the processor would have done by uploading the `users-groups.yaml` to Red Hat Developer Hub:
 
 ![Register an Existing Component!](./media/Register-an-existing-component.png "Register-an-existing-component")
 
-verify that users and teams are discovered
+Verify that users and teams are discovered.
 
 ## Enable RBAC
 
-Enable permissions by updating app-config
+Enable permissions by updating `app-config-rhdh` ConfigMap:
 
 ```yaml
 permission:
@@ -230,11 +244,11 @@ permission:
   rbac:
     admin:
       users:
-        - name: user:default/1   
+        - name: user:default/1
     policies-csv-file: /permissions/rbac-policy.csv
 ```
 
-Mount the new file in the backstage manifests:
+Mount the new file in the `Backstage` manifests:
 
 ```yaml
     extraFiles:
@@ -246,10 +260,130 @@ Mount the new file in the backstage manifests:
 
 Create a new permission file, see [`permission-configmap-5.yaml`](./custom-app-config-gitlab/permission-configmap-5.yaml) file.
 
+There is a dynamic plugin to allow manage the RBAC rules directly in the UI. This plugin is added in the list of the dynamic plugins
+to add into Red Hat Developer Hub.
+
 ```sh
+oc apply -f ./custom-app-config-gitlab/dynamic-plugins-5.yaml -n rhdh-gitlab
 oc apply -f ./custom-app-config-gitlab/permission-configmap-5.yaml -n rhdh-gitlab
 oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-5.yaml -n rhdh-gitlab
 oc apply -f ./custom-app-config-gitlab/rhdh-instance-5.yaml -n rhdh-gitlab
 ```
 
-Verify that user2 cannot see `sample-service` anymore.
+Verify that `user2` cannot see `sample-service` anymore.
+
+References:
+
+* [RBAC in Red Hat Developer Hub](https://access.redhat.com/documentation/en-us/red_hat_developer_hub/1.1/html/administration_guide_for_red_hat_developer_hub/con-rbac-overview_admin-rhdh#doc-wrapper)
+
+## Import Software Template
+
+Software templates are the way to create standard components integrated with the platform, and any tool
+related to that component. This [template](https://github.com/rmarting/rhdh-exercises-software-templates/blob/main/templates.yaml)
+is a simple case of this kind of component.
+
+Templates can be registered from the `Create...` menu. The `Register Existing Component` button opens a wizard to register the component
+from the remote url.
+
+Another alternative is to configure the location of the templates in the `catalog` definition. This is the
+configuration to add in the `app-config-rhdh` ConfigMap:
+
+```yaml
+    catalog:
+      locations:
+        - type: url
+          target: https://github.com/rmarting/rhdh-exercises-software-templates/blob/main/templates.yaml
+          rules:
+            - allow: [Template]
+```
+
+Or run:
+
+```sh
+oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-6.yaml -n rhdh-gitlab
+```
+
+It is needed to restart the Red Hat Developer Hub deployment to load the new configuration from the ConfigMap. One
+way to restart can be:
+
+´´´sh
+oc scale --replicas=0 deployment/backstage-developer-hub
+oc scale --replicas=1 deployment/backstage-developer-hub
+´´´
+
+Verify the new Software Templates clicking in the `Create...` button.
+
+## Create a component
+
+Create a new component from a Software Template is a simple process. Create a new component
+from the `Sample Software Template from Backstage` template.
+
+Fulfil the parameters requested:
+
+- Name - an unique name of this new component
+- Description
+- Owner - Choose one from the list of options, or add one such as `team-a`, or `team-b`
+- Repository Location - Location of the GitLab server instance.
+
+To get the repository location run:
+
+```sh
+echo gitlab.$(oc get ingresscontroller -n openshift-ingress-operator default -o jsonpath='{.status.domain}')
+```
+
+Verify that your new component is listed in the Catalog.
+
+## Deploy a dynamic plugin
+
+Another capability of Red Hat Developer Hub is add dynamic plugins easily. This exercise will deploy a dynamic
+plugin defined in this [repo](https://github.com/rmarting/rhdh-dynamic-devquote-plugin)
+
+Previously we added the definition of the GitLab catalog backend plugin, now we will extend the list of dynamic
+plugins including the new one with the following configuration:
+
+```yaml
+    plugins:
+      - package: './dynamic-plugins/dist/backstage-plugin-catalog-backend-module-gitlab-dynamic'
+        disabled: false
+        pluginConfig: {}
+      - package: './dynamic-plugins/dist/janus-idp-backstage-plugin-rbac'
+        disabled: false
+        pluginConfig: {}
+      - package: '@rmarting/my-devquote-plugin@0.0.2'
+        integrity: sha512-S/CbM8s8vqVMeBeWGJ/4SsCd2b6K8Ngp992H1JN6HdwB9QiupPZu5wfnEpjN024SJemd/VUFT53tiUGrt1J/dw==
+        disabled: false
+        pluginConfig:
+          dynamicPlugins:
+            frontend:
+              rmarting.my-devquote-plugin:
+                mountPoints:
+                  - config:
+                      layout:
+                        gridColumnEnd:
+                          lg: span 4
+                          md: span 6
+                          xs: span 12
+                    importName: DevQuote
+                    mountPoint: entity.page.overview/cards
+                dynamicRoutes:
+                  - importName: DevQuote
+                    menuItem:
+                      text: Quote
+                    path: /devquote
+```
+
+Or run:
+
+```sh
+oc apply -f ./custom-app-config-gitlab/dynamic-plugins-7.yaml -n rhdh-gitlab
+```
+
+It is needed to restart the Red Hat Developer Hub deployment to load the new configuration from the ConfigMap. One
+way to restart can be:
+
+´´´sh
+oc scale --replicas=0 deployment/backstage-developer-hub
+oc scale --replicas=1 deployment/backstage-developer-hub
+´´´
+
+Verify the `Quote` menu is listed, and a quote is showed in any component dashboard.

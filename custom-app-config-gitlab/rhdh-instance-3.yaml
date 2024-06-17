@@ -12,6 +12,10 @@ spec:
     extraFiles:
       mountPath: /opt/app-root/src
     extraEnvs:
+      envs:
+        # Disabling TLS verification
+        - name: NODE_TLS_REJECT_UNAUTHORIZED
+          value: '0'
       secrets:
         - name: gitlab-secrets
         - name: rhdh-secrets               
