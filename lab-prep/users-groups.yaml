@@ -2,6 +2,15 @@
 apiVersion: backstage.io/v1alpha1
 kind: User
 metadata:
+  name: "1"
+spec:
+  profile:
+    displayName: admin
+    email: admin@example.com
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
   name: "2"
 spec:
   profile:
