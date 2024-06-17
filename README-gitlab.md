@@ -228,7 +228,8 @@ oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-4.yaml -n rhdh-gitlab
 ```
 
 **ATTENTION**: This step is broken due to this [issue](https://issues.redhat.com/browse/RHIDP-1713).
-We will emulate what the processor would have done by uploading the `users-groups.yaml` to Red Hat Developer Hub:
+We will emulate what the processor would have done by registering the [`users-groups.yaml`](./lab-prep/users-groups.yaml)
+to Red Hat Developer Hub:
 
 ![Register an Existing Component!](./media/Register-an-existing-component.png "Register-an-existing-component")
 
