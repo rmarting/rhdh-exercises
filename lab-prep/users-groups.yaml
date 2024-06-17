@@ -91,4 +91,5 @@ spec:
   profile:
     displayName: Red Hat Developer Hub Group
     email: rhdh@example.com
+  members: [admin]
   children: []
