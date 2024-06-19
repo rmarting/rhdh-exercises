@@ -52,8 +52,9 @@ data:
               frequency: { minutes: 1 }
               # supports ISO duration, "human duration" as used in code
               timeout: { minutes: 3 }
-            orgEnabled: false
+            orgEnabled: true
             #group: org/teams # Required for gitlab.com when `orgEnabled: true`. Optional for self managed. Must not end with slash. Accepts only groups under the provided path (which will be stripped)
+            allowInherited: true # Allow groups to be ingested even if there are no direct members.
             groupPattern: '[\s\S]*'
     permission:
       enabled: true
@@ -62,11 +63,8 @@ data:
           users:
             - name: user:default/1
         policies-csv-file: /opt/app-root/src/rbac-policy.csv
-    # Tech Docs
-    enabled:
-      techdocs: true
     techdocs:
-      builder: 'local' # 'external'
+      builder: 'external'
       generator:
         runIn: 'local'
       publisher:
@@ -75,7 +73,7 @@ data:
           bucketName: ${BUCKET_NAME}
           endpoint: ${BUCKET_URL}
           s3ForcePathStyle: true
-          #region: ${AWS_REGION}
+          region: ${AWS_REGION}
           credentials:
             accessKeyId: ${AWS_ACCESS_KEY_ID}
             secretAccessKey: ${AWS_SECRET_ACCESS_KEY}

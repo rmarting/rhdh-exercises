@@ -1,0 +1,9 @@
+---
+apiVersion: apps.gitlab.com/v1beta2
+kind: Runner
+metadata:
+  name: techdocs-runner
+  namespace: gitlab-system
+spec:
+  gitlabUrl: https://gitlab.${basedomain}
+  token: gitlab-gitlab-runner-secret

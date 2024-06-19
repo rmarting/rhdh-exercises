@@ -389,3 +389,115 @@ oc scale --replicas=1 deployment/backstage-developer-hub -n rhdh-gitlab
 ```
 
 Verify the `Quote` menu is listed, and a quote is showed in any component dashboard.
+
+## Enabling Tech Docs
+
+### Create Storage
+
+Create a new Storage component by OpenShift Data Foundation in the same namespace
+where Red Hat Developer Hub is running:
+
+```sh
+oc apply -f ./custom-app-config-gitlab/obc-8.yaml -n rhdh-gitlab
+```
+
+Once the object is created, a new ConfigMap and Secret are created both with the
+name of the `ObjectBucketClaim` resource. In our case, `rhdh-exercises-bucket-claim`.
+These resources include a set of properties to identify the new bucket in AWS.
+
+* `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` as credentials of this new bucket
+* `BUCKET_HOST`, `BUCKET_NAME`, ... to identify the new bucket
+
+Some of these values are needed in the following steps:
+
+### Enabling GitLab runners
+
+The technical docs will be created as part of the CI pipelines of the components, so
+we need to set up the GitLab instance to run pipelines and use some variables to
+identify the new bucket to store the results.
+
+Deploy a GitLab runner to run pipelines:
+
+```sh
+export basedomain=$(oc get ingresscontroller -n openshift-ingress-operator default -o jsonpath='{.status.domain}')
+envsubst < ./custom-app-config-gitlab/gitlab-runner-8.yaml | oc apply -n gitlab-system -f -
+```
+
+GitLab requires a set of CI variables to run successfully the techdocs pipelines.
+Login as `root` into GitLab and add these variables in `Admin Area / CI/CD / Variables`:
+
+* `AWS_ENDPOINT`: Output of the command `oc get route s3 -n openshift-storage -o jsonpath='https://{.spec.host}'`
+* `AWS_ACCESS_KEY_ID`
+* `AWS_SECRET_ACCESS_KEY`
+* `TECHDOCS_S3_BUCKET_NAME`: Value of `BUCKET_NAME` variable
+* `AWS_REGION`: `us-east-2`
+
+The configuration should be similar to:
+
+![GitLab CICD Variables](./media/gitlab-admin-cicd-variables.png)
+
+### Setting techdocs plugin
+
+Patch the `rhdh-secrets` secret to add the `AWS_REGION` and `BUCKET_URL` variables:
+
+```sh
+export AWS_REGION=$(echo -n 'us-east-2' | base64 -w0)
+export BUCKET_URL=$(oc get route s3 -n openshift-storage -o jsonpath='https://{.spec.host}' | base64 -w0)
+oc patch secret rhdh-secrets -n rhdh-gitlab -p '{"data":{"AWS_REGION":"'"${AWS_REGION}"'"}}'
+oc patch secret rhdh-secrets -n rhdh-gitlab -p '{"data":{"BUCKET_URL":"'"${BUCKET_URL}"'"}}'
+```
+
+Add the `rhdh-exercises-bucket-claim` ConfigMap and Secret to the Red Hat Developer Hub deployment.
+
+```yaml
+    extraEnvs:
+      envs:
+        # Disabling TLS verification
+        - name: NODE_TLS_REJECT_UNAUTHORIZED
+          value: '0'
+      configMaps:
+        - name: rhdh-exercises-bucket-claim
+      secrets:
+        - name: gitlab-secrets
+        - name: rhdh-secrets
+        - name: rhdh-exercises-bucket-claim
+```
+
+And apply changes to the application configuration:
+
+```yaml
+    techdocs:
+      builder: 'external'
+      generator:
+        runIn: 'local'
+      publisher:
+        type: 'awsS3'
+        awsS3:
+          bucketName: ${BUCKET_NAME}
+          endpoint: ${BUCKET_URL}
+          s3ForcePathStyle: true
+          region: ${AWS_REGION}
+          credentials:
+            accessKeyId: ${AWS_ACCESS_KEY_ID}
+            secretAccessKey: ${AWS_SECRET_ACCESS_KEY}
+```
+
+Or run:
+
+```sh
+oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-8.yaml -n rhdh-gitlab
+oc apply -f ./custom-app-config-gitlab/rhdh-instance-8.yaml -n rhdh-gitlab
+```
+
+Modify the content of the `docs/index.md` file of your component, check the CI pipeline
+is executed successfully and verify the technical content in Red Hat Developer Hub.
+
+**ATTENTION**: This step is broken due to this [issue](https://issues.redhat.com/browse/RHIDP-2204).
+It is fixed in Red Hat Developer Hub 1.2. Meanwhile, if you want to test it, RBAC must be disabled:
+
+```yaml
+    permission:
+      enabled: false
+```
+
+Restart the pod, and your technical documentation is available.

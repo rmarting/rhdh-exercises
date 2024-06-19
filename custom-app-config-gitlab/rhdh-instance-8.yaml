@@ -1,0 +1,32 @@
+apiVersion: rhdh.redhat.com/v1alpha1
+kind: Backstage
+metadata:
+  name: developer-hub
+spec:
+  application:
+    dynamicPluginsConfigMapName: dynamic-plugins-rhdh
+    appConfig:
+      mountPath: /opt/app-root/src
+      configMaps:
+      - name: app-config-rhdh
+    extraFiles:
+      mountPath: /opt/app-root/src
+      configMaps:
+        - name: rbac-policy
+          key: rbac-policy.csv
+    extraEnvs:
+      envs:
+        # Disabling TLS verification
+        - name: NODE_TLS_REJECT_UNAUTHORIZED
+          value: '0'
+      configMaps:
+        - name: rhdh-exercises-bucket-claim
+      secrets:
+        - name: gitlab-secrets
+        - name: rhdh-secrets
+        - name: rhdh-exercises-bucket-claim
+    replicas: 1
+    route:
+      enabled: true
+  database:
+    enableLocalDb: true
