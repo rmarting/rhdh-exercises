@@ -390,7 +390,7 @@ oc scale --replicas=1 deployment/backstage-developer-hub -n rhdh-gitlab
 
 Verify the `Quote` menu is listed, and a quote is showed in any component dashboard.
 
-## Enabling Tech Docs
+## Enable Tech Docs
 
 ### Create Storage
 
@@ -410,7 +410,7 @@ These resources include a set of properties to identify the new bucket in AWS.
 
 Some of these values are needed in the following steps:
 
-### Enabling GitLab runners
+### Deploy GitLab runner
 
 The technical docs will be created as part of the CI pipelines of the components, so
 we need to set up the GitLab instance to run pipelines and use some variables to
@@ -436,7 +436,7 @@ The configuration should be similar to:
 
 ![GitLab CICD Variables](./media/gitlab-admin-cicd-variables.png)
 
-### Setting techdocs plugin
+### Set up techdocs plugin
 
 Patch the `rhdh-secrets` secret to add the `AWS_REGION` and `BUCKET_URL` variables:
 
