@@ -4,14 +4,14 @@ metadata:
   name: rbac-policy
 data:
   rbac-policy.csv: |
-    # Admin role
+    # Admin Role
     p, role:default/admins, catalog.location.read, read, allow
     p, role:default/admins, catalog.location.create, create, allow
     p, role:default/admins, catalog.location.delete, delete, allow
     p, role:default/admins, catalog.entity.create, create, allow
     p, role:default/admins, catalog.entity.delete, delete, allow
     p, role:default/admins, catalog.entity.read, read, allow
-    p, role:default/admins, catalog.entity.refresh, refresh, allow
+    p, role:default/admins, catalog.entity.refresh, update, allow
     p, role:default/admins, catalog-entity, read, update, delete, allow
     p, role:default/admins, scaffolder.action.execute, use, allow
     p, role:default/admins, scaffolder.template.parameter.read, read, allow
@@ -22,14 +22,15 @@ data:
     p, role:default/admins, policy-entity.delete, delete,allow
     p, role:default/admins, kubernetes.proxy, use, allow
 
+    # Admin User
     # this is not needed now with the new superUser setting
-    # g, user:default/1, role:default/admins
+    g, user:default/1, role:default/admins
 
     # Team-A Role
     p, role:default/team-a, catalog-entity, read, allow
     p, role:default/team-a, catalog.entity.create, create, allow
     p, role:default/team-a, catalog.entity.read, read, allow
-    p, role:default/team-a, catalog.entity.refresh, refresh, allow
+    p, role:default/team-a, catalog.entity.refresh, update, allow
     p, role:default/team-a, catalog-entity, read, update, delete, allow
     p, role:default/team-a, catalog.location.read, read, allow
     p, role:default/team-a, catalog.location.create, create, allow

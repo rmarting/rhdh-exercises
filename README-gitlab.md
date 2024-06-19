@@ -216,9 +216,10 @@ Add this to the ConfigMap:
       gitlab:
         yourProviderId:
           host: gitlab.${basedomain}
-          orgEnabled: true
-          group: org/teams # Required for gitlab.com when `orgEnabled: true`. Optional for self managed. Must not end with slash. Accepts only groups under the provided path (which will be stripped)
-          groupPattern: '[\s\S]*'
+            orgEnabled: true
+            #group: org/teams # Required for gitlab.com when `orgEnabled: true`. Optional for self managed. Must not end with slash. Accepts only groups under the provided path (which will be stripped)
+            allowInherited: true # Allow groups to be ingested even if there are no direct members.
+            groupPattern: '[\s\S]*'
 ```
 
 Or run:

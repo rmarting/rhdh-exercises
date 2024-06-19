@@ -52,8 +52,9 @@ data:
               frequency: { minutes: 1 }
               # supports ISO duration, "human duration" as used in code
               timeout: { minutes: 3 }
-            orgEnabled: false
+            orgEnabled: true
             #group: org/teams # Required for gitlab.com when `orgEnabled: true`. Optional for self managed. Must not end with slash. Accepts only groups under the provided path (which will be stripped)
+            allowInherited: true # Allow groups to be ingested even if there are no direct members.
             groupPattern: '[\s\S]*'
     permission:
       enabled: true

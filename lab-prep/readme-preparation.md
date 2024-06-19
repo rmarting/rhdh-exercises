@@ -7,7 +7,7 @@ instance from [Red Hat Demo Platform](https://demo.redhat.com/).
 
 **NOTE**: You must `cluster-admin` privileges to install the different operators required for this technical exercise.
 
-The content of this repo was tested in Red Hat Developer Hub 1.1 on Red Hat OpenShift Container Platform 4.12.12 and 4.15.16.
+The content of this repo was tested in Red Hat Developer Hub 1.1 on Red Hat OpenShift Container Platform 4.12.12, 4.14.20, and 4.15.16.
 
 ## Install cert-manager operator
 

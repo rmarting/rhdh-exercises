@@ -4,7 +4,7 @@ metadata:
   name: app-config-rhdh
 data:
   app-config-rhdh.yaml: |
-    signInPage: gitlab 
+    signInPage: gitlab
     app:
       title: Red Hat Developer Hub
       baseUrl: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
@@ -14,7 +14,7 @@ data:
           - secret: ${BACKEND_SECRET}
       baseUrl: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
       cors:
-        origin: https://backstage-developer-hub-rhdh-gitlab.${basedomain} 
+        origin: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
     auth:
       environment: development
       providers:
@@ -22,16 +22,16 @@ data:
           development:
             clientId: ${AUTH_GITLAB_CLIENT_ID}
             clientSecret: ${AUTH_GITLAB_CLIENT_SECRET}
-            audience: https://gitlab.${basedomain}     
+            audience: https://gitlab.${basedomain}
     integrations:
       gitlab:
         - host: gitlab.${basedomain}
           token: ${GITLAB_TOKEN}
           apiBaseUrl: https://gitlab.${basedomain}/api/v4
-          baseUrl: https://gitlab.${basedomain}          
+          baseUrl: https://gitlab.${basedomain}
     catalog:
       rules:
-        - allow: [Component, System, Group, Resource, Location, Template, API, User, Domain, Type]    
+        - allow: [Component, System, Group, Resource, Location, Template, API, User, Domain, Type]
       providers:
         gitlab:
           yourProviderId:
@@ -47,7 +47,7 @@ data:
               frequency: { minutes: 1 }
               # supports ISO duration, "human duration" as used in code
               timeout: { minutes: 3 }
-            orgEnabled: false
+            orgEnabled: true
             #group: org/teams # Required for gitlab.com when `orgEnabled: true`. Optional for self managed. Must not end with slash. Accepts only groups under the provided path (which will be stripped)
-            groupPattern: '[\s\S]*'                                                
-      
+            allowInherited: true # Allow groups to be ingested even if there are no direct members.
+            groupPattern: '[\s\S]*'
