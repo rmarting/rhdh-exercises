@@ -13,4 +13,4 @@ data:
           - secret: ${BACKEND_SECRET}
       baseUrl: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
       cors:
-        origin: https://backstage-developer-hub-rhdh-gitlab.${basedomain}         
+        origin: https://backstage-developer-hub-rhdh-gitlab.${basedomain}

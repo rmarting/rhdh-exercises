@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Running from same folder
+cd $(dirname $0)
+
 # Set default values
 ssl_certs_self_signed="n"
 
@@ -24,7 +27,7 @@ if [ "$ssl_certs_self_signed" = "y" ]; then
 fi
 
 # Check required CLI's
-command -v jq >/dev/null 2>&1 || { echo >&2 "jq is required but not installed.  Aborting."; exit 1; } 
+command -v jq >/dev/null 2>&1 || { echo >&2 "jq is required but not installed.  Aborting."; exit 1; }
 command -v oc >/dev/null 2>&1 || { echo >&2 "OpenShift CLI is required but not installed.  Aborting."; exit 1; }
 
 #GitLab token must be 20 characters

@@ -34,7 +34,7 @@ data:
         - allow: [Component, System, Group, Resource, Location, Template, API, User, Domain, Type]
       providers:
         gitlab:
-          yourProviderId:
+          myGitLab:
             host: gitlab.${basedomain} # Identifies one of the hosts set up in the integrations
             apiBaseUrl: https://gitlab.${basedomain}/api/v4
             branch: main # Optional. Used to discover on a specific branch
@@ -51,3 +51,4 @@ data:
             #group: org/teams # Required for gitlab.com when `orgEnabled: true`. Optional for self managed. Must not end with slash. Accepts only groups under the provided path (which will be stripped)
             allowInherited: true # Allow groups to be ingested even if there are no direct members.
             groupPattern: '[\s\S]*'
+            restrictUsersToGroup: false

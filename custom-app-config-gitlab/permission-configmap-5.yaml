@@ -5,41 +5,69 @@ metadata:
 data:
   rbac-policy.csv: |
     # Admin Role
+    # Catalog permissions
+    p, role:default/admins, catalog.entity.read, read, allow
+    p, role:default/admins, catalog.entity.create, create, allow
+    p, role:default/admins, catalog.entity.refresh, update, allow
+    p, role:default/admins, catalog.entity.delete, delete, allow
     p, role:default/admins, catalog.location.read, read, allow
     p, role:default/admins, catalog.location.create, create, allow
     p, role:default/admins, catalog.location.delete, delete, allow
-    p, role:default/admins, catalog.entity.create, create, allow
-    p, role:default/admins, catalog.entity.delete, delete, allow
-    p, role:default/admins, catalog.entity.read, read, allow
-    p, role:default/admins, catalog.entity.refresh, update, allow
-    p, role:default/admins, catalog-entity, read, update, delete, allow
+    # Scaffolder permissions
     p, role:default/admins, scaffolder.action.execute, use, allow
     p, role:default/admins, scaffolder.template.parameter.read, read, allow
     p, role:default/admins, scaffolder.template.step.read, read, allow
-    p, role:default/admins, policy-entity.read, read, allow
-    p, role:default/admins, policy-entity.create, create, allow
-    p, role:default/admins, policy-entity.update, update, allow
-    p, role:default/admins, policy-entity.delete, delete,allow
-    p, role:default/admins, kubernetes.proxy, use, allow
+    p, role:default/admins, scaffolder.task.create, create, allow
+    p, role:default/admins, scaffolder.task.cancel, use, allow
+    p, role:default/admins, scaffolder.task.read, read, allow
+    # RBAC permissions
+    p, role:default/admins, policy.entity.read, read, allow
+    p, role:default/admins, policy.entity.create, create, allow
+    p, role:default/admins, policy.entity.update, update, allow
+    p, role:default/admins, policy.entity.delete, delete, allow
+    # Kubernetes permissions
+    #p, role:default/admins, kubernetes.proxy, use, allow
+    # OCM permissions
+    #p, role:default/admins, ocm.entity.read, read, allow
+    #p, role:default/admins, ocm.cluster.read, read, allow
+    # Topology permissions
+    #p, role:default/admins, topology.view.read, read, allow
 
     # Admin User
     # this is not needed now with the new superUser setting
     g, user:default/1, role:default/admins
 
     # Team-A Role
-    p, role:default/team-a, catalog-entity, read, allow
-    p, role:default/team-a, catalog.entity.create, create, allow
+    # Catalog permissions
     p, role:default/team-a, catalog.entity.read, read, allow
+    p, role:default/team-a, catalog.entity.create, create, allow
     p, role:default/team-a, catalog.entity.refresh, update, allow
-    p, role:default/team-a, catalog-entity, read, update, delete, allow
+    p, role:default/team-a, catalog.entity.delete, delete, allow
     p, role:default/team-a, catalog.location.read, read, allow
     p, role:default/team-a, catalog.location.create, create, allow
+    p, role:default/team-a, catalog.location.delete, delete, allow
+    # Scaffolder permissions
     p, role:default/team-a, scaffolder.action.execute, use, allow
     p, role:default/team-a, scaffolder.template.parameter.read, read, allow
     p, role:default/team-a, scaffolder.template.step.read, read, allow
+    p, role:default/team-a, scaffolder.task.create, create, allow
+    p, role:default/team-a, scaffolder.task.cancel, use, allow
+    p, role:default/team-a, scaffolder.task.read, read, allow
+    # RBAC permissions
+    p, role:default/team-a, policy.entity.read, read, allow
+    p, role:default/team-a, policy.entity.create, create, allow
+    p, role:default/team-a, policy.entity.update, update, allow
+    p, role:default/team-a, policy.entity.delete, delete, allow
+    # Kubernetes permissions
+    #p, role:default/team-a, kubernetes.proxy, use, allow
+    # OCM permissions
+    #p, role:default/team-a, ocm.entity.read, read, allow
+    #p, role:default/team-a, ocm.cluster.read, read, allow
+    # Topology permissions
+    #p, role:default/team-a, topology.view.read, read, allow
 
     # Team-B Role
-    p, role:default/team-b, catalog-entity, read, deny
+    p, role:default/team-b, catalog.entity.read, read, deny
 
     # Groups
     g, group:default/team-a, role:default/team-a
@@ -49,3 +77,5 @@ data:
     # as the mapping is automatic
     g, user:default/2, role:default/team-a
     g, user:default/3, role:default/team-b
+
+

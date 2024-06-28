@@ -7,14 +7,14 @@ instance from [Red Hat Demo Platform](https://demo.redhat.com/).
 
 **NOTE**: You must `cluster-admin` privileges to install the different operators required for this technical exercise.
 
-The content of this repo was tested in Red Hat Developer Hub 1.1 on Red Hat OpenShift Container Platform 4.12.12, 4.14.20, and 4.15.16.
+The content of this repo was tested in Red Hat Developer Hub 1.2 on Red Hat OpenShift Container Platform 4.12.12, 4.14.20, and 4.15.16.
 
 ## Install cert-manager operator
 
 Run:
 
 ```sh
-oc apply -f ./cert-manager-operator.yaml
+oc apply -f ./lab-prep/cert-manager-operator.yaml
 ```
 
 Once the operator is ready you can continue. This command shows the status of this operator:
@@ -24,6 +24,8 @@ on 🎩 ❯ oc get csv -n cert-manager-operator
 NAME                            DISPLAY                                       VERSION   REPLACES                        PHASE
 cert-manager-operator.v1.13.0   cert-manager Operator for Red Hat OpenShift   1.13.1    cert-manager-operator.v1.13.0   Succeeded
 ```
+
+**NOTE:** Please, wait until the operator is installed successfully before continue with the preparations. Otherwise, you can face other issues.
 
 ## Install GitLab operator
 
@@ -40,7 +42,7 @@ Run:
 
 ```sh
 export basedomain=$(oc get ingresscontroller -n openshift-ingress-operator default -o jsonpath='{.status.domain}')
-envsubst < ./gitlab.yaml | oc apply -f -
+envsubst < ./lab-prep/gitlab.yaml | oc apply -f -
 ```
 
 Deploying GitLab takes some time, so check its status as `Running` before continuing with next steps:
@@ -59,10 +61,12 @@ oc get secret gitlab-gitlab-initial-root-password -o jsonpath='{.data.password}'
 Setup GitLab with some initial configuration:
 
 ```sh
-./configure-gitlab.sh
+./lab-prep/configure-gitlab.sh
 ```
 
-**NOTE**: If GitLab is deployed using self-signed certificates, you can get the following exception:
+The initial configuration requires to push some content into GitLab, you should use the `user1` credentials to do it.
+
+**WARNING**: If GitLab is deployed using self-signed certificates, you can get the following exception:
 
 `SSL certificate problem: self-signed certificate in certificate chain`
 
@@ -91,7 +95,7 @@ Create a repo called `sample-app` under `team-a` add the `catalog-info.yaml` and
 Run:
 
 ```sh
-oc apply -f ./rhdh-operator.yaml
+oc apply -f ./lab-prep/rhdh-operator.yaml
 ```
 
 The operator is installed in the `rhdh-operator` namespace:
@@ -99,7 +103,7 @@ The operator is installed in the `rhdh-operator` namespace:
 ```sh
 on 🎩 ❯ oc get csv -n rhdh-operator
 NAME                                  DISPLAY                          VERSION                REPLACES               PHASE
-rhdh-operator.v1.1.2-0.1714688890.p   Red Hat Developer Hub Operator   1.1.2+0.1714688890.p   rhdh-operator.v1.1.1   Succeeded
+rhdh-operator.v1.2.0-0.1719307450.p   Red Hat Developer Hub Operator   1.2.0+0.1719307450.p   rhdh-operator.v1.1.1   Succeeded
 ```
 
 ## Install Red Hat Developer Hub instance
@@ -107,7 +111,7 @@ rhdh-operator.v1.1.2-0.1714688890.p   Red Hat Developer Hub Operator   1.1.2+0.1
 Run:
 
 ```sh
-oc apply -f ./rhdh-instance.yaml
+oc apply -f ./lab-prep/rhdh-instance.yaml
 ```
 
 Once the deployment is finished, the status is identified as `Deployed`. This command shows that status:

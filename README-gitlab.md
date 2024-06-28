@@ -5,15 +5,41 @@
 When Red Hat Developer Hub is installed via the operator there are some mandatory settings that need to be set:
 
 - create mandatory backend secret
-- add the `basedomain` to enable proper navigation and cors settings
+- add the `basedomain` to enable proper navigation and CORs settings
+
+Customizing the instance requires a custom application file defined in a ConfigMap object. Additionally we can use a
+Secret object to store sensitive data required by Red Hat Developer Hub. An example of sensitive data required is
+the `BACKEND_SECRET` variable. That variable contains a mandatory backend authentication key.
+
+Creating a Secret including that variable, and adding the base domain of our instance can be done running:
 
 ```sh
 oc apply -f ./custom-app-config-gitlab/rhdh-secrets.yaml -n rhdh-gitlab
-export basedomain=$(oc get ingresscontroller -n openshift-ingress-operator default -o jsonpath='{.status.domain}' | base64 -w0)
-oc patch secret rhdh-secrets -n rhdh-gitlab -p '{"data":{"basedomain":"'"${basedomain}"'"}}'
+oc patch secret rhdh-secrets -n rhdh-gitlab -p '{"stringData":{"basedomain":"'"${basedomain}"'"}}'
 ```
 
-Enable custom and external application configuration adding this ConfigMap and Secret to the `developer-hub` manifest:
+This is the structure of the `app-config-rhdh` ConfigMap to customize the configuration of our Red Hat Developer Hub instance:
+
+```yaml
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: app-config-rhdh
+data:
+  app-config-rhdh.yaml: |
+    app:
+      title: Red Hat Developer Hub
+      baseUrl: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
+    backend:
+      auth:
+        keys:
+          - secret: ${BACKEND_SECRET}
+      baseUrl: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
+      cors:
+        origin: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
+```
+
+Once created the ConfigMap and Secret, we can add them into the `developer-hub` CR Red Hat Developer Hub manifest:
 
 ```yaml
 spec:
@@ -23,7 +49,7 @@ spec:
       - name: app-config-rhdh
     extraEnvs:
       secrets:
-        - name: rhdh-secrets
+      - name: rhdh-secrets
 ```
 
 or run this:
@@ -33,15 +59,24 @@ oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-0.yaml -n rhdh-gitlab
 oc apply -f ./custom-app-config-gitlab/rhdh-instance-0.yaml -n rhdh-gitlab
 ```
 
+**ATTENTION**: Red Hat Developer Hub has a slow startup as it is building and loading the dynamic plugins. Every time
+we apply a [change in the configuration](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.2/html-single/release_notes_for_red_hat_developer_hub_1.2/index#enhancement-to-configmap-or-secret-configuration),
+an automatic redeploy will start, and it will few minutes until
+the new pod is ready to serve request. Please, be patient after any change before confirming they are
+correctly applied.
+
+More detailed information about this step [here](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.2/html-single/getting_started_with_red_hat_developer_hub/index#proc-add-custom-app-config-file-ocp-operator_rhdh-getting-started.)
+
 ## Enable GitLab authentication
 
-Create a [new application](https://backstage.io/docs/auth/gitlab/provider):
+Enabling GitLab authentication requires to create a GitLab application within our GitLab instance. This
+process is described [here](https://backstage.io/docs/auth/gitlab/provider), however, keep in mind to
+execute the actions in your GitLab instance:
 
+- GitLab UI navigation: Edit Profile -> Applications -> Add new application
 - name: `rhdh-exercises`
-- the call back uri should look something like: `https://backstage-developer-hub-rhdh-gitlab.${OCP_CLUSTER_DOMAIN}/api/auth/gitlab/handler/frame`
+- Redirect URI: copy output `echo https://backstage-developer-hub-rhdh-gitlab.${basedomain}/api/auth/gitlab/handler/frame`
 - set the correct permissions: `read_user`, `read_repository`, `write_repository`, `openid`, `profile`, `email`
-
-The applications are managed in the profile the user in the menu `Applications`.
 
 Create a secret with an app id and secret:
 
@@ -63,7 +98,7 @@ You can create the `gitlab-secrets.yaml` inside of `custom-app-config-gitlab` fo
 oc apply -f ./custom-app-config-gitlab/gitlab-secrets.yaml -n rhdh-gitlab
 ```
 
-Modify `app-config` with environment variables from the new secret:
+Modify `app-config` section of the `app-config-rhdh` ConfigMap with environment variables from the new secret:
 
 ```yaml
     app:
@@ -102,8 +137,17 @@ Verify that you can login with GitLab.
 
 ## Enable GitLab plugin integration
 
-Create new Personal Access Token (aka PAT) in menu `Access Tokens` of the GitLab user profile :
+The GitLab integration has a special entity provider for discovering catalog entities from GitLab. The entity provider
+will crawl the GitLab instance and register entities matching the configured paths. This can be useful as an alternative
+to static locations or manually adding things to the catalog.
 
+More information about Dynamic Plugins [here](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.2/html-single/configuring_plugins_in_red_hat_developer_hub/index#rhdh-installing-dynamic-plugins).
+
+To enable the GitLab integration and discovery capabilities a Personal Access Token (aka PAT) is required.
+
+Create new Personal Access Token (aka PAT) in menu `Access Tokens` of the GitLab user profile:
+
+- GitLab UI navigation: Edit Profile -> Access Tokens -> Add new token
 - name: `pat-rhdh-exercises`
 - expiration date: Disabled it or just one in the future
 - set the scopes: `api`, `read_repository`, `write_repository`
@@ -121,12 +165,6 @@ stringData:
   AUTH_GITLAB_CLIENT_SECRET: REPLACE_WITH_YOUR_GITLAB_CLIENT_SECRET
   GITLAB_TOKEN: REPLACE_WITH_YOUR_PAT
 type: Opaque
-```
-
-And apply changes:
-
-```sh
-oc apply -f ./custom-app-config-gitlab/gitlab-secrets.yaml -n rhdh-gitlab
 ```
 
 Add the following to the `app-config-rhdh` ConfigMap:
@@ -151,24 +189,30 @@ data:
 Or execute:
 
 ```sh
+oc apply -f ./custom-app-config-gitlab/gitlab-secrets.yaml -n rhdh-gitlab
 oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-2.yaml -n rhdh-gitlab
 ```
 
 ## Add GitLab autodiscovery
 
-Create a new ConfigMap with the needed dynamic plugin:
+Once we have integrated GitLab with Red Hat Developer Hub, we need to enable the autodiscovery
+capabilities of this provider. Very useful to load our catalog with repositories already created in
+our GitLab server. That requires to enable the `backstage-plugin-catalog-backend-module-gitlab-dynamic`
+dynamic plugin provided by Red Hat Developer Hub.
+
+We will use a new ConfigMap to enable the dynamic plugins:
 
 ```sh
 oc apply -f ./custom-app-config-gitlab/dynamic-plugins-3.yaml -n rhdh-gitlab
 ```
 
-Add this to the app config ConfigMap:
+Add this to the `app-config-rhdh` ConfigMap:
 
 ```yaml
 catalog:
   providers:
     gitlab:
-      yourProviderId:
+      myGitLab:
         host: gitlab.${basedomain} # Identifies one of the hosts set up in the integrations
         apiBaseUrl: https://gitlab.${basedomain}/api/v4
         branch: main # Optional. Used to discover on a specific branch
@@ -183,13 +227,7 @@ catalog:
           timeout: { minutes: 3 }
 ```
 
-Or execute:
-
-```sh
-oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-3.yaml -n rhdh-gitlab
-```
-
-Update the backstage manifest to use the new ConfigMap for plugins:
+Update the Red Hat Developer Hub manifest to use the new ConfigMap for plugins:
 
 ```yaml
 spec:
@@ -201,12 +239,16 @@ spec:
 Or run:
 
 ```sh
+oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-3.yaml -n rhdh-gitlab
 oc apply -f ./custom-app-config-gitlab/rhdh-instance-3.yaml -n rhdh-gitlab
 ```
 
-Verify that the `sample-service` component is in the application catalog.
+Verify that the `sample-service` component is located on the `Catalog` page.
 
 ## Enable users/teams autodiscovery
+
+The Red Hat Developer Hub catalog can be set up to ingest organizational data -- users and groups -- directly from GitLab.
+The result is a hierarchy of User and Group entities that mirrors your org setup.
 
 Add this to the ConfigMap:
 
@@ -214,12 +256,13 @@ Add this to the ConfigMap:
   catalog:
     providers:
       gitlab:
-        yourProviderId:
+        myGitLab:
           host: gitlab.${basedomain}
-            orgEnabled: true
-            #group: org/teams # Required for gitlab.com when `orgEnabled: true`. Optional for self managed. Must not end with slash. Accepts only groups under the provided path (which will be stripped)
-            allowInherited: true # Allow groups to be ingested even if there are no direct members.
-            groupPattern: '[\s\S]*'
+          orgEnabled: true
+          #group: org/teams # Required for gitlab.com when `orgEnabled: true`. Optional for self managed. Must not end with slash. Accepts only groups under the provided path (which will be stripped)
+          allowInherited: true # Allow groups to be ingested even if there are no direct members.
+          groupPattern: '[\s\S]*'
+          restrictUsersToGroup: false
 ```
 
 Or run:
@@ -272,11 +315,13 @@ oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-5.yaml -n rhdh-gitlab
 oc apply -f ./custom-app-config-gitlab/rhdh-instance-5.yaml -n rhdh-gitlab
 ```
 
-Verify that `user2` cannot see `sample-service` anymore.
+Open an incognito window, or just logout, and login with `user2` (password: `@abc1cde2`) to confirm
+that the component `sample-service` is not accessible on the `Catalog` page. You can check that
+the `user1` can still access to that component successfully.
 
 References:
 
-* [RBAC in Red Hat Developer Hub](https://access.redhat.com/documentation/en-us/red_hat_developer_hub/1.1/html/administration_guide_for_red_hat_developer_hub/con-rbac-overview_admin-rhdh#doc-wrapper)
+* [RBAC in Red Hat Developer Hub](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.2/html/administration_guide_for_red_hat_developer_hub/con-rbac-overview_assembly-rhdh-integration-aks)
 
 ## Import Software Template
 
@@ -305,19 +350,11 @@ Or run:
 oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-6.yaml -n rhdh-gitlab
 ```
 
-It is needed to restart the Red Hat Developer Hub deployment to load the new configuration from the ConfigMap. One
-way to restart can be:
-
-```sh
-oc scale --replicas=0 deployment/backstage-developer-hub -n rhdh-gitlab
-oc scale --replicas=1 deployment/backstage-developer-hub -n rhdh-gitlab
-```
-
-Verify the new Software Templates clicking in the `Create...` button.
+Verify there is a new Software Template available on the `Create...` page.
 
 ## Create a component
 
-Create a new component from a Software Template is a simple process. Create a new component
+Creating a new component from a Software Template is a simple process. Create a new component
 from the `Sample Software Template from Backstage` template.
 
 Fulfil the parameters requested:
@@ -325,7 +362,7 @@ Fulfil the parameters requested:
 - Name - an unique name of this new component
 - Description (Optional)
 - Owner - Choose one from the list of options, or add one such as `team-a`, or `team-b` (Remove the `group:` or `user:` prefix)
-- Repository Location - Location of the GitLab server instance.
+- Repository Location: Copy output: `echo gitlab.${basedomain}`. Note that `https://` is not included.
 
 To get the repository location run:
 
@@ -333,7 +370,7 @@ To get the repository location run:
 echo gitlab.$(oc get ingresscontroller -n openshift-ingress-operator default -o jsonpath='{.status.domain}')
 ```
 
-Verify that your new component is listed in the Catalog.
+Verify that your new component is listed on the `Catalog` page.
 
 ## Deploy a dynamic plugin
 
@@ -380,124 +417,5 @@ Or run:
 oc apply -f ./custom-app-config-gitlab/dynamic-plugins-7.yaml -n rhdh-gitlab
 ```
 
-It is needed to restart the Red Hat Developer Hub deployment to load the new configuration from the ConfigMap. One
-way to restart can be:
-
-```sh
-oc scale --replicas=0 deployment/backstage-developer-hub -n rhdh-gitlab
-oc scale --replicas=1 deployment/backstage-developer-hub -n rhdh-gitlab
-```
-
 Verify the `Quote` menu is listed, and a quote is showed in any component dashboard.
 
-## Enable Tech Docs
-
-### Create Storage
-
-Create a new Storage component by OpenShift Data Foundation in the same namespace
-where Red Hat Developer Hub is running:
-
-```sh
-oc apply -f ./custom-app-config-gitlab/obc-8.yaml -n rhdh-gitlab
-```
-
-Once the object is created, a new ConfigMap and Secret are created both with the
-name of the `ObjectBucketClaim` resource. In our case, `rhdh-exercises-bucket-claim`.
-These resources include a set of properties to identify the new bucket in AWS.
-
-* `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` as credentials of this new bucket
-* `BUCKET_HOST`, `BUCKET_NAME`, ... to identify the new bucket
-
-Some of these values are needed in the following steps:
-
-### Deploy GitLab runner
-
-The technical docs will be created as part of the CI pipelines of the components, so
-we need to set up the GitLab instance to run pipelines and use some variables to
-identify the new bucket to store the results.
-
-Deploy a GitLab runner to run pipelines:
-
-```sh
-export basedomain=$(oc get ingresscontroller -n openshift-ingress-operator default -o jsonpath='{.status.domain}')
-envsubst < ./custom-app-config-gitlab/gitlab-runner-8.yaml | oc apply -n gitlab-system -f -
-```
-
-GitLab requires a set of CI variables to run successfully the techdocs pipelines.
-Login as `root` into GitLab and add these variables in `Admin Area / CI/CD / Variables`:
-
-* `AWS_ENDPOINT`: Output of the command `oc get route s3 -n openshift-storage -o jsonpath='https://{.spec.host}'`
-* `AWS_ACCESS_KEY_ID`
-* `AWS_SECRET_ACCESS_KEY`
-* `TECHDOCS_S3_BUCKET_NAME`: Value of `BUCKET_NAME` variable
-* `AWS_REGION`: `us-east-2`
-
-The configuration should be similar to:
-
-![GitLab CICD Variables](./media/gitlab-admin-cicd-variables.png)
-
-### Set up techdocs plugin
-
-Patch the `rhdh-secrets` secret to add the `AWS_REGION` and `BUCKET_URL` variables:
-
-```sh
-export AWS_REGION=$(echo -n 'us-east-2' | base64 -w0)
-export BUCKET_URL=$(oc get route s3 -n openshift-storage -o jsonpath='https://{.spec.host}' | base64 -w0)
-oc patch secret rhdh-secrets -n rhdh-gitlab -p '{"data":{"AWS_REGION":"'"${AWS_REGION}"'"}}'
-oc patch secret rhdh-secrets -n rhdh-gitlab -p '{"data":{"BUCKET_URL":"'"${BUCKET_URL}"'"}}'
-```
-
-Add the `rhdh-exercises-bucket-claim` ConfigMap and Secret to the Red Hat Developer Hub deployment.
-
-```yaml
-    extraEnvs:
-      envs:
-        # Disabling TLS verification
-        - name: NODE_TLS_REJECT_UNAUTHORIZED
-          value: '0'
-      configMaps:
-        - name: rhdh-exercises-bucket-claim
-      secrets:
-        - name: gitlab-secrets
-        - name: rhdh-secrets
-        - name: rhdh-exercises-bucket-claim
-```
-
-And apply changes to the application configuration:
-
-```yaml
-    techdocs:
-      builder: 'external'
-      generator:
-        runIn: 'local'
-      publisher:
-        type: 'awsS3'
-        awsS3:
-          bucketName: ${BUCKET_NAME}
-          endpoint: ${BUCKET_URL}
-          s3ForcePathStyle: true
-          region: ${AWS_REGION}
-          credentials:
-            accessKeyId: ${AWS_ACCESS_KEY_ID}
-            secretAccessKey: ${AWS_SECRET_ACCESS_KEY}
-```
-
-Or run:
-
-```sh
-oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-8.yaml -n rhdh-gitlab
-oc apply -f ./custom-app-config-gitlab/rhdh-instance-8.yaml -n rhdh-gitlab
-```
-
-Modify the content of the `docs/index.md` file of your component, check the CI pipeline
-is executed successfully and verify the technical content in Red Hat Developer Hub.
-
-**ATTENTION**: This step is broken due to this [issue](https://issues.redhat.com/browse/RHIDP-2204).
-It is fixed in Red Hat Developer Hub 1.2. Meanwhile, if you want to test it, RBAC must be disabled:
-
-```yaml
-    permission:
-      enabled: false
-```
-
-Restart the pod, and your technical documentation is available.
