@@ -6,7 +6,7 @@ data:
   app-config-rhdh.yaml: |
     signInPage: gitlab
     app:
-      title: Red Hat Developer Hub
+      title: My Red Hat Developer Hub Instance
       baseUrl: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
     backend:
       auth:

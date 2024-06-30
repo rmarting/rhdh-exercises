@@ -7,7 +7,7 @@ oc apply -f rhdh-installation/operator.yaml
 oc apply -f rhdh-installation/rhdh-instance.yaml
 ```
 
-## Start customizing 
+## Start customizing
 
 ```sh
 oc apply -f ./custom-app-config/rhdh-app-configmap.yaml -n rhdh
@@ -53,7 +53,7 @@ modify app config with the new secret
 
 ```yaml
     app:
-      title: Red Hat Developer Hub
+      title: My Red Hat Developer Hub Instance
     auth:
       # see https://backstage.io/docs/auth/ to learn about auth providers
       environment: development
@@ -62,7 +62,7 @@ modify app config with the new secret
           development:
             clientId: ${GITHUB_APP_CLIENT_ID}
             clientSecret: ${GITHUB_APP_CLIENT_SECRET}
-```     
+```
 
 or execute
 
@@ -79,7 +79,7 @@ spec:
     ...
     extraEnvs:
       secrets:
-        - name: github-secrets 
+        - name: github-secrets
 ```
 
 ## Enable github plugin integration
@@ -114,7 +114,7 @@ metadata:
 data:
   app-config-rhdh.yaml: |
     app:
-      title: Red Hat Developer Hub
+      title: My Red Hat Developer Hub Instance
     integrations:
       github:
         - host: github.com
@@ -126,7 +126,7 @@ data:
               webhookSecret: ${GITHUB_APP_WEBHOOK_SECRET}
               privateKey: |
                 ${GITHUB_APP_PRIVATE_KEY}
-```      
+```
 
 or execute
 
@@ -171,7 +171,7 @@ spec:
   application:
   ...
     dynamicPluginsConfigMapName: dynamic-plugins-rhdh
-```    
+```
 
 ```sh
 oc apply -f ./custom-app-config/rhdh-instance-3.yaml -n rhdh

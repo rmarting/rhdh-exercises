@@ -4,9 +4,9 @@ metadata:
   name: app-config-rhdh
 data:
   app-config-rhdh.yaml: |
-    signInPage: gitlab   
+    signInPage: gitlab
     app:
-      title: Red Hat Developer Hub
+      title: My Red Hat Developer Hub Instance
       baseUrl: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
     backend:
       auth:
@@ -14,7 +14,7 @@ data:
           - secret: ${BACKEND_SECRET}
       baseUrl: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
       cors:
-        origin: https://backstage-developer-hub-rhdh-gitlab.${basedomain} 
+        origin: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
     auth:
       environment: development
       providers:
@@ -22,5 +22,4 @@ data:
           development:
             clientId: ${AUTH_GITLAB_CLIENT_ID}
             clientSecret: ${AUTH_GITLAB_CLIENT_SECRET}
-            audience: https://gitlab.${basedomain}           
-      
+            audience: https://gitlab.${basedomain}

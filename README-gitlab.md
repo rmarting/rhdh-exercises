@@ -28,7 +28,7 @@ metadata:
 data:
   app-config-rhdh.yaml: |
     app:
-      title: Red Hat Developer Hub
+      title: My Red Hat Developer Hub Instance
       baseUrl: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
     backend:
       auth:
@@ -102,7 +102,7 @@ Modify `app-config` section of the `app-config-rhdh` ConfigMap with environment 
 
 ```yaml
     app:
-      title: Red Hat Developer Hub
+      title: My Red Hat Developer Hub Instance
     signInPage: gitlab
     auth:
       environment: development
@@ -177,7 +177,7 @@ metadata:
 data:
   app-config-rhdh.yaml: |
     app:
-      title: Red Hat Developer Hub
+      title: My Red Hat Developer Hub Instance
     integrations:
       gitlab:
         - host: gitlab.${basedomain}
