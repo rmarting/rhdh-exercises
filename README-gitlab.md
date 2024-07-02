@@ -101,8 +101,6 @@ oc apply -f ./custom-app-config-gitlab/gitlab-secrets.yaml -n rhdh-gitlab
 Modify `app-config` section of the `app-config-rhdh` ConfigMap with environment variables from the new secret:
 
 ```yaml
-    app:
-      title: My Red Hat Developer Hub Instance
     signInPage: gitlab
     auth:
       environment: development
@@ -111,6 +109,7 @@ Modify `app-config` section of the `app-config-rhdh` ConfigMap with environment 
           development:
             clientId: ${AUTH_GITLAB_CLIENT_ID}
             clientSecret: ${AUTH_GITLAB_CLIENT_SECRET}
+            audience: https://gitlab.${basedomain}
 ```
 
 Notice that we set the `signInPage` to `gitlab`, the default is `github`.
