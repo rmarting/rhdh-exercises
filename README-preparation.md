@@ -2,12 +2,16 @@
 
 ## Start Red Hat OpenShift Container Platform
 
-Request a ["Red Hat OpenShift Container Platform Cluster"](https://demo.redhat.com/catalog?search=openshift&item=babylon-catalog-prod%2Fopenshift-cnv.ocpmulti-wksp-cnv.prod)
-instance from [Red Hat Demo Platform](https://demo.redhat.com/).
+This repository was tested and verified in the following environments provided by the [Red Hat Demo Platform](https://demo.redhat.com/):
+
+* [Red Hat OpenShift Container Platform Cluster](https://demo.redhat.com/catalog?search=openshift&item=babylon-catalog-prod%2Fopenshift-cnv.ocpmulti-wksp-cnv.prod)
+* [OpenShift Single Node Cluster](https://demo.redhat.com/catalog?item=babylon-catalog-prod%2Fopenshift-cnv.ocpmulti-single-node-cnv.prod)
+
+In both cases, request at least 64GB RAM memory.
 
 **NOTE**: You must `cluster-admin` privileges to install the different operators required for this technical exercise.
 
-The content of this repo was tested in Red Hat Developer Hub 1.2 on Red Hat OpenShift Container Platform 4.12.12, 4.14.20, and 4.15.16.
+The content of this repo was tested in Red Hat Developer Hub 1.2 on Red Hat OpenShift Container Platform 4.12.12, 4.12.59, 4.14.20, and 4.15.16.
 
 ## Install cert-manager operator
 
