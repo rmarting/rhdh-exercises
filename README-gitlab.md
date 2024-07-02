@@ -97,7 +97,8 @@ You can create the `gitlab-secrets.yaml` inside of `custom-app-config-gitlab` fo
 ```sh
 oc apply -f ./custom-app-config-gitlab/gitlab-secrets.yaml -n rhdh-gitlab
 ```
-!!! If you want to create this scret in the OpenShift Web Console, you need to base64-decode the "CLIENT ID" and "CLIENT SECRET" value
+
+**NOTE**: If you want to create this secret in the OpenShift Web Console, you need to base64-decode the "CLIENT ID" and "CLIENT SECRET" values.
 
 Modify `app-config` section of the `app-config-rhdh` ConfigMap with environment variables from the new secret:
 
