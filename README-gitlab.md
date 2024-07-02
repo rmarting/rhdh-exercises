@@ -97,6 +97,7 @@ You can create the `gitlab-secrets.yaml` inside of `custom-app-config-gitlab` fo
 ```sh
 oc apply -f ./custom-app-config-gitlab/gitlab-secrets.yaml -n rhdh-gitlab
 ```
+!!! If you want to create this scret in the OpenShift Web Console, you need to base64-decode the "CLIENT ID" and "CLIENT SECRET" value
 
 Modify `app-config` section of the `app-config-rhdh` ConfigMap with environment variables from the new secret:
 
@@ -114,7 +115,7 @@ Modify `app-config` section of the `app-config-rhdh` ConfigMap with environment 
 
 Notice that we set the `signInPage` to `gitlab`, the default is `github`.
 
-To disable guest login set the `environment` to `production` add the new secret to the backstage manifests:
+Next, add the new secret to the backstage manifests:
 
 ```yaml
 spec:
@@ -131,6 +132,7 @@ Or execute:
 oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-1.yaml -n rhdh-gitlab
 oc apply -f ./custom-app-config-gitlab/rhdh-instance-1.yaml -n rhdh-gitlab
 ```
+> **_NOTE:_** To disable guest login set the `environment` to `production`!
 
 Verify that you can login with GitLab.
 
