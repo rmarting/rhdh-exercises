@@ -265,6 +265,8 @@ Add this to the ConfigMap:
           allowInherited: true # Allow groups to be ingested even if there are no direct members.
           groupPattern: '[\s\S]*'
           restrictUsersToGroup: false
+          rules:
+            - allow: [Group, User, Domain, System]
 ```
 
 Or run:
@@ -386,10 +388,8 @@ plugins including the new one with the following configuration:
     plugins:
       - package: './dynamic-plugins/dist/backstage-plugin-catalog-backend-module-gitlab-dynamic'
         disabled: false
-        pluginConfig: {}
       - package: './dynamic-plugins/dist/janus-idp-backstage-plugin-rbac'
         disabled: false
-        pluginConfig: {}
       - package: '@rmarting/my-devquote-plugin@0.0.2'
         integrity: sha512-S/CbM8s8vqVMeBeWGJ/4SsCd2b6K8Ngp992H1JN6HdwB9QiupPZu5wfnEpjN024SJemd/VUFT53tiUGrt1J/dw==
         disabled: false

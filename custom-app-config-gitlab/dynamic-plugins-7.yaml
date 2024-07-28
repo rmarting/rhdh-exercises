@@ -9,10 +9,8 @@ data:
     plugins:
       - package: './dynamic-plugins/dist/backstage-plugin-catalog-backend-module-gitlab-dynamic'
         disabled: false
-        pluginConfig: {}
       - package: './dynamic-plugins/dist/janus-idp-backstage-plugin-rbac'
         disabled: false
-        pluginConfig: {}
       - package: '@rmarting/rhdh-dynamic-devquote-plugin@0.0.4'
         integrity: sha512-FxJ6m08GvO3f2qW8MOb+GTXQJyExA1aVAK8pzXTjAIyuENoVNbg3ajzuBTysJXLykNQwA+d9TIrbQUc/kdcpAA==
         disabled: false

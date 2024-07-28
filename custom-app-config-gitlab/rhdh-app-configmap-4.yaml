@@ -52,3 +52,5 @@ data:
             allowInherited: true # Allow groups to be ingested even if there are no direct members.
             groupPattern: '[\s\S]*'
             restrictUsersToGroup: false
+            rules:
+              - allow: [Group, User, Domain, System]
