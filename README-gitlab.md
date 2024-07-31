@@ -437,3 +437,139 @@ oc apply -f ./custom-app-config-gitlab/dynamic-plugins-7.yaml -n rhdh-gitlab
 
 Verify the `Quote` menu is listed, and a quote is showed in any component dashboard.
 
+## Enable Tech Docs
+
+### Deploy OpenShift Data Foundation
+
+Verify first if the OpenShift Data Foundation operator is installed on your cluster:
+
+```sh
+on 🎩 ❯ oc get csv -n openshift-storage
+NAME                                    DISPLAY                       VERSION        REPLACES                                PHASE
+mcg-operator.v4.16.0-rhodf              NooBaa Operator                    4.16.0-rhodf                                  Succeeded
+ocs-client-operator.v4.16.0-rhodf       OpenShift Data Foundation Client   4.16.0-rhodf                                  Succeeded
+ocs-operator.v4.16.0-rhodf              OpenShift Container Storage        4.16.0-rhodf                                  Succeeded
+odf-csi-addons-operator.v4.16.0-rhodf   CSI Addons                         4.16.0-rhodf                                  Succeeded
+odf-operator.v4.16.0-rhodf              OpenShift Data Foundation          4.16.0-rhodf                                  Succeeded
+odf-prometheus-operator.v4.16.0-rhodf   Prometheus Operator                4.16.0-rhodf                                  Succeeded
+recipe.v4.16.0-rhodf                    Recipe                             4.16.0-rhodf                                  Succeeded
+rook-ceph-operator.v4.16.0-rhodf        Rook-Ceph                          4.16.0-rhodf                                  Succeeded
+```
+
+If you get a similar output, then your system is already prepared to continue. Otherwise, you must install following
+this [instructions](https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation/4.16/html-single/deploying_openshift_data_foundation_using_amazon_web_services/index#installing-openshift-data-foundation-operator-using-the-operator-hub_cloud-storage).
+
+Installing this operator takes a while, so, wait until all of them are successfully installed before continuing with the next step.
+
+Create the storage system following this [instructions](https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation/4.16/html/deploying_openshift_data_foundation_using_amazon_web_services/deploy-using-dynamic-storage-devices-aws#creating-an-openshift-data-foundation-service_cloud-storage).
+
+
+### Create Storage
+
+Create a new Storage component by OpenShift Data Foundation in the same namespace where Red Hat Developer Hub is running:
+
+```sh
+oc apply -f ./custom-app-config-gitlab/rhdh-techdocs-bucket-claim-obc-8.yaml -n rhdh-gitlab
+```
+
+Once the object is created, a new ConfigMap and Secret are created both with the
+name of the `ObjectBucketClaim` resource. In our case, `rhdh-techdocs-bucket-claim`.
+These resources include a set of properties to identify the new bucket in AWS.
+
+* `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` as credentials of this new bucket
+* `BUCKET_HOST`, `BUCKET_NAME`, ... to identify the new bucket
+
+Some of these values are needed in the following steps.
+
+### Deploy GitLab runner
+
+Install GitLab Runner operator:
+
+```shell
+oc apply -f ./custom-app-config-gitlab/gitlab-runner-operator-8.yaml -n gitlab-system
+```
+
+```shell
+on 🎩 ❯ oc get csv -n gitlab-system
+NAME                             DISPLAY            VERSION   REPLACES                         PHASE
+gitlab-runner-operator.v1.27.1   GitLab Runner      1.27.1    gitlab-runner-operator.v1.27.0   Succeeded
+```
+
+The technical docs will be created as part of the CI pipelines of the components, so
+we need to set up the GitLab instance to run pipelines and use some variables to
+identify the new bucket to store the results.
+
+Deploy a GitLab runner to run pipelines:
+
+```sh
+envsubst < ./custom-app-config-gitlab/gitlab-runner-8.yaml | oc apply -n gitlab-system -f -
+```
+
+GitLab requires a set of CI variables to run successfully the techdocs pipelines.
+Login as `root` into GitLab and add these variables in `Admin Area / Settings / CI/CD / Variables`:
+
+* `AWS_ENDPOINT`: Output of the command `oc get route s3 -n openshift-storage -o jsonpath='https://{.spec.host}'`
+* `AWS_ACCESS_KEY_ID`: Value of the same variable from `rhdh-techdocs-bucket-claim` Secret
+* `AWS_SECRET_ACCESS_KEY`: Value of the same variable from `rhdh-techdocs-bucket-claim` Secret
+* `TECHDOCS_S3_BUCKET_NAME`: Value of `BUCKET_NAME` variable from `rhdh-techdocs-bucket-claim` ConfigMap
+* `AWS_REGION`: `us-east-2`
+
+The configuration should be similar to:
+
+![GitLab CICD Variables](./media/gitlab-admin-cicd-variables.png)
+
+### Set up techdocs plugin
+
+Patch the `rhdh-secrets` secret to add the `AWS_REGION` and `BUCKET_URL` variables:
+
+```sh
+export AWS_REGION=$(echo -n 'us-east-2' | base64 -w0)
+export BUCKET_URL=$(oc get route s3 -n openshift-storage -o jsonpath='https://{.spec.host}' | base64 -w0)
+oc patch secret rhdh-secrets -n rhdh-gitlab -p '{"data":{"AWS_REGION":"'"${AWS_REGION}"'"}}'
+oc patch secret rhdh-secrets -n rhdh-gitlab -p '{"data":{"BUCKET_URL":"'"${BUCKET_URL}"'"}}'
+```
+
+Add the `rhdh-exercises-bucket-claim` ConfigMap and Secret to the Red Hat Developer Hub deployment.
+
+```yaml
+    extraEnvs:
+      envs:
+        # Disabling TLS verification
+        - name: NODE_TLS_REJECT_UNAUTHORIZED
+          value: '0'
+      configMaps:
+        - name: rhdh-exercises-bucket-claim
+      secrets:
+        - name: gitlab-secrets
+        - name: rhdh-secrets
+        - name: rhdh-exercises-bucket-claim
+```
+
+And apply changes to the application configuration:
+
+```yaml
+    techdocs:
+      builder: 'external'
+      generator:
+        runIn: 'local'
+      publisher:
+        type: 'awsS3'
+        awsS3:
+          bucketName: ${BUCKET_NAME}
+          endpoint: ${BUCKET_URL}
+          s3ForcePathStyle: true
+          region: ${AWS_REGION}
+          credentials:
+            accessKeyId: ${AWS_ACCESS_KEY_ID}
+            secretAccessKey: ${AWS_SECRET_ACCESS_KEY}
+```
+
+Or run:
+
+```sh
+oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-8.yaml -n rhdh-gitlab
+oc apply -f ./custom-app-config-gitlab/rhdh-instance-8.yaml -n rhdh-gitlab
+```
+
+Modify the content of the `docs/index.md` file of your component, check the CI pipeline
+is executed successfully and verify the technical content in Red Hat Developer Hub.

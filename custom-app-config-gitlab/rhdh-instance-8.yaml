@@ -20,11 +20,11 @@ spec:
         - name: NODE_TLS_REJECT_UNAUTHORIZED
           value: '0'
       configMaps:
-        - name: rhdh-exercises-bucket-claim
+        - name: rhdh-techdocs-bucket-claim
       secrets:
         - name: gitlab-secrets
         - name: rhdh-secrets
-        - name: rhdh-exercises-bucket-claim
+        - name: rhdh-techdocs-bucket-claim
     replicas: 1
     route:
       enabled: true

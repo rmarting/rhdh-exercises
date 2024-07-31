@@ -106,8 +106,8 @@ The operator is installed in the `rhdh-operator` namespace:
 
 ```sh
 on 🎩 ❯ oc get csv -n rhdh-operator
-NAME                                  DISPLAY                          VERSION                REPLACES               PHASE
-rhdh-operator.v1.2.0-0.1719307450.p   Red Hat Developer Hub Operator   1.2.0+0.1719307450.p   rhdh-operator.v1.1.1   Succeeded
+NAME                   DISPLAY                          VERSION   REPLACES               PHASE
+rhdh-operator.v1.2.2   Red Hat Developer Hub Operator   1.2.2     rhdh-operator.v1.1.1   Succeeded
 ```
 
 ## Install Red Hat Developer Hub instance
