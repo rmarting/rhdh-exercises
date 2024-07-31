@@ -78,6 +78,8 @@ execute the actions in your GitLab instance:
 - Redirect URI: copy output `echo https://backstage-developer-hub-rhdh-gitlab.${basedomain}/api/auth/gitlab/handler/frame`
 - set the correct permissions: `read_user`, `read_repository`, `write_repository`, `openid`, `profile`, `email`
 
+**NOTE**: Use the `root` user of GitLab to create this application.
+
 Create a secret with an app id and secret:
 
 ```yaml
@@ -105,7 +107,7 @@ Modify `app-config` section of the `app-config-rhdh` ConfigMap with environment 
 ```yaml
     signInPage: gitlab
     auth:
-      environment: development
+      environment: production
       providers:
         gitlab:
           development:
@@ -152,7 +154,9 @@ Create new Personal Access Token (aka PAT) in menu `Access Tokens` of the GitLab
 - GitLab UI navigation: Edit Profile -> Access Tokens -> Add new token
 - name: `pat-rhdh-exercises`
 - expiration date: Disabled it or just one in the future
-- set the scopes: `api`, `read_repository`, `write_repository`
+- set the scopes: `api`, `read_api`, `read_repository`, `write_repository`
+
+**NOTE**: Use the `root` user of GitLab to create this application.
 
 Add the PAT to the previously created `gitlab-secrets` secret:
 
@@ -218,7 +222,7 @@ catalog:
         host: gitlab.${basedomain} # Identifies one of the hosts set up in the integrations
         apiBaseUrl: https://gitlab.${basedomain}/api/v4
         branch: main # Optional. Used to discover on a specific branch
-        fallbackBranch: main # Optional. Fallback to be used if there is no default branch configured at the Gitlab repository. It is only used, if `branch` is undefined. Uses `master` as default
+        fallbackBranch: master # Optional. Fallback to be used if there is no default branch configured at the Gitlab repository. It is only used, if `branch` is undefined. Uses `master` as default
         skipForkedRepos: false # Optional. If the project is a fork, skip repository
         entityFilename: catalog-info.yaml # Optional. Defaults to `catalog-info.yaml`
         projectPattern: '[\s\S]*' # Optional. Filters found projects based on provided patter. Defaults to `[\s\S]*`, which means to not filter anything
@@ -252,6 +256,16 @@ Verify that the `sample-service` component is located on the `Catalog` page.
 The Red Hat Developer Hub catalog can be set up to ingest organizational data -- users and groups -- directly from GitLab.
 The result is a hierarchy of User and Group entities that mirrors your org setup.
 
+Once we have integrated GitLab with Red Hat Developer Hub, we need to enable the autodiscovery
+capabilities of users and groups. That requires to enable the `backstage-plugin-catalog-backend-module-gitlab-org-dynamic`
+dynamic plugin provided by Red Hat Developer Hub.
+
+Run:
+
+```sh
+oc apply -f ./custom-app-config-gitlab/dynamic-plugins-4.yaml -n rhdh-gitlab
+```
+
 Add this to the ConfigMap:
 
 ```yaml
@@ -260,13 +274,12 @@ Add this to the ConfigMap:
       gitlab:
         myGitLab:
           host: gitlab.${basedomain}
+          # ... previous GitLab configuration
           orgEnabled: true
           #group: org/teams # Required for gitlab.com when `orgEnabled: true`. Optional for self managed. Must not end with slash. Accepts only groups under the provided path (which will be stripped)
           allowInherited: true # Allow groups to be ingested even if there are no direct members.
           groupPattern: '[\s\S]*'
           restrictUsersToGroup: false
-          rules:
-            - allow: [Group, User, Domain, System]
 ```
 
 Or run:
@@ -275,13 +288,14 @@ Or run:
 oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-4.yaml -n rhdh-gitlab
 ```
 
-**ATTENTION**: This step is broken due to this [issue](https://issues.redhat.com/browse/RHIDP-1713).
-We will emulate what the processor would have done by registering the [`users-groups.yaml`](./lab-prep/users-groups.yaml)
-to Red Hat Developer Hub:
-
-![Register an Existing Component!](./media/Register-an-existing-component.png "Register-an-existing-component")
-
 Verify that users and teams are discovered.
+
+**NOTE**: Currently the GitLab resolver creates the users using the `id` instead of the `username`.
+This matching impacts the references creates in the catalog to identify clearly the users and its groups.
+There are some JIRA issues to improve that behavior. Meanwhile, to avoid issues in the rest of the
+exercises, please register the next reference as components using the Red Hat Developer Hub UI.
+
+[Users and Groups](https://github.com/rmarting/rhdh-exercises/blob/main/lab-prep/users-groups.yaml)
 
 ## Enable RBAC
 
@@ -294,7 +308,7 @@ permission:
     admin:
       users:
         - name: user:default/1
-    policies-csv-file: /permissions/rbac-policy.csv
+    policies-csv-file: /opt/app-root/src/rbac-policy.csv
 ```
 
 Mount the new file in the `Backstage` manifests:
@@ -307,14 +321,14 @@ Mount the new file in the `Backstage` manifests:
           key: rbac-policy.csv
 ```
 
-Create a new permission file, see [`permission-configmap-5.yaml`](./custom-app-config-gitlab/permission-configmap-5.yaml) file.
+Create a new permission file, see [`rbac-policy-configmap-5.yaml`](./custom-app-config-gitlab/rbac-policy-configmap-5.yaml) file.
 
 There is a dynamic plugin to allow manage the RBAC rules directly in the UI. This plugin is added in the list of the dynamic plugins
 to add into Red Hat Developer Hub.
 
 ```sh
 oc apply -f ./custom-app-config-gitlab/dynamic-plugins-5.yaml -n rhdh-gitlab
-oc apply -f ./custom-app-config-gitlab/permission-configmap-5.yaml -n rhdh-gitlab
+oc apply -f ./custom-app-config-gitlab/rbac-policy-configmap-5.yaml -n rhdh-gitlab
 oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-5.yaml -n rhdh-gitlab
 oc apply -f ./custom-app-config-gitlab/rhdh-instance-5.yaml -n rhdh-gitlab
 ```
@@ -322,6 +336,8 @@ oc apply -f ./custom-app-config-gitlab/rhdh-instance-5.yaml -n rhdh-gitlab
 Open an incognito window, or just logout, and login with `user2` (password: `@abc1cde2`) to confirm
 that the component `sample-service` is not accessible on the `Catalog` page. You can check that
 the `user1` can still access to that component successfully.
+
+**NOTE**: If you login with the `root` user, you will be able to edit the RBAC policies from the `Administration` page.
 
 References:
 
