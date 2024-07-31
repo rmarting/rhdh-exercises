@@ -26,16 +26,16 @@ data:
     p, role:default/admins, policy.entity.update, update, allow
     p, role:default/admins, policy.entity.delete, delete, allow
     # Kubernetes permissions
-    #p, role:default/admins, kubernetes.proxy, use, allow
+    p, role:default/admins, kubernetes.proxy, use, allow
     # OCM permissions
-    #p, role:default/admins, ocm.entity.read, read, allow
-    #p, role:default/admins, ocm.cluster.read, read, allow
+    p, role:default/admins, ocm.entity.read, read, allow
+    p, role:default/admins, ocm.cluster.read, read, allow
     # Topology permissions
-    #p, role:default/admins, topology.view.read, read, allow
+    p, role:default/admins, topology.view.read, read, allow
 
     # Admin User
     # this is not needed now with the new superUser setting
-    g, user:default/1, role:default/admins
+    #g, user:default/1, role:default/admins
 
     # Team-A Role
     # Catalog permissions
@@ -73,9 +73,6 @@ data:
     g, group:default/team-a, role:default/team-a
     g, group:default/team-b, role:default/team-b
 
-    # these lines are not needed if the https://issues.redhat.com/browse/RHIDP-1713 issue is fixed
-    # as the mapping is automatic
+    # Users - Required until the GitLab resolvers match properly the users
     g, user:default/2, role:default/team-a
     g, user:default/3, role:default/team-b
-
-
