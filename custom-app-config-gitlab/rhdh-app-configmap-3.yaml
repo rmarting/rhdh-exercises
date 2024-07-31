@@ -16,10 +16,10 @@ data:
       cors:
         origin: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
     auth:
-      environment: development
+      environment: production
       providers:
         gitlab:
-          development:
+          production:
             clientId: ${AUTH_GITLAB_CLIENT_ID}
             clientSecret: ${AUTH_GITLAB_CLIENT_SECRET}
             audience: https://gitlab.${basedomain}
@@ -38,7 +38,7 @@ data:
             host: gitlab.${basedomain} # Identifies one of the hosts set up in the integrations
             apiBaseUrl: https://gitlab.${basedomain}/api/v4
             branch: main # Optional. Used to discover on a specific branch
-            fallbackBranch: main # Optional. Fallback to be used if there is no default branch configured at the Gitlab repository. It is only used, if `branch` is undefined. Uses `master` as default
+            fallbackBranch: master # Optional. Fallback to be used if there is no default branch configured at the Gitlab repository. It is only used, if `branch` is undefined. Uses `master` as default
             skipForkedRepos: false # Optional. If the project is a fork, skip repository
             entityFilename: catalog-info.yaml # Optional. Defaults to `catalog-info.yaml`
             projectPattern: '[\s\S]*' # Optional. Filters found projects based on provided patter. Defaults to `[\s\S]*`, which means to not filter anything
