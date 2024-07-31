@@ -11,7 +11,7 @@ In both cases, request at least 64GB RAM memory.
 
 **NOTE**: You must `cluster-admin` privileges to install the different operators required for this technical exercise.
 
-The content of this repo was tested in Red Hat Developer Hub 1.2 on Red Hat OpenShift Container Platform 4.12.12, 4.12.59, 4.14.20, and 4.15.16.
+The content of this repo was tested in Red Hat Developer Hub 1.2 on Red Hat OpenShift Container Platform 4.16.3.
 
 ## Install cert-manager operator
 
@@ -26,7 +26,7 @@ Once the operator is ready you can continue. This command shows the status of th
 ```sh
 on 🎩 ❯ oc get csv -n cert-manager-operator
 NAME                            DISPLAY                                       VERSION   REPLACES                        PHASE
-cert-manager-operator.v1.13.0   cert-manager Operator for Red Hat OpenShift   1.13.1    cert-manager-operator.v1.13.0   Succeeded
+cert-manager-operator.v1.14.0   cert-manager Operator for Red Hat OpenShift   1.14.0    cert-manager-operator.v1.13.1   Succeeded
 ```
 
 **NOTE:** Please, wait until the operator is installed successfully before continue with the preparations. Otherwise, you can face other issues.
