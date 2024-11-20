@@ -4,14 +4,14 @@
 
 This repository was tested and verified in the following environments provided by the [Red Hat Demo Platform](https://demo.redhat.com/):
 
-* [Red Hat OpenShift Container Platform Cluster](https://demo.redhat.com/catalog?search=openshift&item=babylon-catalog-prod%2Fopenshift-cnv.ocpmulti-wksp-cnv.prod)
+* [Red Hat OpenShift Container Platform Cluster](https://demo.redhat.com/catalog?item=babylon-catalog-prod/sandboxes-gpte.ocp-wksp.prod)
 * [OpenShift Single Node Cluster](https://demo.redhat.com/catalog?item=babylon-catalog-prod%2Fopenshift-cnv.ocpmulti-single-node-cnv.prod)
 
 In both cases, request at least 64GB RAM memory.
 
 **NOTE**: You must `cluster-admin` privileges to install the different operators required for this technical exercise.
 
-The content of this repo was tested in Red Hat Developer Hub 1.2 on Red Hat OpenShift Container Platform 4.16.3.
+The content of this repo was tested in Red Hat Developer Hub 1.3 on Red Hat OpenShift Container Platform 4.16.20.
 
 ## Install cert-manager operator
 
@@ -26,7 +26,7 @@ Once the operator is ready you can continue. This command shows the status of th
 ```sh
 on 🎩 ❯ oc get csv -n cert-manager-operator
 NAME                            DISPLAY                                       VERSION   REPLACES                        PHASE
-cert-manager-operator.v1.14.0   cert-manager Operator for Red Hat OpenShift   1.14.0    cert-manager-operator.v1.13.1   Succeeded
+cert-manager-operator.v1.14.1   cert-manager Operator for Red Hat OpenShift   1.14.1    cert-manager-operator.v1.14.0   Succeeded
 ```
 
 **NOTE:** Please, wait until the operator is installed successfully before continue with the preparations. Otherwise, you can face other issues.
@@ -37,7 +37,7 @@ Run:
 
 ```sh
 oc create namespace gitlab-system
-oc apply -f https://gitlab.com/api/v4/projects/18899486/packages/generic/gitlab-operator/0.30.1/gitlab-operator-openshift-0.30.1.yaml
+oc apply -f https://gitlab.com/api/v4/projects/18899486/packages/generic/gitlab-operator/1.4.1/gitlab-operator-openshift-1.4.1.yaml
 ```
 
 ## Deploy GitLab
@@ -107,7 +107,7 @@ The operator is installed in the `rhdh-operator` namespace:
 ```sh
 on 🎩 ❯ oc get csv -n rhdh-operator
 NAME                   DISPLAY                          VERSION   REPLACES               PHASE
-rhdh-operator.v1.2.2   Red Hat Developer Hub Operator   1.2.2     rhdh-operator.v1.1.1   Succeeded
+rhdh-operator.v1.3.1   Red Hat Developer Hub Operator   1.3.1     rhdh-operator.v1.1.1   Succeeded
 ```
 
 ## Install Red Hat Developer Hub instance

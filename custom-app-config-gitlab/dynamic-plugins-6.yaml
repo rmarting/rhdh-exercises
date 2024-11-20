@@ -13,3 +13,5 @@ data:
         disabled: false
       - package: './dynamic-plugins/dist/backstage-community-plugin-rbac'
         disabled: false
+      - package: './dynamic-plugins/dist/backstage-plugin-scaffolder-backend-module-gitlab-dynamic'
+        disabled: false
