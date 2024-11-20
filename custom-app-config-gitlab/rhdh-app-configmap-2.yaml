@@ -5,6 +5,8 @@ metadata:
 data:
   app-config-rhdh.yaml: |
     signInPage: gitlab
+    # Workaround until a fix for https://issues.redhat.com/browse/RHIDP-4349
+    dangerouslyAllowSignInWithoutUserInCatalog: true
     app:
       title: My Red Hat Developer Hub Instance
       baseUrl: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
