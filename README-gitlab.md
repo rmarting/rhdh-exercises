@@ -60,12 +60,12 @@ oc apply -f ./custom-app-config-gitlab/rhdh-instance-0.yaml -n rhdh-gitlab
 ```
 
 **ATTENTION**: Red Hat Developer Hub has a slow startup as it is building and loading the dynamic plugins. Every time
-we apply a [change in the configuration](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.2/html-single/release_notes_for_red_hat_developer_hub_1.2/index#enhancement-to-configmap-or-secret-configuration),
+we apply a [change in the configuration](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.3/html-single/release_notes/index#feature-rhidp-3569),
 an automatic redeploy will start, and it will few minutes until
 the new pod is ready to serve request. Please, be patient after any change before confirming they are
 correctly applied.
 
-More detailed information about this step [here](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.2/html-single/getting_started_with_red_hat_developer_hub/index#proc-add-custom-app-config-file-ocp-operator_rhdh-getting-started.)
+More detailed information about this step [here](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.3/html-single/getting_started_with_red_hat_developer_hub/index#proc-add-custom-app-config-file-ocp-operator_rhdh-getting-started).
 
 ## Enable GitLab authentication
 
@@ -73,10 +73,10 @@ Enabling GitLab authentication requires to create a GitLab application within ou
 process is described [here](https://backstage.io/docs/auth/gitlab/provider), however, keep in mind to
 execute the actions in your GitLab instance:
 
-- GitLab UI navigation: Edit Profile -> Applications -> Add new application
+- GitLab UI navigation: Edit `Profile` -> `Applications` -> `Add new application`
 - name: `rhdh-exercises`
 - Redirect URI: copy output `echo https://backstage-developer-hub-rhdh-gitlab.${basedomain}/api/auth/gitlab/handler/frame`
-- set the correct permissions: `read_user`, `read_repository`, `write_repository`, `openid`, `profile`, `email`
+- set the correct permissions: `api`, `read_user`, `read_repository`, `write_repository`, `openid`, `profile`, `email`
 
 **NOTE**: Use the `root` user of GitLab to create this application.
 
@@ -100,7 +100,7 @@ You can create the `gitlab-secrets.yaml` inside of `custom-app-config-gitlab` fo
 oc apply -f ./custom-app-config-gitlab/gitlab-secrets.yaml -n rhdh-gitlab
 ```
 
-**NOTE**: If you want to create this secret in the OpenShift Web Console, you need to base64-decode the "CLIENT ID" and "CLIENT SECRET" values.
+**NOTE**: If you want to create this secret in the OpenShift Web Console, you need to base64-decode the "`CLIENT ID`" and "`CLIENT SECRET`" values.
 
 Modify `app-config` section of the `app-config-rhdh` ConfigMap with environment variables from the new secret:
 
@@ -135,6 +135,7 @@ Or execute:
 oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-1.yaml -n rhdh-gitlab
 oc apply -f ./custom-app-config-gitlab/rhdh-instance-1.yaml -n rhdh-gitlab
 ```
+
 > **_NOTE:_** To disable guest login set the `environment` to `production`!
 
 Verify that you can login with GitLab.
@@ -341,7 +342,7 @@ the `user1` can still access to that component successfully.
 
 References:
 
-* [RBAC in Red Hat Developer Hub](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.2/html/administration_guide_for_red_hat_developer_hub/con-rbac-overview_assembly-rhdh-integration-aks)
+* [Authorization in Red Hat Developer Hub](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.3/html/authorization/index)
 
 ## Import Software Template
 
@@ -364,9 +365,14 @@ configuration to add in the `app-config-rhdh` ConfigMap:
             - allow: [Template]
 ```
 
+The templates provided as example, includes an integration to publish content into the GitLab server. To enable that
+capability is needed to enabled the `backstage-plugin-scaffolder-backend-module-gitlab-dynamic` plugin, which includes
+the actions to manage and operate GitLab repositories. This plugin is listed as another one in the `dynamic-plugins` configmap.
+
 Or run:
 
 ```sh
+oc apply -f ./custom-app-config-gitlab/dynamic-plugins-6.yaml -n rhdh-gitlab
 oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-6.yaml -n rhdh-gitlab
 ```
 
@@ -445,24 +451,25 @@ Verify first if the OpenShift Data Foundation operator is installed on your clus
 
 ```sh
 on 🎩 ❯ oc get csv -n openshift-storage
-NAME                                    DISPLAY                       VERSION        REPLACES                                PHASE
-mcg-operator.v4.16.0-rhodf              NooBaa Operator                    4.16.0-rhodf                                  Succeeded
-ocs-client-operator.v4.16.0-rhodf       OpenShift Data Foundation Client   4.16.0-rhodf                                  Succeeded
-ocs-operator.v4.16.0-rhodf              OpenShift Container Storage        4.16.0-rhodf                                  Succeeded
-odf-csi-addons-operator.v4.16.0-rhodf   CSI Addons                         4.16.0-rhodf                                  Succeeded
-odf-operator.v4.16.0-rhodf              OpenShift Data Foundation          4.16.0-rhodf                                  Succeeded
-odf-prometheus-operator.v4.16.0-rhodf   Prometheus Operator                4.16.0-rhodf                                  Succeeded
-recipe.v4.16.0-rhodf                    Recipe                             4.16.0-rhodf                                  Succeeded
-rook-ceph-operator.v4.16.0-rhodf        Rook-Ceph                          4.16.0-rhodf                                  Succeeded
+NAME                                    DISPLAY                            VERSION        REPLACES               PHASE
+cephcsi-operator.v4.17.0-rhodf          CephCSI operator                   4.17.0-rhodf                          Succeeded
+mcg-operator.v4.17.0-rhodf              NooBaa Operator                    4.17.0-rhodf                          Succeeded
+ocs-client-operator.v4.17.0-rhodf       OpenShift Data Foundation Client   4.17.0-rhodf                          Succeeded
+ocs-operator.v4.17.0-rhodf              OpenShift Container Storage        4.17.0-rhodf                          Succeeded
+odf-csi-addons-operator.v4.17.0-rhodf   CSI Addons                         4.17.0-rhodf                          Succeeded
+odf-operator.v4.17.0-rhodf              OpenShift Data Foundation          4.17.0-rhodf                          Succeeded
+odf-prometheus-operator.v4.17.0-rhodf   Prometheus Operator                4.17.0-rhodf                          Succeeded
+recipe.v4.17.0-rhodf                    Recipe                             4.17.0-rhodf                          Succeeded
+rhdh-operator.v1.3.1                    Red Hat Developer Hub Operator     1.3.1          rhdh-operator.v1.1.1   Succeeded
+rook-ceph-operator.v4.17.0-rhodf        Rook-Ceph                          4.17.0-rhodf                          Succeeded
 ```
 
 If you get a similar output, then your system is already prepared to continue. Otherwise, you must install following
-this [instructions](https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation/4.16/html-single/deploying_openshift_data_foundation_using_amazon_web_services/index#installing-openshift-data-foundation-operator-using-the-operator-hub_cloud-storage).
+this [instructions](https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation/4.17/html-single/deploying_openshift_data_foundation_using_amazon_web_services/index#installing-openshift-data-foundation-operator-using-the-operator-hub_cloud-storage).
 
 Installing this operator takes a while, so, wait until all of them are successfully installed before continuing with the next step.
 
-Create the storage system following this [instructions](https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation/4.16/html/deploying_openshift_data_foundation_using_amazon_web_services/deploy-using-dynamic-storage-devices-aws#creating-an-openshift-data-foundation-service_cloud-storage).
-
+Create the storage system following this [instructions](https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation/4.17/html/deploying_openshift_data_foundation_using_amazon_web_services/deploy-using-dynamic-storage-devices-aws#creating-an-openshift-data-foundation-service_cloud-storage).
 
 ### Create Storage
 
@@ -492,7 +499,7 @@ oc apply -f ./custom-app-config-gitlab/gitlab-runner-operator-8.yaml -n gitlab-s
 ```shell
 on 🎩 ❯ oc get csv -n gitlab-system
 NAME                             DISPLAY            VERSION   REPLACES                         PHASE
-gitlab-runner-operator.v1.27.1   GitLab Runner      1.27.1    gitlab-runner-operator.v1.27.0   Succeeded
+gitlab-runner-operator.v1.30.1   GitLab Runner      1.30.1    gitlab-runner-operator.v1.30.0   Succeeded
 ```
 
 The technical docs will be created as part of the CI pipelines of the components, so
