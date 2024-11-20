@@ -11,5 +11,5 @@ data:
         disabled: false
       - package: './dynamic-plugins/dist/backstage-plugin-catalog-backend-module-gitlab-org-dynamic'
         disabled: false
-      - package: './dynamic-plugins/dist/janus-idp-backstage-plugin-rbac'
+      - package: './dynamic-plugins/dist/backstage-community-plugin-rbac'
         disabled: false
