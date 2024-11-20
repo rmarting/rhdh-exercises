@@ -5,6 +5,8 @@ metadata:
 data:
   app-config-rhdh.yaml: |
     signInPage: gitlab
+    # Workaround until a fix for https://issues.redhat.com/browse/RHIDP-4349
+    dangerouslyAllowSignInWithoutUserInCatalog: true
     app:
       title: My Red Hat Developer Hub Instance
       baseUrl: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
@@ -61,6 +63,7 @@ data:
       enabled: true
       rbac:
         admin:
-          superUsers:
+          users:
             - name: user:default/1
+            - name: user:default/user1
         policies-csv-file: /opt/app-root/src/rbac-policy.csv

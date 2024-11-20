@@ -11,7 +11,9 @@ data:
         disabled: false
       - package: './dynamic-plugins/dist/backstage-plugin-catalog-backend-module-gitlab-org-dynamic'
         disabled: false
-      - package: './dynamic-plugins/dist/janus-idp-backstage-plugin-rbac'
+      - package: './dynamic-plugins/dist/backstage-community-plugin-rbac'
+        disabled: false
+      - package: './dynamic-plugins/dist/backstage-plugin-scaffolder-backend-module-gitlab-dynamic'
         disabled: false
       - package: '@rmarting/rhdh-dynamic-devquote-plugin@0.0.4'
         integrity: sha512-FxJ6m08GvO3f2qW8MOb+GTXQJyExA1aVAK8pzXTjAIyuENoVNbg3ajzuBTysJXLykNQwA+d9TIrbQUc/kdcpAA==
