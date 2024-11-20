@@ -1,8 +1,12 @@
-apiVersion: rhdh.redhat.com/v1alpha1
+apiVersion: rhdh.redhat.com/v1alpha2
 kind: Backstage
 metadata:
   name: developer-hub
 spec:
+  deployment:
+    patch:
+      spec:
+        replicas: 1
   application:
     dynamicPluginsConfigMapName: dynamic-plugins-rhdh
     appConfig:
@@ -25,8 +29,8 @@ spec:
         - name: gitlab-secrets
         - name: rhdh-secrets
         - name: rhdh-techdocs-bucket-claim
-    replicas: 1
     route:
       enabled: true
+    #image: quay.io/janus-idp/backstage-showcase:pr-1729
   database:
     enableLocalDb: true
