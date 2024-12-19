@@ -13,6 +13,8 @@ data:
     p, role:default/admins, catalog.location.read, read, allow
     p, role:default/admins, catalog.location.create, create, allow
     p, role:default/admins, catalog.location.delete, delete, allow
+    # Import permissions
+    p, role:default/admins, bulk.import, use, allow
     # Scaffolder permissions
     p, role:default/admins, scaffolder.action.execute, use, allow
     p, role:default/admins, scaffolder.template.parameter.read, read, allow
@@ -46,6 +48,8 @@ data:
     p, role:default/team-a, catalog.location.read, read, allow
     p, role:default/team-a, catalog.location.create, create, allow
     p, role:default/team-a, catalog.location.delete, delete, allow
+    # Import permissions
+    p, role:default/team-a, bulk.import, use, allow
     # Scaffolder permissions
     p, role:default/team-a, scaffolder.action.execute, use, allow
     p, role:default/team-a, scaffolder.template.parameter.read, read, allow

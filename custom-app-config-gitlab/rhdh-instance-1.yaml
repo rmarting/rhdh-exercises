@@ -24,6 +24,5 @@ spec:
         - name: rhdh-secrets
     route:
       enabled: true
-    #image: quay.io/janus-idp/backstage-showcase:pr-1729-78d939aa
   database:
     enableLocalDb: true

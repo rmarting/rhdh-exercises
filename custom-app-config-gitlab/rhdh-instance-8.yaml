@@ -31,6 +31,5 @@ spec:
         - name: rhdh-techdocs-bucket-claim
     route:
       enabled: true
-    #image: quay.io/janus-idp/backstage-showcase:pr-1729
   database:
     enableLocalDb: true

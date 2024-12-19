@@ -25,6 +25,5 @@ spec:
           value: '0'
     route:
       enabled: true
-    #image: quay.io/janus-idp/backstage-showcase:pr-1729
   database:
     enableLocalDb: true
