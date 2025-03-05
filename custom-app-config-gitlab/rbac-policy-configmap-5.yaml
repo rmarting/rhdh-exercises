@@ -78,5 +78,5 @@ data:
     g, group:default/team-b, role:default/team-b
 
     # Users - Required until the GitLab resolvers match properly the users
-    g, user:default/2, role:default/team-a
-    g, user:default/3, role:default/team-b
+    #g, user:default/2, role:default/team-a
+    #g, user:default/3, role:default/team-b

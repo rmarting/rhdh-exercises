@@ -5,8 +5,7 @@ metadata:
 data:
   app-config-rhdh.yaml: |
     signInPage: gitlab
-    # Workaround until a fix for https://issues.redhat.com/browse/RHIDP-4349
-    dangerouslyAllowSignInWithoutUserInCatalog: true
+    dangerouslyAllowSignInWithoutUserInCatalog: false
     app:
       title: My Red Hat Developer Hub Instance
       baseUrl: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
@@ -46,9 +45,9 @@ data:
             projectPattern: '[\s\S]*' # Optional. Filters found projects based on provided patter. Defaults to `[\s\S]*`, which means to not filter anything
             schedule: # optional; same options as in TaskScheduleDefinition
               # supports cron, ISO duration, "human duration" as used in code
-              frequency: { minutes: 1 }
+              frequency: { minutes: 5 }
               # supports ISO duration, "human duration" as used in code
-              timeout: { minutes: 3 }
+              timeout: { minutes: 15 }
             orgEnabled: true
             #group: org/teams # Required for gitlab.com when `orgEnabled: true`. Optional for self managed. Must not end with slash. Accepts only groups under the provided path (which will be stripped)
             allowInherited: true # Allow groups to be ingested even if there are no direct members.

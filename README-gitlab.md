@@ -65,7 +65,7 @@ an automatic redeploy will start, and it will few minutes until
 the new pod is ready to serve request. Please, be patient after any change before confirming they are
 correctly applied.
 
-More detailed information about this step [here](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.3/html-single/getting_started_with_red_hat_developer_hub/index#proc-add-custom-app-config-file-ocp-operator_rhdh-getting-started).
+More detailed information about this step [here](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.4/html-single/configuring/index#provisioning-and-using-your-custom-configuration).
 
 ## Enable GitLab authentication
 
@@ -146,7 +146,7 @@ The GitLab integration has a special entity provider for discovering catalog ent
 will crawl the GitLab instance and register entities matching the configured paths. This can be useful as an alternative
 to static locations or manually adding things to the catalog.
 
-More information about Dynamic Plugins [here](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.2/html-single/configuring_plugins_in_red_hat_developer_hub/index#rhdh-installing-dynamic-plugins).
+More information about Dynamic Plugins [here](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.4/html-single/installing_and_viewing_plugins_in_red_hat_developer_hub/index).
 
 To enable the GitLab integration and discovery capabilities a Personal Access Token (aka PAT) is required.
 
@@ -229,9 +229,9 @@ catalog:
         projectPattern: '[\s\S]*' # Optional. Filters found projects based on provided patter. Defaults to `[\s\S]*`, which means to not filter anything
         schedule: # optional; same options as in TaskScheduleDefinition
           # supports cron, ISO duration, "human duration" as used in code
-          frequency: { minutes: 1 }
+          frequency: { minutes: 5 }
           # supports ISO duration, "human duration" as used in code
-          timeout: { minutes: 3 }
+          timeout: { minutes: 15 }
 ```
 
 Update the Red Hat Developer Hub manifest to use the new ConfigMap for plugins:
@@ -251,6 +251,12 @@ oc apply -f ./custom-app-config-gitlab/rhdh-instance-3.yaml -n rhdh-gitlab
 ```
 
 Verify that the `sample-service` component is located on the `Catalog` page.
+
+TIP: A similar message is registered in the Red Hat Developer Hub pod to confirm the number of projects scanned:
+
+```text
+{"class":"GitlabDiscoveryEntityProvider","level":"\u001b[32minfo\u001b[39m","message":"Processed 1 from scanned 1 projects.","plugin":"catalog","service":"backstage","span_id":"f957c3084bb63955","target":"GitlabDiscoveryEntityProvider:myGitLab","taskId":"GitlabDiscoveryEntityProvider:myGitLab:refresh","taskInstanceId":"06e6c7f9-1f7f-4f2e-a61b-52bc2614b279","timestamp":"2025-03-05 09:27:24","trace_flags":"01","trace_id":"cb4b00f3c9465893e015c5c4b2233d36"}
+```
 
 ## Enable users/teams autodiscovery
 
@@ -291,12 +297,12 @@ oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-4.yaml -n rhdh-gitlab
 
 Verify that users and teams are discovered.
 
-**NOTE**: Currently the GitLab resolver creates the users using the `id` instead of the `username`.
-This matching impacts the references creates in the catalog to identify clearly the users and its groups.
-There are some JIRA issues to improve that behavior. Meanwhile, to avoid issues in the rest of the
-exercises, please register the next reference as components using the Red Hat Developer Hub UI.
+TIP: A similar message is registered in the Red Hat Developer Hub pod to confirm the number of users and groups scanned:
 
-[Users and Groups](https://github.com/rmarting/rhdh-exercises/blob/main/lab-prep/users-groups.yaml)
+```text
+{"class":"GitlabOrgDiscoveryEntityProvider","level":"\u001b[32minfo\u001b[39m","message":"Scanned 3 users and processed 3 users","plugin":"catalog","service":"backstage","span_id":"2dcb52e328c672ad","target":"GitlabOrgDiscoveryEntityProvider:myGitLab","taskId":"GitlabOrgDiscoveryEntityProvider:myGitLab:refresh","taskInstanceId":"03798434-b9e9-45f0-8be6-330f0229e07a","timestamp":"2025-03-05 10:08:57","trace_flags":"01","trace_id":"f6b7b7e7a96250eeca0e1f2b355c00ac"}
+{"class":"GitlabOrgDiscoveryEntityProvider","level":"\u001b[32minfo\u001b[39m","message":"Scanned 2 groups and processed 2 groups","plugin":"catalog","service":"backstage","span_id":"2dcb52e328c672ad","target":"GitlabOrgDiscoveryEntityProvider:myGitLab","taskId":"GitlabOrgDiscoveryEntityProvider:myGitLab:refresh","taskInstanceId":"03798434-b9e9-45f0-8be6-330f0229e07a","timestamp":"2025-03-05 10:08:57","trace_flags":"01","trace_id":"f6b7b7e7a96250eeca0e1f2b355c00ac"}
+```
 
 ## Enable RBAC
 
@@ -308,7 +314,7 @@ permission:
   rbac:
     admin:
       users:
-        - name: user:default/1
+        - name: user:default/user1
     policies-csv-file: /opt/app-root/src/rbac-policy.csv
 ```
 
@@ -342,7 +348,7 @@ the `user1` can still access to that component successfully.
 
 References:
 
-* [Authorization in Red Hat Developer Hub](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.3/html/authorization/index)
+* [Authorization in Red Hat Developer Hub](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.4/html-single/authorization/index)
 
 ## Import Software Template
 
@@ -499,7 +505,7 @@ oc apply -f ./custom-app-config-gitlab/gitlab-runner-operator-8.yaml -n gitlab-s
 ```shell
 on 🎩 ❯ oc get csv -n gitlab-system
 NAME                             DISPLAY            VERSION   REPLACES                         PHASE
-gitlab-runner-operator.v1.30.1   GitLab Runner      1.30.1    gitlab-runner-operator.v1.30.0   Succeeded
+gitlab-runner-operator.v1.34.0   GitLab Runner      1.34.0                                     Succeeded
 ```
 
 The technical docs will be created as part of the CI pipelines of the components, so
