@@ -12,11 +12,11 @@ metadata:
   namespace: rhdh-operator
 spec:
   channel: fast
-  installPlanApproval: Automatic
+  installPlanApproval: Manual
   name: rhdh
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: rhdh-operator.v1.4.0
+  startingCSV: rhdh-operator.v1.4.1
 ---
 apiVersion: operators.coreos.com/v1
 kind: OperatorGroup
