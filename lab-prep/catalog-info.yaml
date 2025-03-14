@@ -1,11 +1,11 @@
+---
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: sample-service
-  title: Sample Service
+  name: sample-app
+  title: Sample Application
   description: |
-    A service for testing Backstage functionality. Configured for GitHub Actions and
-    Sentry.
+    An application for testing Backstage functionality.
   labels:
     tier: "3"
   tags:
@@ -14,16 +14,13 @@ metadata:
     - demo
   annotations:
     gitlab.com/project-slug: team-a/sample-app
-    # The Sentry organization is stored in the app-config.yaml of the Backstage instance.
-    sentry.io/project-slug: sample-service
     backstage.io/techdocs-ref: dir:.
-    backstage.io/kubernetes-id: sample-service
-    backstage.io/kubernetes-label-selector: 'app.kubernetes.io/name=sample-service'
-
+    backstage.io/kubernetes-id: sample-app
+    backstage.io/kubernetes-label-selector: 'app.kubernetes.io/name=sample-app'
 spec:
   type: service
   owner: group:team-a
   lifecycle: production
-  system: sample-system
+  #system: sample-system
   providesApis:
-    - sample-service
+    - sample-app
