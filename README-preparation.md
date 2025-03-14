@@ -37,7 +37,7 @@ Run:
 
 ```sh
 oc create namespace gitlab-system
-oc apply -f https://gitlab.com/api/v4/projects/18899486/packages/generic/gitlab-operator/1.4.1/gitlab-operator-openshift-1.4.1.yaml
+oc apply -f https://gitlab.com/api/v4/projects/18899486/packages/generic/gitlab-operator/1.10.0/gitlab-operator-openshift-1.10.0.yaml
 ```
 
 ## Deploy GitLab
