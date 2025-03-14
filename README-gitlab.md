@@ -250,7 +250,7 @@ oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-3.yaml -n rhdh-gitlab
 oc apply -f ./custom-app-config-gitlab/rhdh-instance-3.yaml -n rhdh-gitlab
 ```
 
-Verify that the `sample-service` component is located on the `Catalog` page.
+Verify that the `sample-app` component is located on the `Catalog` page.
 
 TIP: A similar message is registered in the Red Hat Developer Hub pod to confirm the number of projects scanned:
 
@@ -314,18 +314,19 @@ permission:
   rbac:
     admin:
       users:
-        - name: user:default/user1
+        - name: user:default/root
     policies-csv-file: /opt/app-root/src/rbac-policy.csv
+    conditionalPoliciesFile: /opt/app-root/src/rbac/rbac-conditional-policies.yaml
+    policyFileReload: true
 ```
 
 Mount the new file in the `Backstage` manifests:
 
 ```yaml
     extraFiles:
-      mountPath: /opt/app-root/src
+      mountPath: /opt/app-root/src/rbac
       configMaps:
         - name: rbac-policy
-          key: rbac-policy.csv
 ```
 
 Create a new permission file, see [`rbac-policy-configmap-5.yaml`](./custom-app-config-gitlab/rbac-policy-configmap-5.yaml) file.
@@ -341,8 +342,7 @@ oc apply -f ./custom-app-config-gitlab/rhdh-instance-5.yaml -n rhdh-gitlab
 ```
 
 Open an incognito window, or just logout, and login with `user2` (password: `@abc1cde2`) to confirm
-that the component `sample-service` is not accessible on the `Catalog` page. You can check that
-the `user1` can still access to that component successfully.
+that this user can't create anything. This user has not any `Create` button enabled.
 
 **NOTE**: If you login with the `root` user, you will be able to edit the RBAC policies from the `Administration` page.
 
