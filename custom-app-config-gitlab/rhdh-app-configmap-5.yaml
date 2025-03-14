@@ -58,6 +58,11 @@ data:
       rbac:
         admin:
           users:
-            - name: user:default/1
-            - name: user:default/user1
-        policies-csv-file: /opt/app-root/src/rbac-policy.csv
+            - name: user:default/root
+        policies-csv-file: /opt/app-root/src/rbac/rbac-policy.csv
+        conditionalPoliciesFile: /opt/app-root/src/rbac/rbac-conditional-policies.yaml
+        policyFileReload: true
+        pluginsWithPermission:
+          - catalog
+          - scaffolder
+          - permission

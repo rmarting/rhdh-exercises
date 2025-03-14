@@ -14,10 +14,9 @@ spec:
       configMaps:
       - name: app-config-rhdh
     extraFiles:
-      mountPath: /opt/app-root/src
+      mountPath: /opt/app-root/src/rbac
       configMaps:
         - name: rbac-policy
-          key: rbac-policy.csv
     extraEnvs:
       envs:
         # Disabling TLS verification
