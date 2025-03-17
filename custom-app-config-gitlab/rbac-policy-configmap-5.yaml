@@ -4,6 +4,16 @@ metadata:
   name: rbac-policy
 data:
   rbac-conditional-policies.yaml: |
+    # Reference: https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.4/html-single/authorization/index#con-rbac-conditional-policies-rhdh_title-authorization
+    ---
+    #result: CONDITIONAL
+    #roleEntityRef: <role_entity_reference>
+    #pluginId: <plugin_id>
+    #permissionMapping:
+    #  - read
+    #  - update
+    #  - delete
+    #conditions: <conditions>
     ---
     result: CONDITIONAL
     roleEntityRef: 'role:default/team-a'
@@ -12,35 +22,32 @@ data:
     permissionMapping:
       - read
     conditions:
+      # Show entities that the user is an owner of, that are of the kind 'User', that are of the kind 'Group',
+      # OR are of the 'allOf' criteria
       anyOf:
-        - rule: IS_ENTITY_KIND
-          resourceType: catalog-entity
-          params:
-            kinds:
-              - 'User'
-              - 'Group'
-      - allOf:
-        - rule: IS_ENTITY_KIND
-          resourceType: catalog-entity
-          params:
-            kinds:
-            - 'Component'
         - rule: IS_ENTITY_OWNER
           resourceType: catalog-entity
           params:
             claims:
-            - "$ownerRefs"
-      - allOf:
+              - $ownerRefs
         - rule: IS_ENTITY_KIND
           resourceType: catalog-entity
           params:
             kinds:
-            - 'Template'
-        - rule: HAS_METADATA
-          resourceType: catalog-entity
-          params:
-            key: tags
-            value: gitlab
+              - Group
+              - User
+        # Show entities that have the 'gitlab' tag AND are of the kind 'Template'
+        - allOf:
+            - rule: HAS_METADATA
+              resourceType: catalog-entity
+              params:
+                key: tags
+                value: gitlab
+            - rule: IS_ENTITY_KIND
+              resourceType: catalog-entity
+              params:
+                kinds:
+                  - Template
     ---
     # Team B can only see 'sample' templates
     result: CONDITIONAL
@@ -66,7 +73,7 @@ data:
           resourceType: catalog-entity
           params:
             key: tags
-            value: github
+            value: sample
   rbac-policy.csv: |
     # Administrator Role
     # Catalog permissions
