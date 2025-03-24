@@ -26,7 +26,7 @@ Once the operator is ready you can continue. This command shows the status of th
 ```sh
 on 🎩 ❯ oc get csv -n cert-manager-operator
 NAME                            DISPLAY                                       VERSION   REPLACES                        PHASE
-cert-manager-operator.v1.15.0   cert-manager Operator for Red Hat OpenShift   1.15.0    cert-manager-operator.v1.14.1   Succeeded
+cert-manager-operator.v1.15.1   cert-manager Operator for Red Hat OpenShift   1.15.1    cert-manager-operator.v1.15.0   Succeeded
 ```
 
 **NOTE:** Please, wait until the operator is installed successfully before continue with the preparations. Otherwise, you can face other issues.
