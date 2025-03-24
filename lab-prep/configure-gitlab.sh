@@ -109,7 +109,7 @@ fi
 
 # Add some content to the repo
 git $GIT_DISABLE_SSL_VERIFICATION clone ${GITLAB_URL}/team-a/sample-app.git /tmp/sample-app
-cp catalog-info.yaml users-groups.yaml /tmp/sample-app/
+cp catalog-info.yaml users-groups.yaml systems.yaml /tmp/sample-app/
 git $GIT_DISABLE_SSL_VERIFICATION -C /tmp/sample-app/ add .
 git $GIT_DISABLE_SSL_VERIFICATION -C /tmp/sample-app commit -m "initial commit" --author="user1 <user1@redhat.com>"
 echo enter user1/@abc1cde2

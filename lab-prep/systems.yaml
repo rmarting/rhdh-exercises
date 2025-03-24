@@ -1,0 +1,38 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: rhdh
+  description: Red Hat Developer Hub Group
+spec:
+  type: root
+  profile:
+    displayName: Red Hat Developer Hub Group
+    email: rhdh@example.com
+  children: []
+---
+apiVersion: backstage.io/v1alpha1
+kind: Domain
+metadata:
+  name: developers
+  description: Everything about developers
+spec:
+  owner: rhdh
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: rhdh-system
+  description: Internal Developer Portal for Developers
+spec:
+  owner: rhdh
+  domain: developers
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: sample-system
+  description: Sample system
+spec:
+  owner: rhdh
+  domain: developers
