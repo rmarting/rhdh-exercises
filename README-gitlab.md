@@ -258,6 +258,17 @@ TIP: A similar message is registered in the Red Hat Developer Hub pod to confirm
 {"class":"GitlabDiscoveryEntityProvider","level":"\u001b[32minfo\u001b[39m","message":"Processed 1 from scanned 1 projects.","plugin":"catalog","service":"backstage","span_id":"f957c3084bb63955","target":"GitlabDiscoveryEntityProvider:myGitLab","taskId":"GitlabDiscoveryEntityProvider:myGitLab:refresh","taskInstanceId":"06e6c7f9-1f7f-4f2e-a61b-52bc2614b279","timestamp":"2025-03-05 09:27:24","trace_flags":"01","trace_id":"cb4b00f3c9465893e015c5c4b2233d36"}
 ```
 
+**NOTE**: Enabling the following plugins shows some tabs in each component published in a GitLab server. Those
+tabs shows the issues, merge requests and other useful information from the repository hosted in the GitLab server.
+
+```yaml
+      # GitLab Integration Plugins
+      - package: ./dynamic-plugins/dist/immobiliarelabs-backstage-plugin-gitlab-backend-dynamic
+        disabled: false
+      - package: ./dynamic-plugins/dist/immobiliarelabs-backstage-plugin-gitlab
+        disabled: false
+```
+
 ## Enable users/teams autodiscovery
 
 The Red Hat Developer Hub catalog can be set up to ingest organizational data -- users and groups -- directly from GitLab.
@@ -505,7 +516,7 @@ oc apply -f ./custom-app-config-gitlab/gitlab-runner-operator-8.yaml -n gitlab-s
 ```shell
 on 🎩 ❯ oc get csv -n gitlab-system
 NAME                             DISPLAY            VERSION   REPLACES                         PHASE
-gitlab-runner-operator.v1.34.0   GitLab Runner      1.34.0                                     Succeeded
+gitlab-runner-operator.v1.35.0   GitLab Runner      1.35.0    gitlab-runner-operator.v1.34.0   Succeeded
 ```
 
 The technical docs will be created as part of the CI pipelines of the components, so
@@ -586,3 +597,21 @@ oc apply -f ./custom-app-config-gitlab/rhdh-instance-8.yaml -n rhdh-gitlab
 
 Modify the content of the `docs/index.md` file of your component, check the CI pipeline
 is executed successfully and verify the technical content in Red Hat Developer Hub.
+
+## Enabling High-Availability
+
+Red Hat Developer Hub can provide high-availability capabilities adding more replicas
+into the deployment topology. Adding more than one replica in the `Backstage` definition
+your Red Hat Developer Hub will provide that capability.
+
+Run:
+
+```sh
+oc apply -f ./custom-app-config-gitlab/rhdh-instance-9.yaml -n rhdh-gitlab
+```
+
+References:
+
+* https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.5/html-single/configuring_red_hat_developer_hub/index#HighAvailability
+
+
