@@ -15,6 +15,9 @@ The full list of actions implemented in this exercise is:
 5. Enable RBAC permissions
 6. Import Software Templates and create a component
 7. Deploy a dynamic plugin
+8. Enable Tech Docs
+9. Enable High-Availability
+10. Enable dynamic plugins cache
 
 Run the lab [preparation instructions](./README-preparation.md) first,
 then follow the exercise steps [here](./README-gitlab.md).

@@ -1,0 +1,76 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: dynamic-plugins-rhdh
+data:
+  dynamic-plugins.yaml: |
+    includes:
+      - dynamic-plugins.default.yaml
+    plugins:
+      - package: './dynamic-plugins/dist/backstage-plugin-catalog-backend-module-gitlab-dynamic'
+        disabled: false
+      # GitLab Plugins
+      - package: ./dynamic-plugins/dist/immobiliarelabs-backstage-plugin-gitlab-backend-dynamic
+        disabled: false
+      - package: ./dynamic-plugins/dist/immobiliarelabs-backstage-plugin-gitlab
+        disabled: false
+      # GitLab Organization Discovery
+      - package: './dynamic-plugins/dist/backstage-plugin-catalog-backend-module-gitlab-org-dynamic'
+        disabled: false
+      - package: './dynamic-plugins/dist/backstage-community-plugin-rbac'
+        disabled: false
+      - package: './dynamic-plugins/dist/backstage-plugin-scaffolder-backend-module-gitlab-dynamic'
+        disabled: false
+      - package: '@rmarting/rhdh-dynamic-devquote-plugin@0.0.4'
+        integrity: sha512-FxJ6m08GvO3f2qW8MOb+GTXQJyExA1aVAK8pzXTjAIyuENoVNbg3ajzuBTysJXLykNQwA+d9TIrbQUc/kdcpAA==
+        disabled: false
+        pluginConfig:
+          dynamicPlugins:
+            frontend:
+              rmarting.rhdh-dynamic-devquote-plugin:
+                mountPoints:
+                  - config:
+                      layout:
+                        gridColumnEnd:
+                          lg: span 4
+                          md: span 6
+                          xs: span 12
+                    importName: DevQuote
+                    mountPoint: entity.page.overview/cards
+                dynamicRoutes:
+                  - importName: DevQuote
+                    menuItem:
+                      text: Quote
+                    path: /devquote
+      # Adoptions Insights
+      - package: ./dynamic-plugins/dist/backstage-community-plugin-analytics-provider-segment
+        disabled: true
+      - package: oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-adoption-insights:bs_1.35.1__0.0.2!red-hat-developer-hub-backstage-plugin-adoption-insights
+        disabled: false
+        pluginConfig:
+          dynamicPlugins:
+            frontend:
+              red-hat-developer-hub.backstage-plugin-adoption-insights:
+                appIcons:
+                  - name: adoptionInsightsIcon
+                    importName: AdoptionInsightsIcon
+                dynamicRoutes:
+                  - path: /adoption-insights
+                    importName: AdoptionInsightsPage
+                    menuItem:
+                      icon: adoptionInsightsIcon
+                      text: Adoption Insights
+                menuItems:
+                  adoption-insights:
+                    parent: admin
+                    icon: adoptionInsightsIcon
+      - package: oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-adoption-insights-backend:bs_1.35.1__0.0.2!red-hat-developer-hub-backstage-plugin-adoption-insights-backend
+        disabled: false
+      - package: oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-analytics-module-adoption-insights:bs_1.35.1__0.0.2!red-hat-developer-hub-backstage-plugin-analytics-module-adoption-insights
+        disabled: false
+        pluginConfig:
+          dynamicPlugins:
+            frontend:
+              red-hat-developer-hub.backstage-plugin-analytics-module-adoption-insights:
+                apiFactories:
+                  - importName: AdoptionInsightsAnalyticsApiFactory

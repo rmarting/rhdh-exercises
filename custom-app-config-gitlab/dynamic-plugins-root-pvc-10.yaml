@@ -1,0 +1,13 @@
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: dynamic-plugins-root
+spec:
+  accessModes:
+    - ReadWriteOnce
+    # Note - ReadWriteOnce as the access mode which prevents multiple replicas from sharing the PVC across different nodes.
+    # To run multiple replicas on different nodes, depending on your storage driver, you must use an access mode such as ReadWriteMany.
+  resources:
+    requests:
+      storage: 5Gi

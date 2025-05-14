@@ -5,7 +5,6 @@ metadata:
 data:
   app-config-rhdh.yaml: |
     signInPage: gitlab
-    dangerouslyAllowSignInWithoutUserInCatalog: false
     app:
       title: My Red Hat Developer Hub Instance
       baseUrl: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
@@ -24,6 +23,10 @@ data:
             clientId: ${AUTH_GITLAB_CLIENT_ID}
             clientSecret: ${AUTH_GITLAB_CLIENT_SECRET}
             audience: https://gitlab.${basedomain}
+            signIn:
+              resolvers:
+                - resolver: usernameMatchingUserEntityName
+                  dangerouslyAllowSignInWithoutUserInCatalog: false
     integrations:
       gitlab:
         - host: gitlab.${basedomain}

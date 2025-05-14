@@ -4,7 +4,9 @@ metadata:
   name: rbac-policy
 data:
   rbac-conditional-policies.yaml: |
-    # Reference: https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.4/html-single/authorization/index#con-rbac-conditional-policies-rhdh_title-authorization
+    # References:
+    # https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.4/html-single/authorization/index#con-rbac-conditional-policies-rhdh_title-authorization
+    # https://backstage.io/docs/features/software-catalog/descriptor-format/#common-to-all-kinds-the-metadata
     ---
     #result: CONDITIONAL
     #roleEntityRef: <role_entity_reference>
@@ -14,40 +16,6 @@ data:
     #  - update
     #  - delete
     #conditions: <conditions>
-    ---
-    result: CONDITIONAL
-    roleEntityRef: 'role:default/team-a'
-    pluginId: catalog
-    resourceType: catalog-entity
-    permissionMapping:
-      - read
-    conditions:
-      # Show entities that the user is an owner of, that are of the kind 'User', that are of the kind 'Group',
-      # OR are of the 'allOf' criteria
-      anyOf:
-        - rule: IS_ENTITY_OWNER
-          resourceType: catalog-entity
-          params:
-            claims:
-              - $ownerRefs
-        - rule: IS_ENTITY_KIND
-          resourceType: catalog-entity
-          params:
-            kinds:
-              - Group
-              - User
-        # Show entities that have the 'gitlab' tag AND are of the kind 'Template'
-        - allOf:
-            - rule: HAS_METADATA
-              resourceType: catalog-entity
-              params:
-                key: tags
-                value: gitlab
-            - rule: IS_ENTITY_KIND
-              resourceType: catalog-entity
-              params:
-                kinds:
-                  - Template
     ---
     # Team B can only see 'sample' templates
     result: CONDITIONAL
@@ -69,11 +37,21 @@ data:
           params:
             key: tags
             value: sample
-        - rule: HAS_METADATA
-          resourceType: catalog-entity
-          params:
-            key: tags
-            value: sample
+    #---
+    #result: CONDITIONAL
+    #roleEntityRef: 'role:default/team-b'
+    #pluginId: catalog
+    #resourceType: catalog-entity
+    #permissionMapping:
+    #  - delete # user can only delete groups and users
+    #conditions:
+    #  allOf:
+    #    - rule: 'IS_ENTITY_KIND'
+    #      resourceType: 'catalog-entity'
+    #      params:
+    #        kinds:
+    #          - 'Group'
+    #          - 'User'
   rbac-policy.csv: |
     # Administrator Role
     # Catalog permissions
@@ -110,6 +88,8 @@ data:
     # Bulk import
     #p, role:default/admins, bulk-import, use, allow
     #p, role:default/admins, bulk.import, use, allow
+    # Adoption Insights permissions
+    #p, role:default/admins, adoption-insights.events.read, read, allow
 
     # Admin User
     # this is not needed now with the new superUser setting
@@ -134,24 +114,26 @@ data:
     p, role:default/team-a, scaffolder.task.read, read, allow
     p, role:default/team-a, scaffolder.task.create, create, allow
     p, role:default/team-a, scaffolder.task.cancel, use, allow
+    # Adoption Insights permissions
+    p, role:default/team-a, adoption-insights.events.read, read, allow
 
     # Team-B Role
     # Catalog permissions
     p, role:default/team-b, catalog-entity, read, allow
     p, role:default/team-b, catalog.entity.read, read, allow
     p, role:default/team-b, catalog.entity.create, create, deny
-    p, role:default/team-b, catalog.entity.refresh, update, allow
+    p, role:default/team-b, catalog.entity.refresh, update, deny
     p, role:default/team-b, catalog.entity.delete, delete, deny
-    p, role:default/team-b, catalog.location.read, read, allow
+    p, role:default/team-b, catalog.location.read, read, deny
     p, role:default/team-b, catalog.location.create, create, deny
     p, role:default/team-b, catalog.location.delete, delete, deny
     # Scaffolder permissions
-    p, role:default/team-b, scaffolder-template, read, allow
-    p, role:default/team-b, scaffolder.template.parameter.read, read, allow
-    p, role:default/team-b, scaffolder.template.step.read, read, allow
-    p, role:default/team-b, scaffolder-action, use, allow
-    p, role:default/team-b, scaffolder.action.execute, use, allow
-    p, role:default/team-b, scaffolder.task.read, read, allow
+    p, role:default/team-b, scaffolder-template, read, deny
+    p, role:default/team-b, scaffolder.template.parameter.read, read, deny
+    p, role:default/team-b, scaffolder.template.step.read, read, deny
+    p, role:default/team-b, scaffolder-action, use, deny
+    p, role:default/team-b, scaffolder.action.execute, use, deny
+    p, role:default/team-b, scaffolder.task.read, read, deny
     p, role:default/team-b, scaffolder.task.create, create, deny
     p, role:default/team-b, scaffolder.task.cancel, use, deny
 

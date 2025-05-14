@@ -11,7 +11,7 @@ In both cases, request at least 64GB RAM memory.
 
 **NOTE**: You must `cluster-admin` privileges to install the different operators required for this technical exercise.
 
-The content of this repo was tested in Red Hat Developer Hub 1.4.2 on Red Hat OpenShift Container Platform 4.17.17.
+The content of this repo was tested in Red Hat Developer Hub 1.5.1 on Red Hat OpenShift Container Platform 4.18.11.
 
 ## Install cert-manager operator
 

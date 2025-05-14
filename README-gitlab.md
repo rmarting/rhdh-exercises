@@ -65,7 +65,7 @@ an automatic redeploy will start, and it will few minutes until
 the new pod is ready to serve request. Please, be patient after any change before confirming they are
 correctly applied.
 
-More detailed information about this step [here](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.4/html-single/configuring/index#provisioning-and-using-your-custom-configuration).
+More detailed information about this step [here](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.5/html-single/configuring_red_hat_developer_hub/index#provisioning-and-using-your-custom-configuration).
 
 ## Enable GitLab authentication
 
@@ -114,6 +114,10 @@ Modify `app-config` section of the `app-config-rhdh` ConfigMap with environment 
             clientId: ${AUTH_GITLAB_CLIENT_ID}
             clientSecret: ${AUTH_GITLAB_CLIENT_SECRET}
             audience: https://gitlab.${basedomain}
+            signIn:
+              resolvers:
+                - resolver: usernameMatchingUserEntityName
+                  dangerouslyAllowSignInWithoutUserInCatalog: true
 ```
 
 Notice that we set the `signInPage` to `gitlab`, the default is `github`.
@@ -300,6 +304,8 @@ Add this to the ConfigMap:
           restrictUsersToGroup: false
 ```
 
+Disable the `dangerouslyAllowSignInWithoutUserInCatalog` property to load only valid users.
+
 Or run:
 
 ```sh
@@ -404,7 +410,7 @@ Fulfil the parameters requested:
 
 - Name - an unique name of this new component
 - Description (Optional)
-- Owner - Choose one from the list of options, or add one such as `team-a`, or `team-b` (Remove the `group:` or `user:` prefix)
+- Owner - Choose one from the list of options, or add one such as `team-a`, or `team-b`.
 - Repository Location: Copy output: `echo gitlab.${basedomain}`. Note that `https://` is not included.
 
 To get the repository location run:
@@ -468,25 +474,26 @@ Verify first if the OpenShift Data Foundation operator is installed on your clus
 
 ```sh
 on 🎩 ❯ oc get csv -n openshift-storage
-NAME                                    DISPLAY                            VERSION        REPLACES               PHASE
-cephcsi-operator.v4.17.0-rhodf          CephCSI operator                   4.17.0-rhodf                          Succeeded
-mcg-operator.v4.17.0-rhodf              NooBaa Operator                    4.17.0-rhodf                          Succeeded
-ocs-client-operator.v4.17.0-rhodf       OpenShift Data Foundation Client   4.17.0-rhodf                          Succeeded
-ocs-operator.v4.17.0-rhodf              OpenShift Container Storage        4.17.0-rhodf                          Succeeded
-odf-csi-addons-operator.v4.17.0-rhodf   CSI Addons                         4.17.0-rhodf                          Succeeded
-odf-operator.v4.17.0-rhodf              OpenShift Data Foundation          4.17.0-rhodf                          Succeeded
-odf-prometheus-operator.v4.17.0-rhodf   Prometheus Operator                4.17.0-rhodf                          Succeeded
-recipe.v4.17.0-rhodf                    Recipe                             4.17.0-rhodf                          Succeeded
-rhdh-operator.v1.3.1                    Red Hat Developer Hub Operator     1.3.1          rhdh-operator.v1.1.1   Succeeded
-rook-ceph-operator.v4.17.0-rhodf        Rook-Ceph                          4.17.0-rhodf                          Succeeded
+NAME                                    DISPLAY                            VERSION        REPLACES                                PHASE
+cephcsi-operator.v4.18.2-rhodf          CephCSI operator                   4.18.2-rhodf                                           Succeeded
+mcg-operator.v4.18.2-rhodf              NooBaa Operator                    4.18.2-rhodf   mcg-operator.v4.18.1-rhodf              Succeeded
+ocs-client-operator.v4.18.2-rhodf       OpenShift Data Foundation Client   4.18.2-rhodf   ocs-client-operator.v4.18.1-rhodf       Succeeded
+ocs-operator.v4.18.2-rhodf              OpenShift Container Storage        4.18.2-rhodf   ocs-operator.v4.18.1-rhodf              Succeeded
+odf-csi-addons-operator.v4.18.2-rhodf   CSI Addons                         4.18.2-rhodf   odf-csi-addons-operator.v4.18.1-rhodf   Succeeded
+odf-dependencies.v4.18.2-rhodf          Data Foundation Dependencies       4.18.2-rhodf   odf-dependencies.v4.18.1-rhodf          Succeeded
+odf-operator.v4.18.2-rhodf              OpenShift Data Foundation          4.18.2-rhodf   odf-operator.v4.18.1-rhodf              Succeeded
+odf-prometheus-operator.v4.18.2-rhodf   Prometheus Operator                4.18.2-rhodf   odf-prometheus-operator.v4.18.1-rhodf   Succeeded
+recipe.v4.18.2-rhodf                    Recipe                             4.18.2-rhodf   recipe.v4.18.1-rhodf                    Succeeded
+rhdh-operator.v1.5.1                    Red Hat Developer Hub Operator     1.5.1          rhdh-operator.v1.4.2                    Succeeded
+rook-ceph-operator.v4.18.2-rhodf        Rook-Ceph                          4.18.2-rhodf   rook-ceph-operator.v4.18.1-rhodf        Succeeded
 ```
 
 If you get a similar output, then your system is already prepared to continue. Otherwise, you must install following
-this [instructions](https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation/4.17/html-single/deploying_openshift_data_foundation_using_amazon_web_services/index#installing-openshift-data-foundation-operator-using-the-operator-hub_cloud-storage).
+this [instructions](https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation/4.18/html-single/deploying_openshift_data_foundation_using_amazon_web_services/index#installing-openshift-data-foundation-operator-using-the-operator-hub_cloud-storage).
 
 Installing this operator takes a while, so, wait until all of them are successfully installed before continuing with the next step.
 
-Create the storage system following this [instructions](https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation/4.17/html/deploying_openshift_data_foundation_using_amazon_web_services/deploy-using-dynamic-storage-devices-aws#creating-an-openshift-data-foundation-service_cloud-storage).
+Create the storage system following this [instructions](https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation/4.18/html/deploying_openshift_data_foundation_using_amazon_web_services/deploy-using-dynamic-storage-devices-aws#creating-an-openshift-data-foundation-service_cloud-storage).
 
 ### Create Storage
 
@@ -612,6 +619,46 @@ oc apply -f ./custom-app-config-gitlab/rhdh-instance-9.yaml -n rhdh-gitlab
 
 References:
 
-* https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.5/html-single/configuring_red_hat_developer_hub/index#HighAvailability
+* [Configuring high availability](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.5/html-single/configuring_red_hat_developer_hub/index#HighAvailability)
 
+## Enabling dynamics plugin cache
 
+The dynamic plugins cache in Red Hat Developer Hub enhances the installation process and reduces platform
+boot time by storing previously installed plugins. If the configuration remains unchanged, this feature prevents
+the need to re-download plugins on subsequent boots.
+
+A new storage layer is required to persist the content of the dynamic plugins installed.
+
+Run:
+
+```sh
+oc apply -f ./custom-app-config-gitlab/dynamic-plugins-root-pvc-10.yaml -n rhdh-gitlab
+```
+
+We patch the deployment definition to add this new storage for the init container:
+
+```sh
+oc apply -f ./custom-app-config-gitlab/rhdh-instance-10.yaml -n rhdh-gitlab
+```
+
+References:
+
+* [Enabling the dynamic plugins cache](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.5/html-single/configuring_red_hat_developer_hub/index#enabling-the-dynamic-plugins-cache)
+
+## Enabling Adoption Insights
+
+Our Red Hat Developer Hub instance has a lot of content and provides services to their users. However, how could we
+measure it? Easy! There are a set of plugins to monitor the behavior of the users of Red Hat Developer Hub. Using
+the Adoption Insights plugins, we can enable a dashboard to visualize some interested metrics about the usage
+of the instance.
+
+Run:
+
+```sh
+oc apply -f ./custom-app-config-gitlab/dynamic-plugins-11.yaml -n rhdh-gitlab
+oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-11.yaml -n rhdh-gitlab
+```
+
+References:
+
+* [About Adoption Insights](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.5/html-single/adoption_insights_in_red_hat_developer_hub/index#con-about-adoption-insights_title-adoption-insights)
