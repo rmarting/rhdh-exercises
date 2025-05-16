@@ -7,14 +7,14 @@ data:
     signInPage: gitlab
     app:
       title: My Red Hat Developer Hub Instance
-      baseUrl: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
+      #baseUrl: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
     backend:
       auth:
         keys:
           - secret: ${BACKEND_SECRET}
-      baseUrl: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
-      cors:
-        origin: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
+      #baseUrl: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
+      #cors:
+      #  origin: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
     auth:
       environment: production
       providers:

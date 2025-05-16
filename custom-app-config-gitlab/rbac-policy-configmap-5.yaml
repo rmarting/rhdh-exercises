@@ -73,18 +73,17 @@ data:
     #p, role:default/admins, scaffolder.task.cancel, use, allow
     #p, role:default/admins, scaffolder.task.read, read, allow
     # RBAC permissions
-    #p, role:default/admins, policy-entity, read, allow
     #p, role:default/admins, policy.entity.read, read, allow
     #p, role:default/admins, policy.entity.create, create, allow
     #p, role:default/admins, policy.entity.update, update, allow
     #p, role:default/admins, policy.entity.delete, delete, allow
-    # Kubernetes permissions
+    # Topology and Kubernetes permissions
+    #p, role:default/admins, kubernetes.clusters.read, read, allow
+    #p, role:default/admins, kubernetes.resources.read, read, allow
     #p, role:default/admins, kubernetes.proxy, use, allow
     # OCM permissions
     #p, role:default/admins, ocm.entity.read, read, allow
     #p, role:default/admins, ocm.cluster.read, read, allow
-    # Topology permissions
-    #p, role:default/admins, topology.view.read, read, allow
     # Bulk import
     #p, role:default/admins, bulk-import, use, allow
     #p, role:default/admins, bulk.import, use, allow

@@ -18,6 +18,10 @@ oc apply -f ./custom-app-config-gitlab/rhdh-secrets.yaml -n rhdh-gitlab
 oc patch secret rhdh-secrets -n rhdh-gitlab -p '{"stringData":{"basedomain":"'"${basedomain}"'"}}'
 ```
 
+**TIP**: Since Red Hat Developer Hub 1.6 is not longer required to define base URL for the instance. The operator will
+calculate the correct value an inject in the default configuration. If you need it, you can still override these settings.
+More details [here](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.6/html-single/red_hat_developer_hub_release_notes/index#enhancement-rhidp-6173)
+
 This is the structure of the `app-config-rhdh` ConfigMap to customize the configuration of our Red Hat Developer Hub instance:
 
 ```yaml
@@ -34,9 +38,9 @@ data:
       auth:
         keys:
           - secret: ${BACKEND_SECRET}
-      baseUrl: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
-      cors:
-        origin: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
+      #baseUrl: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
+      #cors:
+      #  origin: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
 ```
 
 Once created the ConfigMap and Secret, we can add them into the `developer-hub` CR Red Hat Developer Hub manifest:
@@ -256,7 +260,7 @@ oc apply -f ./custom-app-config-gitlab/rhdh-instance-3.yaml -n rhdh-gitlab
 
 Verify that the `sample-app` component is located on the `Catalog` page.
 
-TIP: A similar message is registered in the Red Hat Developer Hub pod to confirm the number of projects scanned:
+**TIP**: A similar message is registered in the Red Hat Developer Hub pod to confirm the number of projects scanned:
 
 ```text
 {"class":"GitlabDiscoveryEntityProvider","level":"\u001b[32minfo\u001b[39m","message":"Processed 1 from scanned 1 projects.","plugin":"catalog","service":"backstage","span_id":"f957c3084bb63955","target":"GitlabDiscoveryEntityProvider:myGitLab","taskId":"GitlabDiscoveryEntityProvider:myGitLab:refresh","taskInstanceId":"06e6c7f9-1f7f-4f2e-a61b-52bc2614b279","timestamp":"2025-03-05 09:27:24","trace_flags":"01","trace_id":"cb4b00f3c9465893e015c5c4b2233d36"}
@@ -314,7 +318,7 @@ oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-4.yaml -n rhdh-gitlab
 
 Verify that users and teams are discovered.
 
-TIP: A similar message is registered in the Red Hat Developer Hub pod to confirm the number of users and groups scanned:
+**TIP**: A similar message is registered in the Red Hat Developer Hub pod to confirm the number of users and groups scanned:
 
 ```text
 {"class":"GitlabOrgDiscoveryEntityProvider","level":"\u001b[32minfo\u001b[39m","message":"Scanned 3 users and processed 3 users","plugin":"catalog","service":"backstage","span_id":"2dcb52e328c672ad","target":"GitlabOrgDiscoveryEntityProvider:myGitLab","taskId":"GitlabOrgDiscoveryEntityProvider:myGitLab:refresh","taskInstanceId":"03798434-b9e9-45f0-8be6-330f0229e07a","timestamp":"2025-03-05 10:08:57","trace_flags":"01","trace_id":"f6b7b7e7a96250eeca0e1f2b355c00ac"}
