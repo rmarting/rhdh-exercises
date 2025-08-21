@@ -86,7 +86,6 @@ data:
     #p, role:default/admins, ocm.cluster.read, read, allow
     # Bulk import
     #p, role:default/admins, bulk-import, use, allow
-    #p, role:default/admins, bulk.import, use, allow
     # Adoption Insights permissions
     #p, role:default/admins, adoption-insights.events.read, read, allow
 
