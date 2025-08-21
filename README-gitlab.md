@@ -69,7 +69,7 @@ an automatic redeploy will start, and it will few minutes until
 the new pod is ready to serve request. Please, be patient after any change before confirming they are
 correctly applied.
 
-More detailed information about this step [here](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.5/html-single/configuring_red_hat_developer_hub/index#provisioning-and-using-your-custom-configuration).
+More detailed information about this step [here](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.7/html-single/configuring_red_hat_developer_hub/index#provisioning-and-using-your-custom-configuration).
 
 ## Enable GitLab authentication
 
@@ -111,7 +111,7 @@ Modify `app-config` section of the `app-config-rhdh` ConfigMap with environment 
 ```yaml
     signInPage: gitlab
     auth:
-      environment: production
+      environment: development
       providers:
         gitlab:
           development:
@@ -154,7 +154,7 @@ The GitLab integration has a special entity provider for discovering catalog ent
 will crawl the GitLab instance and register entities matching the configured paths. This can be useful as an alternative
 to static locations or manually adding things to the catalog.
 
-More information about Dynamic Plugins [here](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.4/html-single/installing_and_viewing_plugins_in_red_hat_developer_hub/index).
+More information about Dynamic Plugins [here](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.7/html-single/installing_and_viewing_plugins_in_red_hat_developer_hub/index).
 
 To enable the GitLab integration and discovery capabilities a Personal Access Token (aka PAT) is required.
 
@@ -369,7 +369,7 @@ that this user can't create anything. This user has not any `Create` button enab
 
 References:
 
-* [Authorization in Red Hat Developer Hub](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.4/html-single/authorization/index)
+* [Authorization in Red Hat Developer Hub](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.7/html-single/authorization_in_red_hat_developer_hub/index)
 
 ## Import Software Template
 
@@ -479,17 +479,16 @@ Verify first if the OpenShift Data Foundation operator is installed on your clus
 ```sh
 on 🎩 ❯ oc get csv -n openshift-storage
 NAME                                    DISPLAY                            VERSION        REPLACES                                PHASE
-cephcsi-operator.v4.18.2-rhodf          CephCSI operator                   4.18.2-rhodf                                           Succeeded
-mcg-operator.v4.18.2-rhodf              NooBaa Operator                    4.18.2-rhodf   mcg-operator.v4.18.1-rhodf              Succeeded
-ocs-client-operator.v4.18.2-rhodf       OpenShift Data Foundation Client   4.18.2-rhodf   ocs-client-operator.v4.18.1-rhodf       Succeeded
-ocs-operator.v4.18.2-rhodf              OpenShift Container Storage        4.18.2-rhodf   ocs-operator.v4.18.1-rhodf              Succeeded
-odf-csi-addons-operator.v4.18.2-rhodf   CSI Addons                         4.18.2-rhodf   odf-csi-addons-operator.v4.18.1-rhodf   Succeeded
-odf-dependencies.v4.18.2-rhodf          Data Foundation Dependencies       4.18.2-rhodf   odf-dependencies.v4.18.1-rhodf          Succeeded
-odf-operator.v4.18.2-rhodf              OpenShift Data Foundation          4.18.2-rhodf   odf-operator.v4.18.1-rhodf              Succeeded
-odf-prometheus-operator.v4.18.2-rhodf   Prometheus Operator                4.18.2-rhodf   odf-prometheus-operator.v4.18.1-rhodf   Succeeded
-recipe.v4.18.2-rhodf                    Recipe                             4.18.2-rhodf   recipe.v4.18.1-rhodf                    Succeeded
-rhdh-operator.v1.5.1                    Red Hat Developer Hub Operator     1.5.1          rhdh-operator.v1.4.2                    Succeeded
-rook-ceph-operator.v4.18.2-rhodf        Rook-Ceph                          4.18.2-rhodf   rook-ceph-operator.v4.18.1-rhodf        Succeeded
+cephcsi-operator.v4.18.8-rhodf          CephCSI operator                   4.18.8-rhodf   cephcsi-operator.v4.18.7-rhodf          Succeeded
+mcg-operator.v4.18.8-rhodf              NooBaa Operator                    4.18.8-rhodf   mcg-operator.v4.18.7-rhodf              Succeeded
+ocs-client-operator.v4.18.8-rhodf       OpenShift Data Foundation Client   4.18.8-rhodf   ocs-client-operator.v4.18.7-rhodf       Succeeded
+ocs-operator.v4.18.8-rhodf              OpenShift Container Storage        4.18.8-rhodf   ocs-operator.v4.18.7-rhodf              Succeeded
+odf-csi-addons-operator.v4.18.8-rhodf   CSI Addons                         4.18.8-rhodf   odf-csi-addons-operator.v4.18.7-rhodf   Succeeded
+odf-dependencies.v4.18.8-rhodf          Data Foundation Dependencies       4.18.8-rhodf   odf-dependencies.v4.18.7-rhodf          Succeeded
+odf-operator.v4.18.8-rhodf              OpenShift Data Foundation          4.18.8-rhodf   odf-operator.v4.18.7-rhodf              Succeeded
+odf-prometheus-operator.v4.18.8-rhodf   Prometheus Operator                4.18.8-rhodf   odf-prometheus-operator.v4.18.7-rhodf   Succeeded
+recipe.v4.18.8-rhodf                    Recipe                             4.18.8-rhodf   recipe.v4.18.7-rhodf                    Succeeded
+rook-ceph-operator.v4.18.8-rhodf        Rook-Ceph                          4.18.8-rhodf   rook-ceph-operator.v4.18.7-rhodf        Succeeded
 ```
 
 If you get a similar output, then your system is already prepared to continue. Otherwise, you must install following
@@ -527,7 +526,7 @@ oc apply -f ./custom-app-config-gitlab/gitlab-runner-operator-8.yaml -n gitlab-s
 ```shell
 on 🎩 ❯ oc get csv -n gitlab-system
 NAME                             DISPLAY            VERSION   REPLACES                         PHASE
-gitlab-runner-operator.v1.35.0   GitLab Runner      1.35.0    gitlab-runner-operator.v1.34.0   Succeeded
+gitlab-runner-operator.v1.35.0   GitLab Runner      1.39.0    gitlab-runner-operator.v1.38.0   Succeeded
 ```
 
 The technical docs will be created as part of the CI pipelines of the components, so
@@ -623,7 +622,7 @@ oc apply -f ./custom-app-config-gitlab/rhdh-instance-9.yaml -n rhdh-gitlab
 
 References:
 
-* [Configuring high availability](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.5/html-single/configuring_red_hat_developer_hub/index#HighAvailability)
+* [Configuring high availability](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.7/html-single/configuring_red_hat_developer_hub/index#HighAvailability)
 
 ## Enabling dynamics plugin cache
 
@@ -647,7 +646,7 @@ oc apply -f ./custom-app-config-gitlab/rhdh-instance-10.yaml -n rhdh-gitlab
 
 References:
 
-* [Enabling the dynamic plugins cache](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.5/html-single/configuring_red_hat_developer_hub/index#enabling-the-dynamic-plugins-cache)
+* [Enabling the dynamic plugins cache](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.6/html-single/configuring_red_hat_developer_hub/index#enabling-the-rhdh-plugin-assets-cache_running-behind-a-proxy)
 
 ## Enabling Adoption Insights
 
@@ -655,6 +654,8 @@ Our Red Hat Developer Hub instance has a lot of content and provides services to
 measure it? Easy! There are a set of plugins to monitor the behavior of the users of Red Hat Developer Hub. Using
 the Adoption Insights plugins, we can enable a dashboard to visualize some interested metrics about the usage
 of the instance.
+
+**NOTE**: Since Red Hat Developer Hub 1.7 this plugin is enabled by default.
 
 Run:
 
@@ -665,4 +666,4 @@ oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-11.yaml -n rhdh-gitlab
 
 References:
 
-* [About Adoption Insights](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.5/html-single/adoption_insights_in_red_hat_developer_hub/index#con-about-adoption-insights_title-adoption-insights)
+* [About Adoption Insights](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.7/html-single/adoption_insights_in_red_hat_developer_hub/index#con-about-adoption-insights_title-adoption-insights)

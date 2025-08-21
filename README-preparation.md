@@ -11,11 +11,19 @@ In both cases, request at least 64GB RAM memory.
 
 **NOTE**: You must `cluster-admin` privileges to install the different operators required for this technical exercise.
 
-The content of this repo was tested in Red Hat Developer Hub 1.5.1 on Red Hat OpenShift Container Platform 4.18.11.
+The content of this repo was tested in Red Hat Developer Hub 1.7.0 on Red Hat OpenShift Container Platform 4.18.21.
 
 ## Install cert-manager operator
 
-Run:
+Check if the Cert Manager operator is already available in your cluster:
+
+```sh
+on 🎩 ❯ oc get csv -n cert-manager-operator
+NAME                            DISPLAY                                       VERSION   REPLACES                        PHASE
+cert-manager-operator.v1.17.0   cert-manager Operator for Red Hat OpenShift   1.17.0    cert-manager-operator.v1.16.1   Succeeded
+```
+
+If you don't get a response similar to the previous output, then execute this command:
 
 ```sh
 oc apply -f ./lab-prep/cert-manager-operator.yaml
@@ -26,7 +34,7 @@ Once the operator is ready you can continue. This command shows the status of th
 ```sh
 on 🎩 ❯ oc get csv -n cert-manager-operator
 NAME                            DISPLAY                                       VERSION   REPLACES                        PHASE
-cert-manager-operator.v1.15.1   cert-manager Operator for Red Hat OpenShift   1.15.1    cert-manager-operator.v1.15.0   Succeeded
+cert-manager-operator.v1.17.0   cert-manager Operator for Red Hat OpenShift   1.17.0    cert-manager-operator.v1.16.1   Succeeded
 ```
 
 **NOTE:** Please, wait until the operator is installed successfully before continue with the preparations. Otherwise, you can face other issues.
@@ -107,7 +115,7 @@ The operator is installed in the `rhdh-operator` namespace:
 ```sh
 on 🎩 ❯ oc get csv -n rhdh-operator
 NAME                   DISPLAY                          VERSION   REPLACES               PHASE
-rhdh-operator.v1.6.0   Red Hat Developer Hub Operator   1.6.0     rhdh-operator.v1.5.1   Succeeded
+rhdh-operator.v1.7.0   Red Hat Developer Hub Operator   1.7.0     rhdh-operator.v1.6.3             Succeeded
 ```
 
 ## Install Red Hat Developer Hub instance
