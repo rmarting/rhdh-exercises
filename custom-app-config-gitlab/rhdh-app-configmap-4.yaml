@@ -16,10 +16,10 @@ data:
       #cors:
       #  origin: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
     auth:
-      environment: production
+      environment: development
       providers:
         gitlab:
-          production:
+          development:
             clientId: ${AUTH_GITLAB_CLIENT_ID}
             clientSecret: ${AUTH_GITLAB_CLIENT_SECRET}
             audience: https://gitlab.${basedomain}

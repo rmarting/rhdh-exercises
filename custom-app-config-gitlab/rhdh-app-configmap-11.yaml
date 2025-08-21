@@ -11,10 +11,10 @@ data:
       # Enabling Analytics
       analytics:
         adoptionInsights:
-          maxBufferSize: 25
-          flushInterval: 6000
-          debug: false
-          licensedUsers: 1000
+          maxBufferSize: 25   # Default 20
+          flushInterval: 6000 # Default 5000
+          debug: false        # Default false
+          licensedUsers: 1000 # Default 1000
     backend:
       auth:
         keys:
@@ -23,10 +23,10 @@ data:
       #cors:
       #  origin: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
     auth:
-      environment: production
+      environment: development
       providers:
         gitlab:
-          production:
+          development:
             clientId: ${AUTH_GITLAB_CLIENT_ID}
             clientSecret: ${AUTH_GITLAB_CLIENT_SECRET}
             audience: https://gitlab.${basedomain}

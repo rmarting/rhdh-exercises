@@ -16,10 +16,10 @@ data:
       #cors:
       #  origin: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
     auth:
-      environment: production
+      environment: development
       providers:
         gitlab:
-          production:
+          development:
             clientId: ${AUTH_GITLAB_CLIENT_ID}
             clientSecret: ${AUTH_GITLAB_CLIENT_SECRET}
             audience: https://gitlab.${basedomain}
@@ -34,9 +34,26 @@ data:
           apiBaseUrl: https://gitlab.${basedomain}/api/v4
           baseUrl: https://gitlab.${basedomain}
     catalog:
+      processingInterval: { minutes: 90 }
       rules:
         - allow: [Component, System, Group, Resource, Location, Template, API, User, Domain, Type]
       providers:
+        #github:
+        #  providerId:
+        #    organization: ${GITHUB_ORGANIZATION}
+        #    catalogPath: '/**/catalog-info.yaml' # this will search all folders for catalog-info.yaml files
+        #    #filters:
+        #    #  repository: 'sample-components'
+        #  orgCatalog:
+        #    organization: ${GITHUB_ORGANIZATION}
+        #    catalogPath: '/**/org-catalog.yaml' # this will search all folders for org-catalog.yaml files
+        #    schedule:
+        #      frequency:
+        #        minutes: 10
+        #      initialDelay:
+        #        seconds: 15
+        #      timeout:
+        #        minutes: 5
         gitlab:
           myGitLab:
             host: gitlab.${basedomain} # Identifies one of the hosts set up in the integrations
