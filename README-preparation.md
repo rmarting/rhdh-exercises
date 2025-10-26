@@ -11,7 +11,7 @@ In both cases, request at least 64GB RAM memory.
 
 **NOTE**: You must `cluster-admin` privileges to install the different operators required for this technical exercise.
 
-The content of this repo was tested in Red Hat Developer Hub 1.7.0 on Red Hat OpenShift Container Platform 4.18.21.
+The content of this repo was tested in Red Hat Developer Hub 1.7.1 on Red Hat OpenShift Container Platform 4.19.
 
 ## Install cert-manager operator
 
@@ -44,8 +44,15 @@ cert-manager-operator.v1.17.0   cert-manager Operator for Red Hat OpenShift   1.
 Run:
 
 ```sh
-oc create namespace gitlab-system
-oc apply -f https://gitlab.com/api/v4/projects/18899486/packages/generic/gitlab-operator/1.10.0/gitlab-operator-openshift-1.10.0.yaml
+oc apply -f oc apply -f ./lab-prep/gitlab-operator.yaml
+```
+
+The operator is installed in the `gitlab-system` namespace. Check the status of the operator by:
+
+```sh
+on 🎩 ❯ oc get csv -n gitlab-system
+NAME                                DISPLAY    VERSION   REPLACES                            PHASE
+gitlab-operator-kubernetes.v2.5.1   GitLab     2.5.1     gitlab-operator-kubernetes.v2.5.0   Succeeded
 ```
 
 ## Deploy GitLab
@@ -114,8 +121,8 @@ The operator is installed in the `rhdh-operator` namespace:
 
 ```sh
 on 🎩 ❯ oc get csv -n rhdh-operator
-NAME                   DISPLAY                          VERSION   REPLACES               PHASE
-rhdh-operator.v1.7.0   Red Hat Developer Hub Operator   1.7.0     rhdh-operator.v1.6.3             Succeeded
+NAME                    DISPLAY                           VERSION   REPLACES                PHASE
+rhdh-operator.v1.7.1    Red Hat Developer Hub Operator    1.7.1     rhdh-operator.v1.7.0    Succeeded
 ```
 
 ## Install Red Hat Developer Hub instance
