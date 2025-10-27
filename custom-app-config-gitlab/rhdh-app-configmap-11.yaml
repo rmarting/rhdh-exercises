@@ -8,13 +8,13 @@ data:
     app:
       title: My Red Hat Developer Hub Instance
       #baseUrl: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
-      # Enabling Analytics
+      # Enabling Analytics - Enabled by default from Red Hat Developer Hub 1.7
       analytics:
         adoptionInsights:
-          maxBufferSize: 25   # Default 20
-          flushInterval: 6000 # Default 5000
-          debug: false        # Default false
-          licensedUsers: 1000 # Default 1000
+          maxBufferSize: 25    # Default 20
+          flushInterval: 10000 # Default 5000
+          debug: false         # Default false
+          licensedUsers: 500   # Default 1000
     backend:
       auth:
         keys:

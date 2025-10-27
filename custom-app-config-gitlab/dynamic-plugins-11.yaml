@@ -42,12 +42,12 @@ data:
                     menuItem:
                       text: Quote
                     path: /devquote
-      # Adoptions Insights
-      - package: ./dynamic-plugins/dist/backstage-community-plugin-analytics-provider-segment
-        disabled: true
-      - package: ./dynamic-plugins/dist/red-hat-developer-hub-backstage-plugin-adoption-insights
-        disabled: false
-      - package: ./dynamic-plugins/dist/red-hat-developer-hub-backstage-plugin-adoption-insights-backend-dynamic
-        disabled: false
-      - package: ./dynamic-plugins/dist/red-hat-developer-hub-backstage-plugin-analytics-module-adoption-insights-dynamic
-        disabled: false
+      # Adoptions Insights - Installed by default from Red Hat Developer Hub 1.7
+      #- package: ./dynamic-plugins/dist/backstage-community-plugin-analytics-provider-segment
+      #  disabled: true
+      #- package: ./dynamic-plugins/dist/red-hat-developer-hub-backstage-plugin-adoption-insights
+      #  disabled: false
+      #- package: ./dynamic-plugins/dist/red-hat-developer-hub-backstage-plugin-adoption-insights-backend-dynamic
+      #  disabled: false
+      #- package: ./dynamic-plugins/dist/red-hat-developer-hub-backstage-plugin-analytics-module-adoption-insights-dynamic
+      #  disabled: false
