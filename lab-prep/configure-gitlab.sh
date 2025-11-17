@@ -63,6 +63,13 @@ if [ "0" == $(curl $CURL_DISABLE_SSL_VERIFICATION --header "PRIVATE-TOKEN: $GITL
     "${GITLAB_URL}/api/v4/groups" &> /dev/null
 fi
 
+if [ "0" == $(curl $CURL_DISABLE_SSL_VERIFICATION --header "PRIVATE-TOKEN: $GITLAB_TOKEN" -s "${GITLAB_URL}/api/v4/groups?search=rhdh" | jq length) ]; then
+    curl $CURL_DISABLE_SSL_VERIFICATION --request POST --header "PRIVATE-TOKEN: $GITLAB_TOKEN" \
+    --header "Content-Type: application/json" \
+    --data '{"path": "rhdh", "name": "rhdh", "visibility": "public" }' \
+    "${GITLAB_URL}/api/v4/groups" &> /dev/null
+fi
+
 TEAM_A_ID=$(curl $CURL_DISABLE_SSL_VERIFICATION --header "PRIVATE-TOKEN: $GITLAB_TOKEN" -s "${GITLAB_URL}/api/v4/groups?search=team-a" | jq -r '(.|first).id')
 TEAM_B_ID=$(curl $CURL_DISABLE_SSL_VERIFICATION --header "PRIVATE-TOKEN: $GITLAB_TOKEN" -s "${GITLAB_URL}/api/v4/groups?search=team-b" | jq -r '(.|first).id')
 
