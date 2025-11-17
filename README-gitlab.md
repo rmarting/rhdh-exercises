@@ -69,7 +69,7 @@ an automatic redeploy will start, and it will few minutes until
 the new pod is ready to serve request. Please, be patient after any change before confirming they are
 correctly applied.
 
-More detailed information about this step [here](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.7/html-single/configuring_red_hat_developer_hub/index#provisioning-and-using-your-custom-configuration).
+More detailed information about this step [here](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.8/html-single/configuring_red_hat_developer_hub/index#provisioning-and-using-your-custom-configuration).
 
 ## Enable GitLab authentication
 
@@ -154,7 +154,7 @@ The GitLab integration has a special entity provider for discovering catalog ent
 will crawl the GitLab instance and register entities matching the configured paths. This can be useful as an alternative
 to static locations or manually adding things to the catalog.
 
-More information about Dynamic Plugins [here](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.7/html-single/installing_and_viewing_plugins_in_red_hat_developer_hub/index).
+More information about Dynamic Plugins [here](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.8/html-single/installing_and_viewing_plugins_in_red_hat_developer_hub/index).
 
 To enable the GitLab integration and discovery capabilities a Personal Access Token (aka PAT) is required.
 
@@ -363,13 +363,13 @@ oc apply -f ./custom-app-config-gitlab/rhdh-instance-5.yaml -n rhdh-gitlab
 ```
 
 Open an incognito window, or just logout, and login with `user2` (password: `@abc1cde2`) to confirm
-that this user can't create anything. This user has not any `Create` button enabled.
+that this user can't create anything. This user has not any `Self-Service` button enabled.
 
 **NOTE**: If you login with the `root` user, you will be able to edit the RBAC policies from the `Administration` page.
 
 References:
 
-* [Authorization in Red Hat Developer Hub](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.7/html-single/authorization_in_red_hat_developer_hub/index)
+* [Authorization in Red Hat Developer Hub](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.8/html-single/authorization_in_red_hat_developer_hub/index)
 
 ## Import Software Template
 
@@ -377,7 +377,7 @@ Software templates are the way to create standard components integrated with the
 related to that component. This [template](https://github.com/rmarting/rhdh-exercises-software-templates/blob/main/templates.yaml)
 is a simple case of this kind of component.
 
-Templates can be registered from the `Create...` menu. The `Register Existing Component` button opens a wizard to register the component
+Templates can be registered from the `Self-service` menu. The `Import an existing Git repository` button opens a wizard to register the component
 from the remote url.
 
 Another alternative is to configure the location of the templates in the `catalog` definition. This is the
@@ -394,7 +394,7 @@ configuration to add in the `app-config-rhdh` ConfigMap:
 
 The templates provided as example, includes an integration to publish content into the GitLab server. To enable that
 capability is needed to enabled the `backstage-plugin-scaffolder-backend-module-gitlab-dynamic` plugin, which includes
-the actions to manage and operate GitLab repositories. This plugin is listed as another one in the `dynamic-plugins` configmap.
+the actions to manage and operate GitLab repositories. This plugin is listed as another one in the `dynamic-plugins` ConfigMap.
 
 Or run:
 
@@ -403,7 +403,7 @@ oc apply -f ./custom-app-config-gitlab/dynamic-plugins-6.yaml -n rhdh-gitlab
 oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-6.yaml -n rhdh-gitlab
 ```
 
-Verify there is a new Software Template available on the `Create...` page.
+Verify there is a new Software Template available on the `Self-service` page.
 
 ## Create a component
 
@@ -434,22 +434,22 @@ plugins including the new one with the following configuration:
         disabled: false
       - package: './dynamic-plugins/dist/janus-idp-backstage-plugin-rbac'
         disabled: false
-      - package: '@rmarting/my-devquote-plugin@0.0.2'
-        integrity: sha512-S/CbM8s8vqVMeBeWGJ/4SsCd2b6K8Ngp992H1JN6HdwB9QiupPZu5wfnEpjN024SJemd/VUFT53tiUGrt1J/dw==
+      # DevQuotes Dynamic Plugin
+      - package: oci://quay.io/rhdh-adventure-organization/parsifal-m-plugin-dev-quotes-homepage:3.0.8!parsifal-m-plugin-dev-quotes-homepage
         disabled: false
         pluginConfig:
           dynamicPlugins:
             frontend:
-              rmarting.my-devquote-plugin:
+              parsifal-m.plugin-dev-quotes-homepage:
                 mountPoints:
-                  - config:
+                  - mountPoint: entity.page.overview/cards
+                    importName: DevQuote
+                    config:
                       layout:
                         gridColumnEnd:
                           lg: span 4
                           md: span 6
                           xs: span 12
-                    importName: DevQuote
-                    mountPoint: entity.page.overview/cards
                 dynamicRoutes:
                   - importName: DevQuote
                     menuItem:
@@ -473,25 +473,25 @@ Verify first if the OpenShift Data Foundation operator is installed on your clus
 
 ```shell
 on 🎩 ❯ oc get csv -n openshift-storage
-NAME                                    DISPLAY                            VERSION        REPLACES                                PHASE
-cephcsi-operator.v4.19.6-rhodf          CephCSI operator                   4.19.6-rhodf   cephcsi-operator.v4.19.5-rhodf          Succeeded
-mcg-operator.v4.19.6-rhodf              NooBaa Operator                    4.19.6-rhodf   mcg-operator.v4.19.5-rhodf              Succeeded
-ocs-client-operator.v4.19.6-rhodf       OpenShift Data Foundation Client   4.19.6-rhodf   ocs-client-operator.v4.19.5-rhodf       Succeeded
-ocs-operator.v4.19.6-rhodf              OpenShift Container Storage        4.19.6-rhodf   ocs-operator.v4.19.5-rhodf              Succeeded
-odf-csi-addons-operator.v4.19.6-rhodf   CSI Addons                         4.19.6-rhodf   odf-csi-addons-operator.v4.19.5-rhodf   Succeeded
-odf-dependencies.v4.19.6-rhodf          Data Foundation Dependencies       4.19.6-rhodf   odf-dependencies.v4.19.5-rhodf          Succeeded
-odf-operator.v4.19.6-rhodf              OpenShift Data Foundation          4.19.6-rhodf   odf-operator.v4.19.5-rhodf              Succeeded
-odf-prometheus-operator.v4.19.6-rhodf   Prometheus Operator                4.19.6-rhodf   odf-prometheus-operator.v4.19.5-rhodf   Succeeded
-recipe.v4.19.6-rhodf                    Recipe                             4.19.6-rhodf   recipe.v4.19.5-rhodf                    Succeeded
-rook-ceph-operator.v4.19.6-rhodf        Rook-Ceph                          4.19.6-rhodf   rook-ceph-operator.v4.19.5-rhodf        Succeeded
+NAME                                     DISPLAY                            VERSION         REPLACES                                 PHASE
+cephcsi-operator.v4.18.12-rhodf          CephCSI operator                   4.18.12-rhodf   cephcsi-operator.v4.18.11-rhodf          Succeeded
+mcg-operator.v4.18.12-rhodf              NooBaa Operator                    4.18.12-rhodf   mcg-operator.v4.18.11-rhodf              Succeeded
+ocs-client-operator.v4.18.12-rhodf       OpenShift Data Foundation Client   4.18.12-rhodf   ocs-client-operator.v4.18.11-rhodf       Succeeded
+ocs-operator.v4.18.12-rhodf              OpenShift Container Storage        4.18.12-rhodf   ocs-operator.v4.18.11-rhodf              Succeeded
+odf-csi-addons-operator.v4.18.12-rhodf   CSI Addons                         4.18.12-rhodf   odf-csi-addons-operator.v4.18.11-rhodf   Succeeded
+odf-dependencies.v4.18.12-rhodf          Data Foundation Dependencies       4.18.12-rhodf   odf-dependencies.v4.18.11-rhodf          Succeeded
+odf-operator.v4.18.12-rhodf              OpenShift Data Foundation          4.18.12-rhodf   odf-operator.v4.18.11-rhodf              Succeeded
+odf-prometheus-operator.v4.18.12-rhodf   Prometheus Operator                4.18.12-rhodf   odf-prometheus-operator.v4.18.11-rhodf   Succeeded
+recipe.v4.18.12-rhodf                    Recipe                             4.18.12-rhodf   recipe.v4.18.11-rhodf                    Succeeded
+rook-ceph-operator.v4.18.12-rhodf        Rook-Ceph                          4.18.12-rhodf   rook-ceph-operator.v4.18.11-rhodf        Succeeded
 ```
 
 If you get a similar output, then your system is already prepared to continue. Otherwise, you must install following
-this [instructions](https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation/4.19/html-single/deploying_openshift_data_foundation_using_amazon_web_services/index#installing-openshift-data-foundation-operator-using-the-operator-hub_cloud-storage).
+this [instructions](https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation/4.18/html-single/deploying_openshift_data_foundation_using_amazon_web_services/index#installing-openshift-data-foundation-operator-using-the-operator-hub_cloud-storage).
 
 Installing this operator takes a while, so, wait until all of them are successfully installed before continuing with the next step.
 
-Create the storage system following this [instructions](https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation/4.19/html/deploying_openshift_data_foundation_using_amazon_web_services/deploy-using-dynamic-storage-devices-aws#creating-an-openshift-data-foundation-service_cloud-storage).
+Create the storage system following this [instructions](https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation/4.18/html/deploying_openshift_data_foundation_using_amazon_web_services/deploy-using-dynamic-storage-devices-aws#creating-an-openshift-data-foundation-service_cloud-storage).
 
 ### Create Storage
 
@@ -617,13 +617,21 @@ oc apply -f ./custom-app-config-gitlab/rhdh-instance-9.yaml -n rhdh-gitlab
 
 References:
 
-* [Configuring high availability](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.7/html-single/configuring_red_hat_developer_hub/index#HighAvailability)
+* [Configuring high availability](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.8/html-single/configuring_red_hat_developer_hub/index#HighAvailability)
 
-## Enabling dynamics plugin cache
+## Enabling Dynamics Plugin Cache
 
 The dynamic plugins cache in Red Hat Developer Hub enhances the installation process and reduces platform
 boot time by storing previously installed plugins. If the configuration remains unchanged, this feature prevents
-the need to re-download plugins on subsequent boots.
+the need to re-download plugins on subsequent boots. This provides several benefits:
+
+* Faster deployments: Plugins are cached locally and don’t need to be downloaded when pods start
+* Reduced bandwidth consumption: Plugin packages are only downloaded once and reused across deployments
+* Improved reliability: Reduces dependency on external registries during pod startup
+* Better resource utilization: Reduces CPU and memory usage during plugin installation by avoiding repeated downloads
+
+Without dynamic plugin caching, the Red Hat Developer Hub downloads and installs plugins fresh with each pod restart.
+This process can be slow and bandwidth-intensive, especially in environments with many plugins and frequent deployments.
 
 A new storage layer is required to persist the content of the dynamic plugins installed.
 
@@ -641,9 +649,9 @@ oc apply -f ./custom-app-config-gitlab/rhdh-instance-10.yaml -n rhdh-gitlab
 
 References:
 
-* [Enabling the dynamic plugins cache](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.6/html-single/configuring_red_hat_developer_hub/index#enabling-the-rhdh-plugin-assets-cache_running-behind-a-proxy)
+* [Enabling the dynamic plugins cache](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.8/html-single/configuring_red_hat_developer_hub/index#using-the-dynamic-plugins-cache_configuring-and-operating)
 
-## Enabling Adoption Insights
+## Enabling Monitoring and Observability
 
 Our Red Hat Developer Hub instance has a lot of content and provides services to their users. However, how could we
 measure it? Easy! There are a set of plugins to monitor the behavior of the users of Red Hat Developer Hub. Using
@@ -661,4 +669,118 @@ oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-11.yaml -n rhdh-gitlab
 
 References:
 
-* [About Adoption Insights](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.7/html-single/adoption_insights_in_red_hat_developer_hub/index#con-about-adoption-insights_title-adoption-insights)
+* [About Adoption Insights](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.8/html-single/adoption_insights_in_red_hat_developer_hub/index#con-about-adoption-insights_title-adoption-insights)
+
+Since Red Hat Developer Hub 1.8 is easy to integrate it with the OpenShift Monitoring services using
+the user-defined projects. OpenShift can monitor user-defined projects in addition to the default platform monitoring.
+This feature allows monitoring your own projects in OpenShift without the need for an additional monitoring solution.
+Using this feature centralizes monitoring for core platform components and user-defined projects.
+
+For detailed information, check the [official documentation](https://docs.openshift.com/container-platform/4.17/observability/monitoring/enabling-monitoring-for-user-defined-projects.html).
+
+**NOTE**: As cluster-admin enable the user-monitoring capabilities of OpenShift adding the `enableUserWorkload` variable in
+the configuration of the OpenShift Monitoring. This configuration is described in the `cluster-monitoring-config` ConfigMap
+of the `openshift-monitoring` namespace:
+
+Run:
+
+```shell
+oc apply -f custom-app-config-gitlab/cluster-monitoring-config-11.yaml -n openshift-monitoring
+```
+
+This new configuration will create the `openshift-user-workload-monitoring` namespace and a set of new components
+will be deployed to capture the metrics of the user-defined projects. This command can check the status of those deployments:
+
+```shell
+on 🎩 ❯ oc get pod -n openshift-user-workload-monitoring
+NAME                                   READY   STATUS    RESTARTS   AGE
+prometheus-operator-6f766b4885-bsphx   2/2     Running   0          23s
+prometheus-user-workload-0             6/6     Running   0          21s
+prometheus-user-workload-1             6/6     Running   0          21s
+thanos-ruler-user-workload-0           4/4     Running   0          20s
+thanos-ruler-user-workload-1           4/4     Running   0          20s
+```
+
+NOTE: As `cluster-admin` we can enable permissions to users to edit or view those objects.
+For example, we can provide cluster roles to view and edit them as:
+
+```shell
+oc adm policy add-cluster-role-to-user monitoring-rules-view <user> -n <namespace>
+oc adm policy add-cluster-role-to-user monitoring-edit <user> -n <namespace>
+```
+
+Integration between Red Hat Developer Hub and OpenShift Monitoring stack requires to
+add the following configuration into the `Backstage` definition:
+
+```yaml
+spec:
+  monitoring:
+    enabled: true
+```
+
+Or run:
+
+```shell
+oc apply -f ./custom-app-config-gitlab/rhdh-instance-11.yaml -n rhdh-gitlab
+```
+
+This configuration will enable the metrics endpoint and integrate the metrics into the OpenShift Monitoring stack.
+The metrics are exposed through an HTTP service endpoint under the `/metrics` canonical name. Additionally
+the operator will create a `ServiceMonitor` object to scrape metrics from that service endpoint in a user-defined project.
+
+Once the ServiceMonitor is created, after some minutes to scrape some metrics, the user can visualize
+them from the **Developer** perspective in OpenShift in the menu **Observe -> Metrics**.
+
+For example, the following metrics can be reviewed: `catalog_relations_count`, `catalog_entities_count`.
+
+![Red Hat Developer Hub Metrics Dashboard](./media/rhdh-metrics-dashboard.png)
+
+Regarding the logs generated (audit-log), those logs are collected by the OpenShift Logging stack.
+We can filter audit logs from the OpenShift UI by using the `isAuditLog` field.
+
+This procedure is similar to:
+
+1. From the **Developer** perspective of the OpenShift web console, click the **Topology** tab.
+2. From the **Topology** view, click the pod that you want to view audit log data for.
+3. From the pod panel, click the **Resources** tab.
+4. From the Pods section of the Resources tab, click **View logs**.
+5. From the **Logs view**, enter `isAuditLog` into the Search field to filter audit logs from other log types. You can use the arrows to browse the logs containing the `isAuditLog` field.
+
+References:
+
+* [Monitoring and Logging](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.8/html-single/monitoring_and_logging/index#proc-admin-enabling-metrics-ocp-operator_assembly-rhdh-observability)
+
+## Enabling Notifications
+
+Previously we created a component based on a Software Template. There is a way to create a relationship
+between the component and the software template to track the changes along the time. This process requires
+enable the `backstage-community-plugin-catalog-backend-module-scaffolder-relation-processor-dynamic` plugin
+to add the `spec.scaffoldedFrom` property into the catalog definition. Having that property Red Hat Developer Hub
+will visualize the relationship between both entities.
+
+Additionally we can enable notifications when a new version of the template is deployed, so, we can track
+that our component was created from a previous version. It can be very helpful to review the new version
+of the template and apply some changes into our current version of the component. To enable notifications
+the `backstage-plugin-notifications` and `backstage-plugin-notifications-backend-dynamic` must be enabled.
+
+Run:
+ 
+```shell
+oc apply -f ./custom-app-config-gitlab/dynamic-plugins-12.yaml -n rhdh-gitlab
+oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-12.yaml -n rhdh-gitlab
+```
+
+To verify the dependency between components and templates, let's create a new component
+using the sample template as we did previously in this exercise. After its creation verify that the `spec.scaffolderFrom`
+exists in the `catalog-info.yaml` file generated, and we can see the relationship in the `Dependencies` tab
+of the component.
+
+![Dependency between a component and a template](./media/rhdh-component-template-relation.png)
+
+**Bonus Track**: If we change the version of the template used, a notification will appear similar to:
+
+![Notifications](./media/rhdh-notifications.png)
+
+References: 
+
+* [Enabling Software Template version update notifications in Red Hat Developer Hub](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.8/html-single/customizing_red_hat_developer_hub/index#proc-enabling-software-template-version-update-notifications_configuring-templates)

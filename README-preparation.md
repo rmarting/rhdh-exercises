@@ -11,7 +11,7 @@ In both cases, request at least 64GB RAM memory.
 
 **NOTE**: You must `cluster-admin` privileges to install the different operators required for this technical exercise.
 
-The content of this repo was tested in Red Hat Developer Hub 1.7.1 on Red Hat OpenShift Container Platform 4.19.
+The content of this repo was tested in Red Hat Developer Hub 1.8.0 on Red Hat OpenShift Container Platform 4.18.
 
 ## Install cert-manager operator
 
@@ -20,7 +20,7 @@ Check if the Cert Manager operator is already available in your cluster:
 ```shell
 on 🎩 ❯ oc get csv -n cert-manager-operator
 NAME                            DISPLAY                                       VERSION   REPLACES                        PHASE
-cert-manager-operator.v1.17.0   cert-manager Operator for Red Hat OpenShift   1.17.0    cert-manager-operator.v1.16.1   Succeeded
+cert-manager-operator.v1.18.0   cert-manager Operator for Red Hat OpenShift   1.18.0    cert-manager-operator.v1.17.0   Succeeded
 ```
 
 If you don't get a response similar to the previous output, then execute this command:
@@ -34,7 +34,7 @@ Once the operator is ready you can continue. This command shows the status of th
 ```shell
 on 🎩 ❯ oc get csv -n cert-manager-operator
 NAME                            DISPLAY                                       VERSION   REPLACES                        PHASE
-cert-manager-operator.v1.17.0   cert-manager Operator for Red Hat OpenShift   1.17.0    cert-manager-operator.v1.16.1   Succeeded
+cert-manager-operator.v1.18.0   cert-manager Operator for Red Hat OpenShift   1.18.0    cert-manager-operator.v1.17.0   Succeeded
 ```
 
 **NOTE:** Please, wait until the operator is installed successfully before continue with the preparations. Otherwise, you can face other issues.
@@ -52,7 +52,7 @@ The operator is installed in the `gitlab-system` namespace. Check the status of 
 ```shell
 on 🎩 ❯ oc get csv -n gitlab-system
 NAME                                DISPLAY    VERSION   REPLACES                            PHASE
-gitlab-operator-kubernetes.v2.5.1   GitLab     2.5.1     gitlab-operator-kubernetes.v2.5.0   Succeeded
+gitlab-operator-kubernetes.v2.5.2   GitLab     2.5.2     gitlab-operator-kubernetes.v2.5.0   Succeeded
 ```
 
 ## Deploy GitLab
@@ -94,10 +94,11 @@ In that case, execute the script with the `--ssl_certs_self_signed=y` argument.
 This script will do the following:
 
 ```
-Create two groups:
+Create different groups:
 
 - team-a
 - team-b
+- rhdh
 
 Create two users/passwords:
 
@@ -121,8 +122,8 @@ The operator is installed in the `rhdh-operator` namespace:
 
 ```shell
 on 🎩 ❯ oc get csv -n rhdh-operator
-NAME                    DISPLAY                           VERSION   REPLACES                PHASE
-rhdh-operator.v1.7.1    Red Hat Developer Hub Operator    1.7.1     rhdh-operator.v1.7.0    Succeeded
+NAME                   DISPLAY                          VERSION   REPLACES               PHASE
+rhdh-operator.v1.8.0   Red Hat Developer Hub Operator   1.8.0     rhdh-operator.v1.7.1   Succeeded
 ```
 
 ## Install Red Hat Developer Hub instance
