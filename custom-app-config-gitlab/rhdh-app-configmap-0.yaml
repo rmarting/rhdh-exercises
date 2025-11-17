@@ -11,6 +11,10 @@ data:
       auth:
         keys:
           - secret: ${BACKEND_SECRET}
+    auth:
+      providers:
+        guest:
+          dangerouslyAllowOutsideDevelopment: true
       #baseUrl: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
       #cors:
       #  origin: https://backstage-developer-hub-rhdh-gitlab.${basedomain}

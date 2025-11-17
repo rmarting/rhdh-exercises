@@ -18,6 +18,8 @@ data:
     auth:
       environment: development
       providers:
+        guest:
+          dangerouslyAllowOutsideDevelopment: true
         gitlab:
           development:
             clientId: ${AUTH_GITLAB_CLIENT_ID}
