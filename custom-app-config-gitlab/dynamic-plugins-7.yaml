@@ -21,24 +21,25 @@ data:
         disabled: false
       - package: './dynamic-plugins/dist/backstage-plugin-scaffolder-backend-module-gitlab-dynamic'
         disabled: false
-      - package: '@rmarting/rhdh-dynamic-devquote-plugin@0.0.4'
-        integrity: sha512-FxJ6m08GvO3f2qW8MOb+GTXQJyExA1aVAK8pzXTjAIyuENoVNbg3ajzuBTysJXLykNQwA+d9TIrbQUc/kdcpAA==
+      # DevQuotes Dynamic Plugin
+      - package: oci://quay.io/rhdh-adventure-organization/parsifal-m-plugin-dev-quotes-homepage:3.0.8!parsifal-m-plugin-dev-quotes-homepage
         disabled: false
         pluginConfig:
           dynamicPlugins:
             frontend:
-              rmarting.rhdh-dynamic-devquote-plugin:
+              parsifal-m.plugin-dev-quotes-homepage:
                 mountPoints:
-                  - config:
+                  - mountPoint: entity.page.overview/cards
+                    importName: DevQuote
+                    config:
                       layout:
                         gridColumnEnd:
                           lg: span 4
                           md: span 6
                           xs: span 12
-                    importName: DevQuote
-                    mountPoint: entity.page.overview/cards
                 dynamicRoutes:
                   - importName: DevQuote
                     menuItem:
                       text: Quote
                     path: /devquote
+
