@@ -1,0 +1,133 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: rbac-policy
+data:
+  rbac-conditional-policies.yaml: |
+    # References:
+    # https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.4/html-single/authorization/index#con-rbac-conditional-policies-rhdh_title-authorization
+    # https://backstage.io/docs/features/software-catalog/descriptor-format/#common-to-all-kinds-the-metadata
+    ---
+    # Team B can only see 'sample' templates
+    result: CONDITIONAL
+    roleEntityRef: 'role:default/team-b'
+    pluginId: catalog
+    resourceType: catalog-entity
+    permissionMapping:
+      - read
+    conditions:
+      anyOf:
+        - not:
+            rule: IS_ENTITY_KIND
+            resourceType: catalog-entity
+            params:
+              kinds:
+                - 'Template'
+        - rule: HAS_METADATA
+          resourceType: catalog-entity
+          params:
+            key: tags
+            value: sample
+  rbac-policy.csv: |
+    # Administrator Role
+    # Catalog permissions
+    #p, role:default/admins, catalog-entity, read, allow
+    #p, role:default/admins, catalog.entity.read, read, allow
+    #p, role:default/admins, catalog.entity.create, create, allow
+    #p, role:default/admins, catalog.entity.refresh, update, allow
+    #p, role:default/admins, catalog.entity.delete, delete, allow
+    #p, role:default/admins, catalog.location.read, read, allow
+    #p, role:default/admins, catalog.location.create, create, allow
+    #p, role:default/admins, catalog.location.delete, delete, allow
+    # Scaffolder permissions
+    #p, role:default/admins, scaffolder-action, use, allow
+    #p, role:default/admins, scaffolder.action.execute, use, allow
+    #p, role:default/admins, scaffolder-template, read, allow
+    #p, role:default/admins, scaffolder.template.parameter.read, read, allow
+    #p, role:default/admins, scaffolder.template.step.read, read, allow
+    #p, role:default/admins, scaffolder.task.create, create, allow
+    #p, role:default/admins, scaffolder.task.cancel, use, allow
+    #p, role:default/admins, scaffolder.task.read, read, allow
+    # RBAC permissions
+    #p, role:default/admins, policy.entity.read, read, allow
+    #p, role:default/admins, policy.entity.create, create, allow
+    #p, role:default/admins, policy.entity.update, update, allow
+    #p, role:default/admins, policy.entity.delete, delete, allow
+    # Topology and Kubernetes permissions
+    #p, role:default/admins, kubernetes.clusters.read, read, allow
+    #p, role:default/admins, kubernetes.resources.read, read, allow
+    #p, role:default/admins, kubernetes.proxy, use, allow
+    # OCM permissions
+    #p, role:default/admins, ocm.entity.read, read, allow
+    #p, role:default/admins, ocm.cluster.read, read, allow
+    # Bulk import
+    #p, role:default/admins, bulk-import, use, allow
+    # Adoption Insights permissions
+    #p, role:default/admins, adoption-insights.events.read, read, allow
+
+    # Admin User
+    # this is not needed now with the new superUser setting
+    #g, user:default/root, role:default/admins
+
+    # Team-A Role
+    # Catalog permissions
+    p, role:default/team-a, catalog-entity, read, allow
+    p, role:default/team-a, catalog.entity.read, read, allow
+    p, role:default/team-a, catalog.entity.create, create, allow
+    p, role:default/team-a, catalog.entity.refresh, update, allow
+    p, role:default/team-a, catalog.entity.delete, delete, allow
+    p, role:default/team-a, catalog.location.read, read, allow
+    p, role:default/team-a, catalog.location.create, create, allow
+    p, role:default/team-a, catalog.location.delete, delete, allow
+    # Scaffolder permissions
+    p, role:default/team-a, scaffolder-template, read, allow
+    p, role:default/team-a, scaffolder.template.parameter.read, read, allow
+    p, role:default/team-a, scaffolder.template.step.read, read, allow
+    p, role:default/team-a, scaffolder-action, use, allow
+    p, role:default/team-a, scaffolder.action.execute, use, allow
+    p, role:default/team-a, scaffolder.task.read, read, allow
+    p, role:default/team-a, scaffolder.task.create, create, allow
+    p, role:default/team-a, scaffolder.task.cancel, use, allow
+    # Adoption Insights permissions
+    p, role:default/team-a, adoption-insights.events.read, read, allow
+    # Orchestrator permissions
+    p, role:default/team-a, orchestrator.workflow, read, allow
+    p, role:default/team-a, orchestrator.workflow.use, update, allow
+    p, role:default/team-a, orchestrator.workflowAdminView, read, allow
+    p, role:default/team-a, orchestrator.instanceAdminView, read, allow 
+
+    # Team-B Role
+    # Catalog permissions
+    p, role:default/team-b, catalog-entity, read, allow
+    p, role:default/team-b, catalog.entity.read, read, allow
+    p, role:default/team-b, catalog.entity.create, create, deny
+    p, role:default/team-b, catalog.entity.refresh, update, deny
+    p, role:default/team-b, catalog.entity.delete, delete, deny
+    p, role:default/team-b, catalog.location.read, read, deny
+    p, role:default/team-b, catalog.location.create, create, deny
+    p, role:default/team-b, catalog.location.delete, delete, deny
+    # Scaffolder permissions
+    p, role:default/team-b, scaffolder-template, read, deny
+    p, role:default/team-b, scaffolder.template.parameter.read, read, deny
+    p, role:default/team-b, scaffolder.template.step.read, read, deny
+    p, role:default/team-b, scaffolder-action, use, deny
+    p, role:default/team-b, scaffolder.action.execute, use, deny
+    p, role:default/team-b, scaffolder.task.read, read, deny
+    p, role:default/team-b, scaffolder.task.create, create, deny
+    p, role:default/team-b, scaffolder.task.cancel, use, deny
+    # Orchestrator permissions - Unable to execute the greeting workflow
+    p, role:default/team-b, orchestrator.workflow.greeting, read, allow
+    p, role:default/team-b, orchestrator.workflow.use.greeting, update, deny
+
+    # Groups
+    g, group:default/team-a, role:default/team-a
+    g, group:default/team-b, role:default/team-b
+    # Extension
+    g, group:default/rhdh, role:default/team-a
+    g, group:default/summit-lab, role:default/team-a
+    g, group:default/gitops, role:default/team-a
+    g, group:default/development, role:default/team-a
+
+    # Users
+    #g, user:default/2, role:default/team-a
+    #g, user:default/3, role:default/team-b

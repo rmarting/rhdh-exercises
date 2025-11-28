@@ -20,6 +20,7 @@ The full list of actions implemented in this exercise is:
 10. Enable Dynamic Plugins Cache
 11. Enable Monitoring and Observability
 12. Enable Notifications
+13. Enable Orchestrator
 
 Run the lab [preparation instructions](./README-preparation.md) first,
 then follow the exercise steps [here](./README-gitlab.md).

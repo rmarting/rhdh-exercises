@@ -1,0 +1,99 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: app-config-rhdh
+data:
+  app-config-rhdh.yaml: |
+    signInPage: gitlab
+    app:
+      title: My Red Hat Developer Hub Instance
+      #baseUrl: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
+      # Enabling Analytics - Enabled by default from Red Hat Developer Hub 1.7
+      analytics:
+        adoptionInsights:
+          maxBufferSize: 25    # Default 20
+          flushInterval: 10000 # Default 5000
+          debug: false         # Default false
+          licensedUsers: 500   # Default 1000
+    backend:
+      auth:
+        keys:
+          - secret: ${BACKEND_SECRET}
+    auth:
+      environment: development
+      providers:
+        gitlab:
+          development:
+            clientId: ${AUTH_GITLAB_CLIENT_ID}
+            clientSecret: ${AUTH_GITLAB_CLIENT_SECRET}
+            audience: https://gitlab.${basedomain}
+            signIn:
+              resolvers:
+                - resolver: usernameMatchingUserEntityName
+                  dangerouslyAllowSignInWithoutUserInCatalog: false
+    integrations:
+      gitlab:
+        - host: gitlab.${basedomain}
+          token: ${GITLAB_TOKEN}
+          apiBaseUrl: https://gitlab.${basedomain}/api/v4
+          baseUrl: https://gitlab.${basedomain}
+    catalog:
+      locations:
+        - type: url
+          target: https://github.com/rmarting/rhdh-exercises-software-templates/blob/main/templates.yaml
+          rules:
+            - allow: [Template]
+      rules:
+        - allow: [Component, System, Group, Resource, Location, Template, API, User, Domain, Type]
+      providers:
+        gitlab:
+          myGitLab:
+            host: gitlab.${basedomain} # Identifies one of the hosts set up in the integrations
+            apiBaseUrl: https://gitlab.${basedomain}/api/v4
+            branch: main # Optional. Used to discover on a specific branch
+            fallbackBranch: master # Optional. Fallback to be used if there is no default branch configured at the Gitlab repository. It is only used, if `branch` is undefined. Uses `master` as default
+            skipForkedRepos: false # Optional. If the project is a fork, skip repository
+            entityFilename: catalog-info.yaml # Optional. Defaults to `catalog-info.yaml`
+            projectPattern: '[\s\S]*' # Optional. Filters found projects based on provided patter. Defaults to `[\s\S]*`, which means to not filter anything
+            schedule: # optional; same options as in TaskScheduleDefinition
+              # supports cron, ISO duration, "human duration" as used in code
+              frequency: { minutes: 5 }
+              # supports ISO duration, "human duration" as used in code
+              timeout: { minutes: 15 }
+            orgEnabled: true
+            #group: org/teams # Required for gitlab.com when `orgEnabled: true`. Optional for self managed. Must not end with slash. Accepts only groups under the provided path (which will be stripped)
+            allowInherited: true # Allow groups to be ingested even if there are no direct members.
+            groupPattern: '[\s\S]*'
+            restrictUsersToGroup: false
+    permission:
+      enabled: true
+      rbac:
+        admin:
+          users:
+            - name: user:default/root
+        policies-csv-file: /opt/app-root/src/rbac/rbac-policy.csv
+        conditionalPoliciesFile: /opt/app-root/src/rbac/rbac-conditional-policies.yaml
+        policyFileReload: true
+        pluginsWithPermission:
+          - catalog
+          - scaffolder
+          - permission
+          - orchestrator
+    techdocs:
+      builder: 'external'
+      generator:
+        runIn: 'local'
+      publisher:
+        type: 'awsS3'
+        awsS3:
+          bucketName: ${BUCKET_NAME}
+          endpoint: ${BUCKET_URL}
+          s3ForcePathStyle: true
+          region: ${AWS_REGION}
+          credentials:
+            accessKeyId: ${AWS_ACCESS_KEY_ID}
+            secretAccessKey: ${AWS_SECRET_ACCESS_KEY}
+    scaffolder:
+      notifications:
+        templateUpdate:
+          enabled: true

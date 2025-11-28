@@ -603,7 +603,7 @@ oc apply -f ./custom-app-config-gitlab/rhdh-instance-8.yaml -n rhdh-gitlab
 Modify the content of the `docs/index.md` file of your component, check the CI pipeline
 is executed successfully and verify the technical content in Red Hat Developer Hub.
 
-## Enabling High-Availability
+## Enable High-Availability
 
 Red Hat Developer Hub can provide high-availability capabilities adding more replicas
 into the deployment topology. Adding more than one replica in the `Backstage` definition
@@ -619,7 +619,7 @@ References:
 
 * [Configuring high availability](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.8/html-single/configuring_red_hat_developer_hub/index#HighAvailability)
 
-## Enabling Dynamics Plugin Cache
+## Enable Dynamics Plugin Cache
 
 The dynamic plugins cache in Red Hat Developer Hub enhances the installation process and reduces platform
 boot time by storing previously installed plugins. If the configuration remains unchanged, this feature prevents
@@ -651,7 +651,7 @@ References:
 
 * [Enabling the dynamic plugins cache](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.8/html-single/configuring_red_hat_developer_hub/index#using-the-dynamic-plugins-cache_configuring-and-operating)
 
-## Enabling Monitoring and Observability
+## Enable Monitoring and Observability
 
 Our Red Hat Developer Hub instance has a lot of content and provides services to their users. However, how could we
 measure it? Easy! There are a set of plugins to monitor the behavior of the users of Red Hat Developer Hub. Using
@@ -750,7 +750,7 @@ References:
 
 * [Monitoring and Logging](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.8/html-single/monitoring_and_logging/index#proc-admin-enabling-metrics-ocp-operator_assembly-rhdh-observability)
 
-## Enabling Notifications
+## Enable Notifications
 
 Previously we created a component based on a Software Template. There is a way to create a relationship
 between the component and the software template to track the changes along the time. This process requires
@@ -784,3 +784,7 @@ of the component.
 References: 
 
 * [Enabling Software Template version update notifications in Red Hat Developer Hub](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.8/html-single/customizing_red_hat_developer_hub/index#proc-enabling-software-template-version-update-notifications_configuring-templates)
+
+## Enable Orchestrator
+
+Follow [this guide](./README-orchestrator.md).
