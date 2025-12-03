@@ -788,3 +788,7 @@ References:
 ## Enable Orchestrator
 
 Follow [this guide](./README-orchestrator.md).
+
+## AI Labs - Enable Model Context Protocol (MCP)
+
+Follow [this guide](./README-ai-mcp.md).
