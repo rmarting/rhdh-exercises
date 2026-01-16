@@ -1,9 +1,37 @@
 # Red Hat Developer Hub Workshop
 
-This workshop is about setting up Red Hat Developer Hub including some of the most common
-configurations. The topology of the components deployed on Red Hat OpenShift is:
+![License](https://img.shields.io/github/license/rmarting/rhdh-exercises?style=flat-square)
+![Tag](https://img.shields.io/github/v/tag/rmarting/rhdh-exercises?style=flat-square)
+![Last Commit](https://img.shields.io/github/last-commit/rmarting/rhdh-exercises?style=flat-square)
+![Technology](https://img.shields.io/badge/tech-Red%20Hat%20Developer%20Hub-red?style=flat-square)
+![Language](https://img.shields.io/github/languages/top/rmarting/rhdh-exercises?style=flat-square)
 
-![Red Hat Developer Hub Workshop Topology](./media/rhdh-gitlab-topology.png)
+## Table of Contents
+
+1. [Overview](#overview)
+2. [Topology](#topology)
+3. [Preparation Instructions](#preparation-instructions)
+4. [Exercise Steps](#exercise-steps)
+5. [Contributing](#contributing)
+
+---
+
+## Overview
+
+This workshop is about setting up Red Hat Developer Hub including some of the most common
+configurations.
+
+## Topology
+
+The topology of the components deployed on Red Hat OpenShift is:
+
+![Red Hat Developer Hub Workshop Topology (diagram showing deployed components on OpenShift)](./media/rhdh-gitlab-topology.png)
+
+## Preparation Instructions
+
+Before starting the exercises of this workshop, there are some [preparations to execute](./README-preparation.md). Please follow them.
+
+## Exercise Steps
 
 The full list of actions implemented in this exercise is:
 
@@ -23,5 +51,9 @@ The full list of actions implemented in this exercise is:
 13. Enable Orchestrator
 14. AI Labs - Enable Model Context Protocol (MCP)
 
-Run the lab [preparation instructions](./README-preparation.md) first,
-then follow the exercise steps [here](./README-gitlab.md).
+Follow the exercises steps [here](./README-gitlab.md).
+
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guide](./CONTRIBUTING.md) for details on
+how to contribute to this project. This project follows the [Contributor Covenant Code of Conduct](./CODE_OF_CONDUCT.md).

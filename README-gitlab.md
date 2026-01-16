@@ -1,5 +1,28 @@
 # Red Hat Developer Hub Workshop integrated with GitLab
 
+## Table of Contents
+
+- [Mandatory settings](#mandatory-settings)
+- [Enable GitLab authentication](#enable-gitlab-authentication)
+- [Enable GitLab plugin integration](#enable-gitlab-plugin-integration)
+- [Add GitLab autodiscovery](#add-gitlab-autodiscovery)
+- [Enable users/teams autodiscovery](#enable-usersteams-autodiscovery)
+- [Enable RBAC](#enable-rbac)
+- [Import Software Template](#import-software-template)
+- [Create a component](#create-a-component)
+- [Deploy a dynamic plugin](#deploy-a-dynamic-plugin)
+- [Enable Tech Docs](#enable-tech-docs)
+  - [Deploy OpenShift Data Foundation](#deploy-openshift-data-foundation)
+  - [Create Storage](#create-storage)
+  - [Deploy GitLab runner](#deploy-gitlab-runner)
+  - [Set up techdocs plugin](#set-up-techdocs-plugin)
+- [Enable High-Availability](#enable-high-availability)
+- [Enable Dynamics Plugin Cache](#enable-dynamics-plugin-cache)
+- [Enable Monitoring and Observability](#enable-monitoring-and-observability)
+- [Enable Notifications](#enable-notifications)
+- [Enable Orchestrator](#enable-orchestrator)
+- [AI Labs - Enable Model Context Protocol (MCP)](#ai-labs---enable-model-context-protocol-mcp)
+
 ## Mandatory settings
 
 When Red Hat Developer Hub is installed via the operator there are some mandatory settings that need to be set:
@@ -13,7 +36,7 @@ the `BACKEND_SECRET` variable. That variable contains a mandatory backend authen
 
 Creating a Secret including that variable, and adding the base domain of our instance can be done running:
 
-```shell
+```bash
 oc apply -f ./custom-app-config-gitlab/rhdh-secrets.yaml -n rhdh-gitlab
 oc patch secret rhdh-secrets -n rhdh-gitlab -p '{"stringData":{"basedomain":"'"${basedomain}"'"}}'
 ```
@@ -56,9 +79,9 @@ spec:
       - name: rhdh-secrets
 ```
 
-or run this:
+Or run this:
 
-```shell
+```bash
 oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-0.yaml -n rhdh-gitlab
 oc apply -f ./custom-app-config-gitlab/rhdh-instance-0.yaml -n rhdh-gitlab
 ```
@@ -100,7 +123,7 @@ type: Opaque
 
 You can create the `gitlab-secrets.yaml` inside of `custom-app-config-gitlab` folder and run:
 
-```shell
+```bash
 oc apply -f ./custom-app-config-gitlab/gitlab-secrets.yaml -n rhdh-gitlab
 ```
 
@@ -139,7 +162,7 @@ spec:
 
 Or execute:
 
-```shell
+```bash
 oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-1.yaml -n rhdh-gitlab
 oc apply -f ./custom-app-config-gitlab/rhdh-instance-1.yaml -n rhdh-gitlab
 ```
@@ -203,7 +226,7 @@ data:
 
 Or execute:
 
-```shell
+```bash
 oc apply -f ./custom-app-config-gitlab/gitlab-secrets.yaml -n rhdh-gitlab
 oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-2.yaml -n rhdh-gitlab
 ```
@@ -217,7 +240,7 @@ dynamic plugin provided by Red Hat Developer Hub.
 
 We will use a new ConfigMap to enable the dynamic plugins:
 
-```shell
+```bash
 oc apply -f ./custom-app-config-gitlab/dynamic-plugins-3.yaml -n rhdh-gitlab
 ```
 
@@ -253,7 +276,7 @@ spec:
 
 Or run:
 
-```shell
+```bash
 oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-3.yaml -n rhdh-gitlab
 oc apply -f ./custom-app-config-gitlab/rhdh-instance-3.yaml -n rhdh-gitlab
 ```
@@ -288,7 +311,7 @@ dynamic plugin provided by Red Hat Developer Hub.
 
 Run:
 
-```shell
+```bash
 oc apply -f ./custom-app-config-gitlab/dynamic-plugins-4.yaml -n rhdh-gitlab
 ```
 
@@ -312,7 +335,7 @@ Disable the `dangerouslyAllowSignInWithoutUserInCatalog` property to load only v
 
 Or run:
 
-```shell
+```bash
 oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-4.yaml -n rhdh-gitlab
 ```
 
@@ -355,7 +378,7 @@ Create a new permission file, see [`rbac-policy-configmap-5.yaml`](./custom-app-
 There is a dynamic plugin to allow manage the RBAC rules directly in the UI. This plugin is added in the list of the dynamic plugins
 to add into Red Hat Developer Hub.
 
-```shell
+```bash
 oc apply -f ./custom-app-config-gitlab/dynamic-plugins-5.yaml -n rhdh-gitlab
 oc apply -f ./custom-app-config-gitlab/rbac-policy-configmap-5.yaml -n rhdh-gitlab
 oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-5.yaml -n rhdh-gitlab
@@ -398,7 +421,7 @@ the actions to manage and operate GitLab repositories. This plugin is listed as 
 
 Or run:
 
-```shell
+```bash
 oc apply -f ./custom-app-config-gitlab/dynamic-plugins-6.yaml -n rhdh-gitlab
 oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-6.yaml -n rhdh-gitlab
 ```
@@ -459,7 +482,7 @@ plugins including the new one with the following configuration:
 
 Or run:
 
-```shell
+```bash
 oc apply -f ./custom-app-config-gitlab/dynamic-plugins-7.yaml -n rhdh-gitlab
 ```
 
@@ -471,33 +494,35 @@ Verify the `Quote` menu is listed, and a quote is showed in any component dashbo
 
 Verify first if the OpenShift Data Foundation operator is installed on your cluster:
 
-```shell
+```bash
 on 🎩 ❯ oc get csv -n openshift-storage
-NAME                                     DISPLAY                            VERSION         REPLACES                                 PHASE
-cephcsi-operator.v4.18.12-rhodf          CephCSI operator                   4.18.12-rhodf   cephcsi-operator.v4.18.11-rhodf          Succeeded
-mcg-operator.v4.18.12-rhodf              NooBaa Operator                    4.18.12-rhodf   mcg-operator.v4.18.11-rhodf              Succeeded
-ocs-client-operator.v4.18.12-rhodf       OpenShift Data Foundation Client   4.18.12-rhodf   ocs-client-operator.v4.18.11-rhodf       Succeeded
-ocs-operator.v4.18.12-rhodf              OpenShift Container Storage        4.18.12-rhodf   ocs-operator.v4.18.11-rhodf              Succeeded
-odf-csi-addons-operator.v4.18.12-rhodf   CSI Addons                         4.18.12-rhodf   odf-csi-addons-operator.v4.18.11-rhodf   Succeeded
-odf-dependencies.v4.18.12-rhodf          Data Foundation Dependencies       4.18.12-rhodf   odf-dependencies.v4.18.11-rhodf          Succeeded
-odf-operator.v4.18.12-rhodf              OpenShift Data Foundation          4.18.12-rhodf   odf-operator.v4.18.11-rhodf              Succeeded
-odf-prometheus-operator.v4.18.12-rhodf   Prometheus Operator                4.18.12-rhodf   odf-prometheus-operator.v4.18.11-rhodf   Succeeded
-recipe.v4.18.12-rhodf                    Recipe                             4.18.12-rhodf   recipe.v4.18.11-rhodf                    Succeeded
-rook-ceph-operator.v4.18.12-rhodf        Rook-Ceph                          4.18.12-rhodf   rook-ceph-operator.v4.18.11-rhodf        Succeeded
+NAME                                              DISPLAY                            VERSION        REPLACES                                          PHASE
+cephcsi-operator.v4.20.4-rhodf                    CephCSI operator                   4.20.4-rhodf   cephcsi-operator.v4.20.3-rhodf                    Succeeded
+mcg-operator.v4.20.4-rhodf                        NooBaa Operator                    4.20.4-rhodf   mcg-operator.v4.20.3-rhodf                        Succeeded
+ocs-client-operator.v4.20.4-rhodf                 OpenShift Data Foundation Client   4.20.4-rhodf   ocs-client-operator.v4.20.3-rhodf                 Succeeded
+ocs-operator.v4.20.4-rhodf                        OpenShift Container Storage        4.20.4-rhodf   ocs-operator.v4.20.3-rhodf                        Succeeded
+odf-csi-addons-operator.v4.20.4-rhodf             CSI Addons                         4.20.4-rhodf   odf-csi-addons-operator.v4.20.3-rhodf             Succeeded
+odf-dependencies.v4.20.4-rhodf                    Data Foundation Dependencies       4.20.4-rhodf   odf-dependencies.v4.20.3-rhodf                    Succeeded
+odf-external-snapshotter-operator.v4.20.4-rhodf   Snapshot Controller                4.20.4-rhodf   odf-external-snapshotter-operator.v4.20.3-rhodf   Succeeded
+odf-operator.v4.20.4-rhodf                        OpenShift Data Foundation          4.20.4-rhodf   odf-operator.v4.20.3-rhodf                        Succeeded
+odf-prometheus-operator.v4.20.4-rhodf             Prometheus Operator                4.20.4-rhodf   odf-prometheus-operator.v4.20.3-rhodf             Succeeded
+recipe.v4.20.4-rhodf                              Recipe                             4.20.4-rhodf   recipe.v4.20.3-rhodf                              Succeeded
+rhdh-operator.v1.8.2                              Red Hat Developer Hub Operator     1.8.2          rhdh-operator.v1.8.0                              Succeeded
+rook-ceph-operator.v4.20.4-rhodf                  Rook-Ceph                          4.20.4-rhodf   rook-ceph-operator.v4.20.3-rhodf                  Succeeded
 ```
 
 If you get a similar output, then your system is already prepared to continue. Otherwise, you must install following
-this [instructions](https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation/4.18/html-single/deploying_openshift_data_foundation_using_amazon_web_services/index#installing-openshift-data-foundation-operator-using-the-operator-hub_cloud-storage).
+this [instructions](https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation/4.20/html-single/deploying_openshift_data_foundation_using_amazon_web_services/index#installing-openshift-data-foundation-operator-using-the-operator-hub_cloud-storage).
 
 Installing this operator takes a while, so, wait until all of them are successfully installed before continuing with the next step.
 
-Create the storage system following this [instructions](https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation/4.18/html/deploying_openshift_data_foundation_using_amazon_web_services/deploy-using-dynamic-storage-devices-aws#creating-an-openshift-data-foundation-service_cloud-storage).
+Create the storage system following this [instructions](https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation/4.20/html/deploying_openshift_data_foundation_using_amazon_web_services/deploy-using-dynamic-storage-devices-aws#creating-an-openshift-data-foundation-service_cloud-storage).
 
 ### Create Storage
 
 Create a new Storage component by OpenShift Data Foundation in the same namespace where Red Hat Developer Hub is running:
 
-```shell
+```bash
 oc apply -f ./custom-app-config-gitlab/rhdh-techdocs-bucket-claim-obc-8.yaml -n rhdh-gitlab
 ```
 
@@ -514,14 +539,14 @@ Some of these values are needed in the following steps.
 
 Install GitLab Runner operator:
 
-```shell
+```bash
 oc apply -f ./custom-app-config-gitlab/gitlab-runner-operator-8.yaml -n gitlab-system
 ```
 
-```shell
+```bash
 on 🎩 ❯ oc get csv -n gitlab-system
 NAME                                DISPLAY          VERSION   REPLACES                            PHASE
-gitlab-runner-operator.v1.42.0      GitLab Runner    1.42.0    gitlab-runner-operator.v1.41.1      Succeeded
+gitlab-runner-operator.v1.43.3      GitLab Runner    1.43.3    gitlab-runner-operator.v1.43.2      Succeeded
 ```
 
 The technical docs will be created as part of the CI pipelines of the components, so
@@ -530,7 +555,7 @@ identify the new bucket to store the results.
 
 Deploy a GitLab runner to run pipelines:
 
-```shell
+```bash
 envsubst < ./custom-app-config-gitlab/gitlab-runner-8.yaml | oc apply -n gitlab-system -f -
 ```
 
@@ -551,7 +576,7 @@ The configuration should be similar to:
 
 Patch the `rhdh-secrets` secret to add the `AWS_REGION` and `BUCKET_URL` variables:
 
-```shell
+```bash
 export AWS_REGION=$(echo -n 'us-east-2' | base64 -w0)
 export BUCKET_URL=$(oc get route s3 -n openshift-storage -o jsonpath='https://{.spec.host}' | base64 -w0)
 oc patch secret rhdh-secrets -n rhdh-gitlab -p '{"data":{"AWS_REGION":"'"${AWS_REGION}"'"}}'
@@ -595,7 +620,7 @@ And apply changes to the application configuration:
 
 Or run:
 
-```shell
+```bash
 oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-8.yaml -n rhdh-gitlab
 oc apply -f ./custom-app-config-gitlab/rhdh-instance-8.yaml -n rhdh-gitlab
 ```
@@ -611,7 +636,7 @@ your Red Hat Developer Hub will provide that capability.
 
 Run:
 
-```shell
+```bash
 oc apply -f ./custom-app-config-gitlab/rhdh-instance-9.yaml -n rhdh-gitlab
 ```
 
@@ -637,13 +662,13 @@ A new storage layer is required to persist the content of the dynamic plugins in
 
 Run:
 
-```shell
+```bash
 oc apply -f ./custom-app-config-gitlab/dynamic-plugins-root-pvc-10.yaml -n rhdh-gitlab
 ```
 
 We patch the deployment definition to add this new storage for the init container:
 
-```shell
+```bash
 oc apply -f ./custom-app-config-gitlab/rhdh-instance-10.yaml -n rhdh-gitlab
 ```
 
@@ -662,7 +687,7 @@ of the instance.
 
 Run:
 
-```shell
+```bash
 oc apply -f ./custom-app-config-gitlab/dynamic-plugins-11.yaml -n rhdh-gitlab
 oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-11.yaml -n rhdh-gitlab
 ```
@@ -676,7 +701,7 @@ the user-defined projects. OpenShift can monitor user-defined projects in additi
 This feature allows monitoring your own projects in OpenShift without the need for an additional monitoring solution.
 Using this feature centralizes monitoring for core platform components and user-defined projects.
 
-For detailed information, check the [official documentation](https://docs.openshift.com/container-platform/4.17/observability/monitoring/enabling-monitoring-for-user-defined-projects.html).
+For detailed information, check the [official documentation](https://docs.redhat.com/en/documentation/monitoring_stack_for_red_hat_openshift/4.20/html/configuring_user_workload_monitoring/index).
 
 **NOTE**: As cluster-admin enable the user-monitoring capabilities of OpenShift adding the `enableUserWorkload` variable in
 the configuration of the OpenShift Monitoring. This configuration is described in the `cluster-monitoring-config` ConfigMap
@@ -684,14 +709,14 @@ of the `openshift-monitoring` namespace:
 
 Run:
 
-```shell
+```bash
 oc apply -f custom-app-config-gitlab/cluster-monitoring-config-11.yaml -n openshift-monitoring
 ```
 
 This new configuration will create the `openshift-user-workload-monitoring` namespace and a set of new components
 will be deployed to capture the metrics of the user-defined projects. This command can check the status of those deployments:
 
-```shell
+```bash
 on 🎩 ❯ oc get pod -n openshift-user-workload-monitoring
 NAME                                   READY   STATUS    RESTARTS   AGE
 prometheus-operator-6f766b4885-bsphx   2/2     Running   0          23s
@@ -704,7 +729,7 @@ thanos-ruler-user-workload-1           4/4     Running   0          20s
 NOTE: As `cluster-admin` we can enable permissions to users to edit or view those objects.
 For example, we can provide cluster roles to view and edit them as:
 
-```shell
+```bash
 oc adm policy add-cluster-role-to-user monitoring-rules-view <user> -n <namespace>
 oc adm policy add-cluster-role-to-user monitoring-edit <user> -n <namespace>
 ```
@@ -720,7 +745,7 @@ spec:
 
 Or run:
 
-```shell
+```bash
 oc apply -f ./custom-app-config-gitlab/rhdh-instance-11.yaml -n rhdh-gitlab
 ```
 
@@ -765,7 +790,7 @@ the `backstage-plugin-notifications` and `backstage-plugin-notifications-backend
 
 Run:
  
-```shell
+```bash
 oc apply -f ./custom-app-config-gitlab/dynamic-plugins-12.yaml -n rhdh-gitlab
 oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-12.yaml -n rhdh-gitlab
 ```

@@ -1,5 +1,12 @@
 # Enable Orchestrator
 
+## Table of Contents
+
+- [Overview](#enable-orchestrator)
+- [Installation](#installation)
+- [Deploy a Sample Workflow](#deploy-a-sample-workflow)
+- [References](#references)
+
 Previously we created a component based on a Software Template. However, developer self-service requests might require more than
 what a Software Template can provide natively. For example, certain requests might require an approval, while others might involve
 long-running, stateful processes - this is where the Orchestrator for Red Hat Developer Hub can help. It addresses the fact that
@@ -13,15 +20,17 @@ providing a listing and the ability view and run workflows directly from Red Hat
 
 In summary the Orchestrator feature for Red Hat Developer Hub enables teams to create stateful workflows using open standards, and provide them in a self-service manner through their internal developer portal.
 
+## Installation
+
 To enable running stateful workflows we need to install the OpenShift Serverless Logic Operator:
 
-```shell
+```bash
 oc apply -f ./lab-prep/logic-operator-rhel8-operator.yaml
 ```
 
 And confirm its successful installation:
 
-```shell
+```bash
 on 🎩 ❯ oc get csv -n openshift-serverless-logic
 NAME                            DISPLAY                               VERSION   REPLACES                              PHASE
 logic-operator-rhel8.v1.36.0    OpenShift Serverless Logic Operator   1.36.0    logic-operator-rhel8.v1.35.0          Succeeded
@@ -77,7 +86,7 @@ For more details, review the [permissions documentation](https://github.com/redh
 
 So, to complete the installation run:
 
-```sh
+```bash
 oc apply -f ./custom-app-config-gitlab/dynamic-plugins-13.yaml -n rhdh-gitlab
 oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-13.yaml -n rhdh-gitlab
 oc apply -f ./custom-app-config-gitlab/rbac-policy-configmap-13.yaml -n rhdh-gitlab
@@ -91,10 +100,12 @@ The new topology should looks like as:
 
 ![Red Hat Developer Hub and Orchestrator Topology](./media/rhdh-orchestrator-topology.png)
 
-No, it is time to deploy a simple workflow and verify its integration into Red Hat Developer Hub. To do it, let's deploy
+## Deploy a Sample Workflow
+
+Now, it is time to deploy a simple workflow and verify its integration into Red Hat Developer Hub. To do it, let's deploy
 this sample of Red Hat Advanced Developer Suite repository:
 
-```shell
+```bash
 helm repo add workflows https://redhat-ads-tech.github.io/orchestrator-workflows/
 helm install greeting-workflow workflows/greeting -n rhdh-gitlab
 ```
@@ -107,6 +118,6 @@ Run it and verify the results.
 
 **NOTE**: If you are logged as a `team-b` member, then you are not allowed to run it.
 
-References:
+## References
 
-* [Orchestrator in Red Hat Developer Hub](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.8/html-single/orchestrator_in_red_hat_developer_hub/index)
+- [Orchestrator in Red Hat Developer Hub](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.8/html-single/orchestrator_in_red_hat_developer_hub/index)

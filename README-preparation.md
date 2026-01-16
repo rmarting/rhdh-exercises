@@ -1,5 +1,14 @@
 # Lab Preparation
 
+## Table of Contents
+
+- [Start Red Hat OpenShift Container Platform](#start-red-hat-openshift-container-platform)
+- [Install cert-manager operator](#install-cert-manager-operator)
+- [Install GitLab operator](#install-gitlab-operator)
+- [Deploy GitLab](#deploy-gitlab)
+- [Install Red Hat Developer Hub operator](#install-red-hat-developer-hub-operator)
+- [Install Red Hat Developer Hub instance](#install-red-hat-developer-hub-instance)
+
 ## Start Red Hat OpenShift Container Platform
 
 This repository was tested and verified in the following environments provided by the [Red Hat Demo Platform](https://demo.redhat.com/):
@@ -11,13 +20,13 @@ In both cases, request at least 64GB RAM memory.
 
 **NOTE**: You must `cluster-admin` privileges to install the different operators required for this technical exercise.
 
-The content of this repo was tested in Red Hat Developer Hub 1.8.0 on Red Hat OpenShift Container Platform 4.18.
+The content of this repo was tested in Red Hat Developer Hub 1.8 on Red Hat OpenShift Container Platform 4.20.
 
 ## Install cert-manager operator
 
 Check if the Cert Manager operator is already available in your cluster:
 
-```shell
+```bash
 on 🎩 ❯ oc get csv -n cert-manager-operator
 NAME                            DISPLAY                                       VERSION   REPLACES                        PHASE
 cert-manager-operator.v1.18.0   cert-manager Operator for Red Hat OpenShift   1.18.0    cert-manager-operator.v1.17.0   Succeeded
@@ -25,13 +34,13 @@ cert-manager-operator.v1.18.0   cert-manager Operator for Red Hat OpenShift   1.
 
 If you don't get a response similar to the previous output, then execute this command:
 
-```shell
+```bash
 oc apply -f ./lab-prep/cert-manager-operator.yaml
 ```
 
 Once the operator is ready you can continue. This command shows the status of this operator:
 
-```shell
+```bash
 on 🎩 ❯ oc get csv -n cert-manager-operator
 NAME                            DISPLAY                                       VERSION   REPLACES                        PHASE
 cert-manager-operator.v1.18.0   cert-manager Operator for Red Hat OpenShift   1.18.0    cert-manager-operator.v1.17.0   Succeeded
@@ -43,43 +52,43 @@ cert-manager-operator.v1.18.0   cert-manager Operator for Red Hat OpenShift   1.
 
 Run:
 
-```shell
+```bash
 oc apply -f ./lab-prep/gitlab-operator.yaml
 ```
 
 The operator is installed in the `gitlab-system` namespace. Check the status of the operator by:
 
-```shell
+```bash
 on 🎩 ❯ oc get csv -n gitlab-system
-NAME                                DISPLAY    VERSION   REPLACES                            PHASE
-gitlab-operator-kubernetes.v2.5.2   GitLab     2.5.2     gitlab-operator-kubernetes.v2.5.0   Succeeded
+NAME                                DISPLAY   VERSION   REPLACES                            PHASE
+gitlab-operator-kubernetes.v2.7.0   GitLab    2.7.1     gitlab-operator-kubernetes.v2.7.0   Succeeded
 ```
 
 ## Deploy GitLab
 
 Run:
 
-```shell
+```bash
 export basedomain=$(oc get ingresscontroller -n openshift-ingress-operator default -o jsonpath='{.status.domain}')
 envsubst < ./lab-prep/gitlab.yaml | oc apply -f -
 ```
 
 Deploying GitLab takes some time, so check its status as `Running` before continuing with next steps:
 
-```shell
+```bash
 oc get gitlabs gitlab -o jsonpath='{.status.phase}' -n gitlab-system
 ```
 
 GitLab is now accessible with user `root/<password in "gitlab-gitlab-initial-root-password" secret>`. To get the plain
 value of that password:
 
-```shell
+```bash
 oc get secret gitlab-gitlab-initial-root-password -o jsonpath='{.data.password}' -n gitlab-system | base64 -d
 ```
 
 Setup GitLab with some initial configuration:
 
-```shell
+```bash
 ./lab-prep/configure-gitlab.sh
 ```
 
@@ -93,7 +102,7 @@ In that case, execute the script with the `--ssl_certs_self_signed=y` argument.
 
 This script will do the following:
 
-```
+```text
 Create different groups:
 
 - team-a
@@ -114,35 +123,35 @@ Create a repo called `sample-app` under `team-a` add the `catalog-info.yaml` and
 
 Run:
 
-```shell
+```bash
 oc apply -f ./lab-prep/rhdh-operator.yaml
 ```
 
 The operator is installed in the `rhdh-operator` namespace:
 
-```shell
+```bash
 on 🎩 ❯ oc get csv -n rhdh-operator
 NAME                   DISPLAY                          VERSION   REPLACES               PHASE
-rhdh-operator.v1.8.0   Red Hat Developer Hub Operator   1.8.0     rhdh-operator.v1.7.1   Succeeded
+rhdh-operator.v1.8.2   Red Hat Developer Hub Operator   1.8.2     rhdh-operator.v1.8.0   Succeeded
 ```
 
 ## Install Red Hat Developer Hub instance
 
 Run:
 
-```shell
+```bash
 oc apply -f ./lab-prep/rhdh-instance.yaml
 ```
 
 Once the deployment is finished, the status is identified as `Deployed`. This command shows that status:
 
-```shell
+```bash
 oc get backstage developer-hub -o jsonpath='{.status.conditions[0].type}' -n rhdh-gitlab
 ```
 
 The instance is deployed in the `rhdh-gitlab` namespace and available at:
 
-```shell
+```bash
 echo https://$(oc get route backstage-developer-hub -n rhdh-gitlab -o jsonpath='{.spec.host}')
 ```
 
