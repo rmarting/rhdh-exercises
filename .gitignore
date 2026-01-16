@@ -1,3 +1,7 @@
 custom-app-config/github-secrets.yaml
 custom-app-config-gitlab/gitlab-secrets.yaml
 custom-app-config/
+
+# MPC clients and credentials
+.continue/mcpServers/
+.cursor/mcp.json
