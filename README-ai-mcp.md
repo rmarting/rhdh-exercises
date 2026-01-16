@@ -7,7 +7,7 @@
   - [Using Continue](#using-continue)
     - [Add Red Hat Developer Hub MCP configuration](#add-red-hat-developer-hub-mcp-configuration)
     - [Add LLM in the AI Assistant](#add-llm-in-the-ai-assistant)
-- [Using Cursor](#using-cursor)
+  - [Using Cursor](#using-cursor)
 - [Testing the model and MCP](#testing-the-model-and-mcp)
 - [References](#references)
 
@@ -188,7 +188,7 @@ context:
 
 Now, your AI assistant is ready to be used.
 
-## Using Cursor
+### Using Cursor
 
 [Cursor](https://cursor.sh/) is an AI-powered code editor that supports Model Context Protocol (MCP) servers. 
 You can integrate Cursor with your Red Hat Developer Hub MCP server to enable AI assistants to query your 
