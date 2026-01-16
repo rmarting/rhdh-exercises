@@ -13,7 +13,7 @@ long-running, stateful processes - this is where the Orchestrator for Red Hat De
 regular Software Templates are stateless "run and done" processes.
 
 The Orchestrator feature extends Red Hat Developer Hub with support for workflows created using [SonataFlow](https://sonataflow.org/).
-The Orchestrator project website and documentation is available at [rhdhorchestrator.io](rhdhorchestrator.io).
+The Orchestrator project website and documentation is available at [rhdhorchestrator.io](https://rhdhorchestrator.io).
 
 The Orchestrator feature effectively acts as an interface between Red Hat Developer Hub and SonataFlow-powered workflows,
 providing a listing and the ability view and run workflows directly from Red Hat Developer Hub.
