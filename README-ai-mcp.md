@@ -4,8 +4,10 @@
 
 - [Overview](#ai-labs---enable-model-context-protocol-mcp)
 - [Integrate your AI client with Red Hat Developer Hub MCP Server](#integrate-your-ai-client-with-red-hat-developer-hub-mcp-server)
-  - [Add Red Hat Developer Hub MCP configuration](#add-red-hat-developer-hub-mcp-configuration)
-  - [Add LLM in the AI Assistant](#add-llm-in-the-ai-assistant)
+  - [Using Continue](#using-continue)
+    - [Add Red Hat Developer Hub MCP configuration](#add-red-hat-developer-hub-mcp-configuration)
+    - [Add LLM in the AI Assistant](#add-llm-in-the-ai-assistant)
+- [Using Cursor](#using-cursor)
 - [Testing the model and MCP](#testing-the-model-and-mcp)
 - [References](#references)
 
