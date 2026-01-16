@@ -12,7 +12,8 @@
 2. [Topology](#topology)
 3. [Preparation Instructions](#preparation-instructions)
 4. [Exercise Steps](#exercise-steps)
-5. [Contributing](#contributing)
+5. [FAQ](#faq)
+6. [Contributing](#contributing)
 
 ---
 
@@ -52,6 +53,10 @@ The full list of actions implemented in this exercise is:
 14. AI Labs - Enable Model Context Protocol (MCP)
 
 Follow the exercises steps [here](./README-gitlab.md).
+
+## FAQ
+
+If you are facing some issues, please, review our [FAQ.md](./FAQ.md).
 
 ## Contributing
 

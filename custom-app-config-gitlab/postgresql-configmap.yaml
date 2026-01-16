@@ -1,0 +1,129 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgresql-config
+data:
+  db-statefulset.yaml: |
+    kind: StatefulSet
+    apiVersion: apps/v1
+    metadata:
+      name: backstage-psql-developer-hub
+      labels:
+        app.kubernetes.io/instance: developer-hub
+        app.kubernetes.io/name: backstage
+    spec:
+      serviceName: backstage-psql-developer-hub
+      revisionHistoryLimit: 10
+      persistentVolumeClaimRetentionPolicy:
+        whenDeleted: Retain
+        whenScaled: Retain
+      volumeClaimTemplates:
+        - kind: PersistentVolumeClaim
+          apiVersion: v1
+          metadata:
+            name: data
+            creationTimestamp: null
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 1Gi
+            volumeMode: Filesystem
+          status:
+            phase: Pending
+      template:
+        metadata:
+          creationTimestamp: null
+          labels:
+            rhdh.redhat.com/app: backstage-psql-developer-hub
+        spec:
+          restartPolicy: Always
+          serviceAccountName: default
+          schedulerName: default-scheduler
+          terminationGracePeriodSeconds: 30
+          securityContext: {}
+          containers:
+            - resources:
+                limits:
+                  cpu: 250m
+                  ephemeral-storage: 20Mi
+                  memory: 1Gi
+                requests:
+                  cpu: 250m
+                  memory: 256Mi
+              readinessProbe:
+                exec:
+                  command:
+                    - /bin/sh
+                    - '-c'
+                    - '-e'
+                    - |
+                      exec pg_isready -U ${POSTGRES_USER} -h 127.0.0.1 -p 5432
+                initialDelaySeconds: 5
+                timeoutSeconds: 5
+                periodSeconds: 10
+                successThreshold: 1
+                failureThreshold: 6
+              terminationMessagePath: /dev/termination-log
+              name: postgresql
+              livenessProbe:
+                exec:
+                  command:
+                    - /bin/sh
+                    - '-c'
+                    - 'exec pg_isready -U ${POSTGRES_USER} -h 127.0.0.1 -p 5432'
+                initialDelaySeconds: 30
+                timeoutSeconds: 5
+                periodSeconds: 10
+                successThreshold: 1
+                failureThreshold: 6
+              env:
+                - name: POSTGRESQL_PORT_NUMBER
+                  value: '5432'
+                - name: POSTGRESQL_VOLUME_DIR
+                  value: /var/lib/pgsql/data
+                - name: PGDATA
+                  value: /var/lib/pgsql/data/userdata
+                - name: POSTGRESQL_MAX_CONNECTIONS
+                  value: '200'
+              securityContext:
+                capabilities:
+                  drop:
+                    - ALL
+                runAsGroup: 0
+                runAsNonRoot: true
+                allowPrivilegeEscalation: false
+                seccompProfile:
+                  type: RuntimeDefault
+              ports:
+                - name: tcp-postgresql
+                  containerPort: 5432
+                  protocol: TCP
+              imagePullPolicy: IfNotPresent
+              volumeMounts:
+                - name: dshm
+                  mountPath: /dev/shm
+                - name: data
+                  mountPath: /var/lib/pgsql/data
+              terminationMessagePolicy: File
+              envFrom:
+                - secretRef:
+                    name: backstage-psql-secret-developer-hub
+              image: 'registry.redhat.io/rhel9/postgresql-15@sha256:ce71be9b4c01da3dec635c0c6cd40b117671b01271669f242998f6725e92c7e2'
+          automountServiceAccountToken: false
+          serviceAccount: default
+          volumes:
+            - name: dshm
+              emptyDir:
+                medium: Memory
+          dnsPolicy: ClusterFirst
+      podManagementPolicy: OrderedReady
+      replicas: 1
+      updateStrategy:
+        type: RollingUpdate
+        rollingUpdate:
+          partition: 0
+      selector:
+        matchLabels:
+          rhdh.redhat.com/app: backstage-psql-developer-hub
