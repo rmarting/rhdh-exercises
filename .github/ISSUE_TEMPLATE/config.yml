@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://github.com/rmarting/rhdh-exercises#readme
+    about: Check the README and other documentation files for answers
+  - name: Discussion
+    url: https://github.com/rmarting/rhdh-exercises/discussions
+    about: Ask questions and discuss ideas with the community
