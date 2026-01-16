@@ -122,11 +122,6 @@ data:
     # Groups
     g, group:default/team-a, role:default/team-a
     g, group:default/team-b, role:default/team-b
-    # Extension
-    g, group:default/rhdh, role:default/team-a
-    g, group:default/summit-lab, role:default/team-a
-    g, group:default/gitops, role:default/team-a
-    g, group:default/development, role:default/team-a
 
     # Users
     #g, user:default/2, role:default/team-a
