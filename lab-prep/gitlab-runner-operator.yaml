@@ -9,4 +9,5 @@ spec:
   name: gitlab-runner-operator
   source: certified-operators
   sourceNamespace: openshift-marketplace
+  startingCSV: gitlab-runner-operator.v1.43.3
   installPlanApproval: Automatic
