@@ -7,14 +7,14 @@ data:
     signInPage: gitlab
     app:
       title: My Red Hat Developer Hub Instance
-      #baseUrl: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
+      #baseUrl: https://backstage-developer-hub-rhdh-gitlab.${BASEDOMAIN}
     backend:
       auth:
         keys:
           - secret: ${BACKEND_SECRET}
-      #baseUrl: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
+      #baseUrl: https://backstage-developer-hub-rhdh-gitlab.${BASEDOMAIN}
       #cors:
-      #  origin: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
+      #  origin: https://backstage-developer-hub-rhdh-gitlab.${BASEDOMAIN}
     auth:
       environment: development
       providers:
@@ -24,14 +24,14 @@ data:
           development:
             clientId: ${AUTH_GITLAB_CLIENT_ID}
             clientSecret: ${AUTH_GITLAB_CLIENT_SECRET}
-            audience: https://gitlab.${basedomain}
+            audience: https://gitlab.${BASEDOMAIN}
             signIn:
               resolvers:
                 - resolver: usernameMatchingUserEntityName
                   dangerouslyAllowSignInWithoutUserInCatalog: true
     integrations:
       gitlab:
-        - host: gitlab.${basedomain}
+        - host: gitlab.${BASEDOMAIN}
           token: ${GITLAB_TOKEN}
-          apiBaseUrl: https://gitlab.${basedomain}/api/v4
-          baseUrl: https://gitlab.${basedomain}
+          apiBaseUrl: https://gitlab.${BASEDOMAIN}/api/v4
+          baseUrl: https://gitlab.${BASEDOMAIN}

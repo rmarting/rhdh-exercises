@@ -7,7 +7,7 @@ data:
     signInPage: gitlab
     app:
       title: My Red Hat Developer Hub Instance
-      #baseUrl: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
+      #baseUrl: https://backstage-developer-hub-rhdh-gitlab.${BASEDOMAIN}
       # Enabling Analytics - Enabled by default from Red Hat Developer Hub 1.7
       analytics:
         adoptionInsights:
@@ -19,9 +19,9 @@ data:
       auth:
         keys:
           - secret: ${BACKEND_SECRET}
-      #baseUrl: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
+      #baseUrl: https://backstage-developer-hub-rhdh-gitlab.${BASEDOMAIN}
       #cors:
-      #  origin: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
+      #  origin: https://backstage-developer-hub-rhdh-gitlab.${BASEDOMAIN}
     auth:
       environment: development
       providers:
@@ -31,17 +31,17 @@ data:
           development:
             clientId: ${AUTH_GITLAB_CLIENT_ID}
             clientSecret: ${AUTH_GITLAB_CLIENT_SECRET}
-            audience: https://gitlab.${basedomain}
+            audience: https://gitlab.${BASEDOMAIN}
             signIn:
               resolvers:
                 - resolver: usernameMatchingUserEntityName
                   dangerouslyAllowSignInWithoutUserInCatalog: false
     integrations:
       gitlab:
-        - host: gitlab.${basedomain}
+        - host: gitlab.${BASEDOMAIN}
           token: ${GITLAB_TOKEN}
-          apiBaseUrl: https://gitlab.${basedomain}/api/v4
-          baseUrl: https://gitlab.${basedomain}
+          apiBaseUrl: https://gitlab.${BASEDOMAIN}/api/v4
+          baseUrl: https://gitlab.${BASEDOMAIN}
     catalog:
       locations:
         - type: url
@@ -53,8 +53,8 @@ data:
       providers:
         gitlab:
           myGitLab:
-            host: gitlab.${basedomain} # Identifies one of the hosts set up in the integrations
-            apiBaseUrl: https://gitlab.${basedomain}/api/v4
+            host: gitlab.${BASEDOMAIN} # Identifies one of the hosts set up in the integrations
+            apiBaseUrl: https://gitlab.${BASEDOMAIN}/api/v4
             branch: main # Optional. Used to discover on a specific branch
             fallbackBranch: master # Optional. Fallback to be used if there is no default branch configured at the Gitlab repository. It is only used, if `branch` is undefined. Uses `master` as default
             skipForkedRepos: false # Optional. If the project is a fork, skip repository

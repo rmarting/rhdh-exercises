@@ -6,7 +6,7 @@ data:
   app-config-rhdh.yaml: |
     app:
       title: My Red Hat Developer Hub Instance
-      #baseUrl: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
+      #baseUrl: https://backstage-developer-hub-rhdh-gitlab.${BASEDOMAIN}
     backend:
       auth:
         keys:
@@ -15,6 +15,6 @@ data:
       providers:
         guest:
           dangerouslyAllowOutsideDevelopment: true
-      #baseUrl: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
+      #baseUrl: https://backstage-developer-hub-rhdh-gitlab.${BASEDOMAIN}
       #cors:
-      #  origin: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
+      #  origin: https://backstage-developer-hub-rhdh-gitlab.${BASEDOMAIN}

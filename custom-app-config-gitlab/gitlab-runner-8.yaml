@@ -5,5 +5,5 @@ metadata:
   name: techdocs-runner
   namespace: gitlab-system
 spec:
-  gitlabUrl: https://gitlab.${basedomain}
+  gitlabUrl: https://gitlab.${BASEDOMAIN}
   token: gitlab-gitlab-runner-secret

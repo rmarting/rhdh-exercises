@@ -69,7 +69,7 @@ gitlab-operator-kubernetes.v2.7.0   GitLab    2.7.1     gitlab-operator-kubernet
 Run:
 
 ```bash
-export basedomain=$(oc get ingresscontroller -n openshift-ingress-operator default -o jsonpath='{.status.domain}')
+export BASEDOMAIN=$(oc get ingresscontroller -n openshift-ingress-operator default -o jsonpath='{.status.domain}')
 envsubst < ./lab-prep/gitlab.yaml | oc apply -f -
 ```
 

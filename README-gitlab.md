@@ -28,7 +28,7 @@
 When Red Hat Developer Hub is installed via the operator there are some mandatory settings that need to be set:
 
 - create mandatory backend secret
-- add the `basedomain` to enable proper navigation and CORs settings
+- add the `BASEDOMAIN` to enable proper navigation and CORs settings
 
 Customizing the instance requires a custom application file defined in a ConfigMap object. Additionally we can use a
 Secret object to store sensitive data required by Red Hat Developer Hub. An example of sensitive data required is
@@ -38,7 +38,7 @@ Creating a Secret including that variable, and adding the base domain of our ins
 
 ```bash
 oc apply -f ./custom-app-config-gitlab/rhdh-secrets.yaml -n rhdh-gitlab
-oc patch secret rhdh-secrets -n rhdh-gitlab -p '{"stringData":{"basedomain":"'"${basedomain}"'"}}'
+oc patch secret rhdh-secrets -n rhdh-gitlab -p '{"stringData":{"BASEDOMAIN":"'"${BASEDOMAIN}"'"}}'
 ```
 
 **TIP**: Since Red Hat Developer Hub 1.6 is not longer required to define base URL for the instance. The operator will
@@ -56,14 +56,14 @@ data:
   app-config-rhdh.yaml: |
     app:
       title: My Red Hat Developer Hub Instance
-      baseUrl: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
+      baseUrl: https://backstage-developer-hub-rhdh-gitlab.${BASEDOMAIN}
     backend:
       auth:
         keys:
           - secret: ${BACKEND_SECRET}
-      #baseUrl: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
+      #baseUrl: https://backstage-developer-hub-rhdh-gitlab.${BASEDOMAIN}
       #cors:
-      #  origin: https://backstage-developer-hub-rhdh-gitlab.${basedomain}
+      #  origin: https://backstage-developer-hub-rhdh-gitlab.${BASEDOMAIN}
 ```
 
 Once created the ConfigMap and Secret, we can add them into the `developer-hub` CR Red Hat Developer Hub manifest:
@@ -102,7 +102,7 @@ execute the actions in your GitLab instance:
 
 - GitLab UI navigation: Edit `Profile` -> `Applications` -> `Add new application`
 - name: `rhdh-exercises`
-- Redirect URI: copy output `echo https://backstage-developer-hub-rhdh-gitlab.${basedomain}/api/auth/gitlab/handler/frame`
+- Redirect URI: copy output `echo https://backstage-developer-hub-rhdh-gitlab.${BASEDOMAIN}/api/auth/gitlab/handler/frame`
 - set the correct permissions: `api`, `read_user`, `read_repository`, `write_repository`, `openid`, `profile`, `email`
 
 **NOTE**: Use the `root` user of GitLab to create this application.
@@ -140,7 +140,7 @@ Modify `app-config` section of the `app-config-rhdh` ConfigMap with environment 
           development:
             clientId: ${AUTH_GITLAB_CLIENT_ID}
             clientSecret: ${AUTH_GITLAB_CLIENT_SECRET}
-            audience: https://gitlab.${basedomain}
+            audience: https://gitlab.${BASEDOMAIN}
             signIn:
               resolvers:
                 - resolver: usernameMatchingUserEntityName
@@ -218,10 +218,10 @@ data:
       title: My Red Hat Developer Hub Instance
     integrations:
       gitlab:
-        - host: gitlab.${basedomain}
+        - host: gitlab.${BASEDOMAIN}
           token: ${GITLAB_TOKEN}
-          apiBaseUrl: https://gitlab.${basedomain}/api/v4
-          baseUrl: https://gitlab.${basedomain}
+          apiBaseUrl: https://gitlab.${BASEDOMAIN}/api/v4
+          baseUrl: https://gitlab.${BASEDOMAIN}
 ```
 
 Or execute:
@@ -251,8 +251,8 @@ catalog:
   providers:
     gitlab:
       myGitLab:
-        host: gitlab.${basedomain} # Identifies one of the hosts set up in the integrations
-        apiBaseUrl: https://gitlab.${basedomain}/api/v4
+        host: gitlab.${BASEDOMAIN} # Identifies one of the hosts set up in the integrations
+        apiBaseUrl: https://gitlab.${BASEDOMAIN}/api/v4
         branch: main # Optional. Used to discover on a specific branch
         fallbackBranch: master # Optional. Fallback to be used if there is no default branch configured at the Gitlab repository. It is only used, if `branch` is undefined. Uses `master` as default
         skipForkedRepos: false # Optional. If the project is a fork, skip repository
@@ -322,7 +322,7 @@ Add this to the ConfigMap:
     providers:
       gitlab:
         myGitLab:
-          host: gitlab.${basedomain}
+          host: gitlab.${BASEDOMAIN}
           # ... previous GitLab configuration
           orgEnabled: true
           #group: org/teams # Required for gitlab.com when `orgEnabled: true`. Optional for self managed. Must not end with slash. Accepts only groups under the provided path (which will be stripped)
@@ -438,7 +438,7 @@ Fulfil the parameters requested:
 - Name - an unique name of this new component
 - Description (Optional)
 - Owner - Choose one from the list of options, or add one such as `team-a`, or `team-b`.
-- Repository Location: Copy output: `echo gitlab.${basedomain}`. Note that `https://` is not included.
+- Repository Location: Copy output: `echo gitlab.${BASEDOMAIN}`. Note that `https://` is not included.
   Other option: `echo gitlab.$(oc get ingresscontroller -n openshift-ingress-operator default -o jsonpath='{.status.domain}')`
 
 Verify that your new component is listed on the `Catalog` page.

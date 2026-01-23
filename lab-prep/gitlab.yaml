@@ -12,7 +12,7 @@ spec:
         install: false
       global:
         hosts:
-          domain: ${basedomain}
+          domain: ${BASEDOMAIN}
         ingress:
           annotations:
             route.openshift.io/termination: edge
