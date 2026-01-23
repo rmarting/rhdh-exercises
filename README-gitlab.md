@@ -817,3 +817,7 @@ Follow [this guide](./README-orchestrator.md).
 ## AI Labs - Enable Model Context Protocol (MCP)
 
 Follow [this guide](./README-ai-mcp.md).
+
+## AI Labs - Integrate with Red Hat Developer Lightspeed
+
+Follow [this guide](./README-ai-ls.md).

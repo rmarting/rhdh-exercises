@@ -51,6 +51,7 @@ The full list of actions implemented in this exercise is:
 12. Enable Notifications
 13. Enable Orchestrator
 14. AI Labs - Enable Model Context Protocol (MCP)
+15. AI Labs - Integrate with Red Hat Developer Lightspeed
 
 Follow the exercises steps [here](./README-gitlab.md).
 
