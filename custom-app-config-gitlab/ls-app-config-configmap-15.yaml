@@ -1,0 +1,37 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: lightspeed-app-config
+data:
+  app-config.yaml: |-
+    backend:
+      csp:
+        upgrade-insecure-requests: false
+        img-src:
+          - "'self'"
+          - "data:"
+          - https://img.freepik.com
+          - https://cdn.dribbble.com
+          - https://avatars.githubusercontent.com # This is to load GitHub avatars in the UI
+        script-src:
+          - "'self'"
+          - "'unsafe-eval'"
+          - https://cdn.jsdelivr.net          
+
+    lightspeed:
+      mcpServers:
+        - name: mcp::backstage
+          token: ${MCP_TOKEN}
+      # OPTIONAL: Custom users prompts displayed to users
+      # If not provided, the plugin uses built-in default prompts
+      prompts:
+        - title: "Getting Started with Red Hat Developer Hub"
+          message: "Can you guide me through the first steps to start using Developer Hub as a developer?"
+        - title: "Explore Red Hat Developer Hub"
+          message: "Can you guide me through the Software Catalog available in this instance?"
+        - title: "Learn with Red Hat Developer Hub"
+          message: What documentation is available in the catalog of this instance?
+      # OPTIONAL: Port for lightspeed service (default: 8080)
+      # servicePort: ${LIGHTSPEED_SERVICE_PORT}
+      # OPTIONAL: Override default RHDH system prompt
+      systemPrompt: "You are a helpful assistant focused on Red Hat Developer Hub development."

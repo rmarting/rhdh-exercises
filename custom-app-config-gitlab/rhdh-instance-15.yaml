@@ -1,0 +1,102 @@
+apiVersion: rhdh.redhat.com/v1alpha4
+kind: Backstage
+metadata:
+  name: developer-hub
+spec:
+  deployment:
+    patch:
+      spec:
+        replicas: 1
+        template:
+          spec:
+            volumes:
+              - $patch: replace
+                name: dynamic-plugins-root
+                persistentVolumeClaim:
+                  claimName: dynamic-plugins-root
+              - name: lightspeed-stack
+                configMap:
+                  name: lightspeed-stack                
+              - name: shared-storage
+                emptyDir: {}              
+              - name: rag-data-volume                  
+                emptyDir: {}            
+            initContainers:
+              - name: init-rag-data
+                image: 'quay.io/redhat-ai-dev/rag-content:release-1.8-lcs'
+                command:
+                  - "sh"
+                  - "-c"
+                  - "echo 'Copying RAG data...'; cp -r /rag/vector_db/rhdh_product_docs /data/ && cp -r /rag/embeddings_model /data/ && echo 'Copy complete.'"
+                volumeMounts:
+                  - mountPath: /data
+                    name: rag-data-volume                    
+            containers:
+              - name: llama-stack  # Llama Stack
+                image: 'quay.io/redhat-ai-dev/llama-stack:0.1.1'
+                envFrom:
+                  - secretRef:
+                      name: llama-stack-secrets
+                  - secretRef:
+                      name: rhdh-secrets                      
+                volumeMounts:
+                  - mountPath: /app-root/.llama
+                    name: shared-storage
+                  - mountPath: /app-root/embeddings_model
+                    name: rag-data-volume
+                    subPath: embeddings_model
+                  - mountPath: /app-root/vector_db/rhdh_product_docs
+                    name: rag-data-volume
+                    subPath: rhdh_product_docs
+              - name: lightspeed-core # Lightspeed Core Service
+                image: 'quay.io/lightspeed-core/lightspeed-stack:dev-20251021-ee9f08f'
+                envFrom:
+                  - secretRef:
+                      name: rhdh-secrets
+                volumeMounts:
+                  - mountPath: /app-root/lightspeed-stack.yaml
+                    name: lightspeed-stack
+                    subPath: lightspeed-stack.yaml
+                  - mountPath: /tmp/data/feedback
+                    name: shared-storage
+                  - mountPath: /tmp/data/transcripts
+                    name: shared-storage
+                  - mountPath: /tmp/data/conversations
+                    name: shared-storage
+        #strategy:
+        #  #rollingUpdate: null
+        #  rollingUpdate:
+        #    $patch: delete
+        #  type: Recreate                            
+  application:
+    dynamicPluginsConfigMapName: dynamic-plugins-rhdh
+    appConfig:
+      mountPath: /opt/app-root/src
+      configMaps:
+        - name: app-config-rhdh
+        - name: lightspeed-app-config
+    extraFiles:
+      mountPath: /opt/app-root/src/rbac
+      configMaps:
+        - name: rbac-policy
+    extraEnvs:
+      envs:
+        # Disabling TLS verification
+        - name: NODE_TLS_REJECT_UNAUTHORIZED
+          value: '0'
+          containers:
+            - '*'
+      configMaps:
+        - name: rhdh-techdocs-bucket-claim        
+      secrets:
+        - name: gitlab-secrets
+        - name: rhdh-secrets
+        - name: rhdh-techdocs-bucket-claim
+    route:
+      enabled: true
+    # RHDH 1.8.2
+    #image: registry.redhat.io/rhdh/rhdh-hub-rhel9:1.8.2
+  database:
+    enableLocalDb: true
+  monitoring:
+    enabled: true
