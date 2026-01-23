@@ -1,5 +1,6 @@
 custom-app-config/github-secrets.yaml
 custom-app-config-gitlab/gitlab-secrets.yaml
+custom-app-config-gitlab/ls-llama-stack-secrets.yaml
 custom-app-config/
 
 # MPC clients and credentials
