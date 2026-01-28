@@ -583,7 +583,7 @@ oc patch secret rhdh-secrets -n rhdh-gitlab -p '{"data":{"AWS_REGION":"'"${AWS_R
 oc patch secret rhdh-secrets -n rhdh-gitlab -p '{"data":{"BUCKET_URL":"'"${BUCKET_URL}"'"}}'
 ```
 
-Add the `rhdh-exercises-bucket-claim` ConfigMap and Secret to the Red Hat Developer Hub deployment.
+Add the `rhdh-techdocs-bucket-claim` ConfigMap and Secret to the Red Hat Developer Hub deployment.
 
 ```yaml
     extraEnvs:
@@ -592,11 +592,11 @@ Add the `rhdh-exercises-bucket-claim` ConfigMap and Secret to the Red Hat Develo
         - name: NODE_TLS_REJECT_UNAUTHORIZED
           value: '0'
       configMaps:
-        - name: rhdh-exercises-bucket-claim
+        - name: rhdh-techdocs-bucket-claim
       secrets:
         - name: gitlab-secrets
         - name: rhdh-secrets
-        - name: rhdh-exercises-bucket-claim
+        - name: rhdh-techdocs-bucket-claim
 ```
 
 And apply changes to the application configuration:
