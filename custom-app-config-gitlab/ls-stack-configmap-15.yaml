@@ -30,5 +30,4 @@ data:
     mcp_servers:
       - name: mcp::backstage
         provider_id: model-context-protocol
-        url: https://backstage-developer-hub-rhdh-gitlab.${BASEDOMAIN}/api/mcp-actions/v1
-        #url: https://backstage-developer-hub-rhdh-gitlab.apps.cluster-mxvsb.mxvsb.sandbox3509.opentlc.com/api/mcp-actions/v1
+        url: https://backstage-developer-hub-rhdh-gitlab.${env.BASEDOMAIN}/api/mcp-actions/v1
