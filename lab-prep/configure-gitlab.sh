@@ -115,9 +115,33 @@ if [ "0" == $(curl $CURL_DISABLE_SSL_VERIFICATION --header "PRIVATE-TOKEN: $GITL
 fi
 
 # Add some content to the repo
-git $GIT_DISABLE_SSL_VERIFICATION clone ${GITLAB_URL}/team-a/sample-app.git /tmp/sample-app
-cp catalog-info.yaml users-groups.yaml systems.yaml /tmp/sample-app/
-git $GIT_DISABLE_SSL_VERIFICATION -C /tmp/sample-app/ add .
-git $GIT_DISABLE_SSL_VERIFICATION -C /tmp/sample-app commit -m "initial commit" --author="user1 <user1@redhat.com>"
-echo enter user1/@abc1cde2
-git $GIT_DISABLE_SSL_VERIFICATION -C /tmp/sample-app push
+# Check if content already exists in the repo
+REPO_FILES=$(curl $CURL_DISABLE_SSL_VERIFICATION --header "PRIVATE-TOKEN: $GITLAB_TOKEN" -s "${GITLAB_URL}/api/v4/projects/team-a%2Fsample-app/repository/tree" | jq length 2>/dev/null || echo "0")
+
+if [ "$REPO_FILES" = "0" ] || [ "$REPO_FILES" = "null" ]; then
+    echo "Adding initial content to sample-app repository..."
+    
+    # Clean up any existing temp directory
+    rm -rf /tmp/sample-app
+    
+    # Clone the repo
+    git $GIT_DISABLE_SSL_VERIFICATION clone ${GITLAB_URL}/team-a/sample-app.git /tmp/sample-app
+    
+    # Copy files
+    cp catalog-info.yaml users-groups.yaml systems.yaml /tmp/sample-app/
+    
+    # Commit
+    git $GIT_DISABLE_SSL_VERIFICATION -C /tmp/sample-app/ add .
+    git $GIT_DISABLE_SSL_VERIFICATION -C /tmp/sample-app commit -m "initial commit" --author="user1 <user1@redhat.com>"
+    
+    # Push using token-based URL (no interactive password prompt)
+    GITLAB_HOST=$(echo $GITLAB_URL | sed 's|https://||')
+    git $GIT_DISABLE_SSL_VERIFICATION -C /tmp/sample-app remote set-url origin "https://root:${GITLAB_TOKEN}@${GITLAB_HOST}/team-a/sample-app.git"
+    git $GIT_DISABLE_SSL_VERIFICATION -C /tmp/sample-app push
+    
+    # Clean up
+    rm -rf /tmp/sample-app
+    echo "Repository initialized successfully!"
+else
+    echo "Repository already has content, skipping initialization..."
+fi
