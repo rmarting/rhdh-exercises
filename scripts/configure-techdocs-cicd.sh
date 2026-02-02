@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
 # Post-configure GitLab CI/CD variables for TechDocs
 # This script configures the GitLab CI/CD variables needed for TechDocs pipelines
@@ -7,8 +8,46 @@
 # Source common functions
 source "$(dirname "$0")/common.sh"
 
-# Parse SSL argument
-parse_ssl_arg "$@"
+# ============================================
+# Usage
+# ============================================
+usage() {
+    cat <<EOF
+Usage: $0 [options]
+
+Configures GitLab CI/CD variables for TechDocs pipelines.
+
+Options:
+  -k, --insecure-ssl    Bypass SSL verification for self-signed certs
+  -h, --help            Show this help message
+
+Examples:
+  $0                    # Configure with default SSL verification
+  $0 -k                 # Bypass SSL verification (self-signed certs)
+EOF
+    exit "${1:-0}"
+}
+
+# ============================================
+# Parse Arguments
+# ============================================
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -k|--insecure-ssl)
+            INSECURE_SSL=true
+            CURL_DISABLE_SSL_VERIFICATION="-k"
+            log_info "SSL verification bypass enabled (self-signed certs)"
+            shift
+            ;;
+        -h|--help)
+            usage 0
+            ;;
+        *)
+            log_error "Unknown option: $1"
+            usage 1
+            ;;
+    esac
+done
 
 # Check required CLI's
 check_basic_clis

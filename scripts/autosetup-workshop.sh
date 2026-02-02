@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
 # Autosetup script for RHDH Workshop
 # This script automates the complete setup of the workshop environment:
@@ -13,75 +14,91 @@ source "$(dirname "$0")/common.sh"
 setup_cleanup_trap
 
 # ============================================
-# Command-line Arguments
+# Usage
 # ============================================
-SKIP_OPERATORS="n"
-SKIP_GITLAB="n"
-SKIP_RHDH_OPERATOR="n"
-SKIP_ODF="n"
-SKIP_TECHDOCS="n"
-SKIP_ORCHESTRATOR="n"
-SKIP_LIGHTSPEED="n"
-PARALLEL_OPERATORS="y"  # Enable parallel operator installation by default
+usage() {
+    cat <<EOF
+Usage: $0 [options]
 
-for arg in "$@"; do
-    case $arg in
-        --ssl_certs_self_signed=*)
-            ssl_certs_self_signed="${arg#*=}"
-            if [ "$ssl_certs_self_signed" = "y" ]; then
-                log_info "SSL Certificates self signed enabled."
-                CURL_DISABLE_SSL_VERIFICATION="-k"
-            fi
+Sets up a complete Red Hat Developer Hub workshop environment on OpenShift:
+  - Installs operators (cert-manager, GitLab, RHDH, ODF, Orchestrator, GitLab Runner)
+  - Deploys and configures GitLab with users, groups, and sample repos
+  - Deploys RHDH with OAuth authentication and dynamic plugins
+  - Configures TechDocs with S3 storage and CI/CD pipelines
+  - Deploys sample Orchestrator workflow
+
+General Options:
+  -k, --insecure-ssl          Bypass SSL verification for self-signed certs
+  -h, --help                  Show this help message
+
+Operator Installation Options:
+  -O, --skip-operators        Skip ALL operator installations
+  -s, --sequential            Install operators sequentially (default: parallel)
+
+Configuration Options:
+  -t, --skip-techdocs         Skip TechDocs setup (bucket, runner, CI/CD vars)
+  -l, --skip-lightspeed       Skip Lightspeed secret configuration
+
+Environment Variables (Lightspeed / Red Hat Demo Platform MaaS):
+  VLLM_URL                    LLM service endpoint URL
+  VLLM_API_KEY                LLM service API key
+  VALIDATION_MODEL_NAME       Model name (e.g., meta-llama/Llama-3.3-70B-Instruct)
+
+Examples:
+  $0                          # Full setup with all components
+  $0 -O                       # Skip all operator installations
+  $0 -k -l                    # Self-signed certs, skip Lightspeed
+  $0 -t                       # Skip TechDocs setup
+  $0 -s                       # Install operators sequentially
+EOF
+    exit "${1:-0}"
+}
+
+# ============================================
+# Default Values
+# ============================================
+SKIP_OPERATORS=false
+SKIP_TECHDOCS=false
+SKIP_LIGHTSPEED=false
+PARALLEL_OPERATORS=true
+INSECURE_SSL=false
+
+# ============================================
+# Parse Arguments
+# ============================================
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        # General options
+        -k|--insecure-ssl)
+            INSECURE_SSL=true
+            CURL_DISABLE_SSL_VERIFICATION="-k"
+            log_info "SSL verification bypass enabled (self-signed certs)"
+            shift
             ;;
-        --skip-operators)
-            SKIP_OPERATORS="y"
+        -h|--help)
+            usage 0
             ;;
-        --skip-gitlab)
-            SKIP_GITLAB="y"
+        # Operator installation options
+        -O|--skip-operators)
+            SKIP_OPERATORS=true
+            shift
             ;;
-        --skip-rhdh-operator)
-            SKIP_RHDH_OPERATOR="y"
+        -s|--sequential)
+            PARALLEL_OPERATORS=false
+            shift
             ;;
-        --skip-odf)
-            SKIP_ODF="y"
+        # Configuration options
+        -t|--skip-techdocs)
+            SKIP_TECHDOCS=true
+            shift
             ;;
-        --skip-techdocs)
-            SKIP_TECHDOCS="y"
-            ;;
-        --skip-orchestrator)
-            SKIP_ORCHESTRATOR="y"
-            ;;
-        --skip-lightspeed)
-            SKIP_LIGHTSPEED="y"
-            ;;
-        --sequential-operators)
-            PARALLEL_OPERATORS="n"
-            ;;
-        --help)
-            echo "Usage: $0 [options]"
-            echo ""
-            echo "Options:"
-            echo "  --ssl_certs_self_signed=y  Enable SSL verification bypass for self-signed certs"
-            echo "  --skip-operators           Skip operator installations (cert-manager, gitlab, rhdh)"
-            echo "  --skip-gitlab              Skip GitLab deployment and configuration"
-            echo "  --skip-rhdh-operator       Skip RHDH operator installation"
-            echo "  --skip-odf                 Skip OpenShift Data Foundation installation"
-            echo "  --skip-techdocs            Skip TechDocs setup (ODF, bucket, GitLab runner)"
-            echo "  --skip-orchestrator        Skip Orchestrator/Serverless Logic Operator installation"
-            echo "  --skip-lightspeed          Skip Lightspeed secret configuration"
-            echo "  --sequential-operators     Install operators sequentially instead of in parallel"
-            echo "  --help                     Show this help message"
-            echo ""
-            echo "Environment variables for Lightspeed (Red Hat Demo Platform MaaS):"
-            echo "  VLLM_URL                   LLM service endpoint URL"
-            echo "  VLLM_API_KEY               LLM service API key"
-            echo "  VALIDATION_MODEL_NAME      Model name (e.g., meta-llama/Llama-3.3-70B-Instruct)"
-            exit 0
+        -l|--skip-lightspeed)
+            SKIP_LIGHTSPEED=true
+            shift
             ;;
         *)
-            log_error "Unknown argument: $arg"
-            echo "Use --help for usage information"
-            exit 1
+            log_error "Unknown option: $1"
+            usage 1
             ;;
     esac
 done
@@ -103,7 +120,7 @@ install_operators_parallel() {
     local operator_results=()
 
     # Start cert-manager operator installation in background
-    if [ "$SKIP_OPERATORS" != "y" ]; then
+    if [[ "$SKIP_OPERATORS" == false ]]; then
         if operator_installed "cert-manager-operator"; then
             log_skip "cert-manager operator already installed"
         else
@@ -118,7 +135,7 @@ install_operators_parallel() {
     fi
 
     # Start GitLab operator installation in background
-    if [ "$SKIP_OPERATORS" != "y" ] && [ "$SKIP_GITLAB" != "y" ]; then
+    if [[ "$SKIP_OPERATORS" == false ]]; then
         if operator_installed "gitlab-system"; then
             log_skip "GitLab operator already installed"
         else
@@ -133,7 +150,7 @@ install_operators_parallel() {
     fi
 
     # Start RHDH operator installation in background
-    if [ "$SKIP_OPERATORS" != "y" ] && [ "$SKIP_RHDH_OPERATOR" != "y" ]; then
+    if [[ "$SKIP_OPERATORS" == false ]]; then
         if operator_installed "rhdh-operator"; then
             log_skip "RHDH operator already installed"
         else
@@ -144,6 +161,63 @@ install_operators_parallel() {
             ) &
             pids+=($!)
             operator_results+=("rhdh")
+        fi
+    fi
+
+    # Start OpenShift Serverless Logic operator installation in background
+    if [[ "$SKIP_OPERATORS" == false ]]; then
+        LOGIC_CSV_STATUS=$(oc get csv -n openshift-serverless-logic -o jsonpath='{.items[*].status.phase}' 2>/dev/null | grep -o "Succeeded" | head -1 || echo "")
+        if [ "$LOGIC_CSV_STATUS" = "Succeeded" ]; then
+            log_skip "OpenShift Serverless Logic operator already installed"
+        else
+            log_info "Installing OpenShift Serverless Logic operator (background)..."
+            (
+                oc apply -f ../lab-prep/logic-operator-rhel8-operator.yaml
+                wait_for_csv "openshift-serverless-logic" "logic-operator"
+            ) &
+            pids+=($!)
+            operator_results+=("serverless-logic")
+        fi
+    fi
+
+    # Start ODF operator installation in background
+    if [[ "$SKIP_OPERATORS" == false ]] && [[ "$SKIP_TECHDOCS" == false ]]; then
+        ODF_COUNT=0
+        if oc get csv -n openshift-storage &>/dev/null; then
+            ODF_COUNT=$(oc get csv -n openshift-storage --no-headers 2>/dev/null | grep -c "Succeeded" || echo 0)
+            ODF_COUNT=$(echo "$ODF_COUNT" | tr -d '[:space:]')
+            [ -z "$ODF_COUNT" ] && ODF_COUNT=0
+        fi
+
+        if [ "$ODF_COUNT" -ge 5 ] 2>/dev/null; then
+            log_skip "ODF operator already installed ($ODF_COUNT CSVs)"
+        else
+            log_info "Installing ODF operator (background)..."
+            (
+                oc apply -f ../lab-prep/odf-operator.yaml
+                wait_for_odf_operator
+            ) &
+            pids+=($!)
+            operator_results+=("odf")
+        fi
+    fi
+
+    # Start GitLab Runner operator installation in background
+    if [[ "$SKIP_OPERATORS" == false ]] && [[ "$SKIP_TECHDOCS" == false ]]; then
+        RUNNER_CRD_EXISTS=$(oc get crd runners.apps.gitlab.com &>/dev/null && echo "yes" || echo "no")
+        if [ "$RUNNER_CRD_EXISTS" = "yes" ]; then
+            log_skip "GitLab Runner operator already installed"
+        else
+            LATEST_RUNNER_OP=$(find_latest_version "gitlab-runner-operator" "$CONFIG_DIR")
+            if [ -n "$LATEST_RUNNER_OP" ]; then
+                log_info "Installing GitLab Runner operator (background)..."
+                (
+                    oc apply -f "$LATEST_RUNNER_OP"
+                    wait_for_crd "runners.apps.gitlab.com" 300
+                ) &
+                pids+=($!)
+                operator_results+=("gitlab-runner")
+            fi
         fi
     fi
 
@@ -172,8 +246,8 @@ install_operators_parallel() {
 # ============================================
 install_operators_sequential() {
     # Step 1: Install cert-manager operator
-    if [ "$SKIP_OPERATORS" != "y" ]; then
-        print_section "Step 1: Install cert-manager operator"
+    if [[ "$SKIP_OPERATORS" == false ]]; then
+        print_section "Install cert-manager operator"
 
         if operator_installed "cert-manager-operator"; then
             log_skip "cert-manager operator already installed"
@@ -185,8 +259,8 @@ install_operators_sequential() {
     fi
 
     # Step 2: Install GitLab operator
-    if [ "$SKIP_OPERATORS" != "y" ] && [ "$SKIP_GITLAB" != "y" ]; then
-        print_section "Step 2: Install GitLab operator"
+    if [[ "$SKIP_OPERATORS" == false ]]; then
+        print_section "Install GitLab operator"
 
         if operator_installed "gitlab-system"; then
             log_skip "GitLab operator already installed"
@@ -197,9 +271,9 @@ install_operators_sequential() {
         fi
     fi
 
-    # Step 5: Install RHDH operator
-    if [ "$SKIP_OPERATORS" != "y" ] && [ "$SKIP_RHDH_OPERATOR" != "y" ]; then
-        print_section "Step 5: Install RHDH operator"
+    # Step 3: Install RHDH operator
+    if [[ "$SKIP_OPERATORS" == false ]]; then
+        print_section "Install RHDH operator"
 
         if operator_installed "rhdh-operator"; then
             log_skip "RHDH operator already installed"
@@ -209,6 +283,57 @@ install_operators_sequential() {
             wait_for_csv "rhdh-operator" "rhdh-operator"
         fi
     fi
+
+    # Step 4: Install OpenShift Serverless Logic operator
+    if [[ "$SKIP_OPERATORS" == false ]]; then
+        print_section "Install OpenShift Serverless Logic operator"
+
+        LOGIC_CSV_STATUS=$(oc get csv -n openshift-serverless-logic -o jsonpath='{.items[*].status.phase}' 2>/dev/null | grep -o "Succeeded" | head -1 || echo "")
+        if [ "$LOGIC_CSV_STATUS" = "Succeeded" ]; then
+            log_skip "OpenShift Serverless Logic operator already installed"
+        else
+            log_info "Installing OpenShift Serverless Logic operator..."
+            oc apply -f ../lab-prep/logic-operator-rhel8-operator.yaml
+            wait_for_csv "openshift-serverless-logic" "logic-operator"
+        fi
+    fi
+
+    # Step 5: Install ODF operator
+    if [[ "$SKIP_OPERATORS" == false ]] && [[ "$SKIP_TECHDOCS" == false ]]; then
+        print_section "Install ODF operator"
+
+        ODF_COUNT=0
+        if oc get csv -n openshift-storage &>/dev/null; then
+            ODF_COUNT=$(oc get csv -n openshift-storage --no-headers 2>/dev/null | grep -c "Succeeded" || echo 0)
+            ODF_COUNT=$(echo "$ODF_COUNT" | tr -d '[:space:]')
+            [ -z "$ODF_COUNT" ] && ODF_COUNT=0
+        fi
+
+        if [ "$ODF_COUNT" -ge 5 ] 2>/dev/null; then
+            log_skip "ODF operator already installed ($ODF_COUNT CSVs)"
+        else
+            log_info "Installing ODF operator..."
+            oc apply -f ../lab-prep/odf-operator.yaml
+            wait_for_odf_operator
+        fi
+    fi
+
+    # Step 6: Install GitLab Runner operator
+    if [[ "$SKIP_OPERATORS" == false ]] && [[ "$SKIP_TECHDOCS" == false ]]; then
+        print_section "Install GitLab Runner operator"
+
+        RUNNER_CRD_EXISTS=$(oc get crd runners.apps.gitlab.com &>/dev/null && echo "yes" || echo "no")
+        if [ "$RUNNER_CRD_EXISTS" = "yes" ]; then
+            log_skip "GitLab Runner operator already installed"
+        else
+            LATEST_RUNNER_OP=$(find_latest_version "gitlab-runner-operator" "$CONFIG_DIR")
+            if [ -n "$LATEST_RUNNER_OP" ]; then
+                log_info "Installing GitLab Runner operator..."
+                oc apply -f "$LATEST_RUNNER_OP"
+                wait_for_crd "runners.apps.gitlab.com" 300
+            fi
+        fi
+    fi
 }
 
 # ============================================
@@ -216,7 +341,7 @@ install_operators_sequential() {
 # ============================================
 
 # Install operators (parallel or sequential)
-if [ "$PARALLEL_OPERATORS" = "y" ]; then
+if [[ "$PARALLEL_OPERATORS" == true ]]; then
     print_section "Installing Operators (Parallel)"
     install_operators_parallel
 else
@@ -226,30 +351,26 @@ fi
 # ============================================
 # Step 3: Deploy GitLab
 # ============================================
-if [ "$SKIP_GITLAB" != "y" ]; then
-    print_section "Deploy GitLab"
+print_section "Deploy GitLab"
 
-    GITLAB_STATUS=$(oc get gitlabs gitlab -o jsonpath='{.status.phase}' -n "$GITLAB_NAMESPACE" 2>/dev/null || echo "")
-    if [ "$GITLAB_STATUS" = "Running" ]; then
-        log_skip "GitLab already running"
-    else
-        log_info "Deploying GitLab..."
-        apply_resource_envsubst "../lab-prep/gitlab.yaml"
-        wait_for_gitlab
-    fi
+GITLAB_STATUS=$(oc get gitlabs gitlab -o jsonpath='{.status.phase}' -n "$GITLAB_NAMESPACE" 2>/dev/null || echo "")
+if [ "$GITLAB_STATUS" = "Running" ]; then
+    log_skip "GitLab already running"
+else
+    log_info "Deploying GitLab..."
+    apply_resource_envsubst "../lab-prep/gitlab.yaml"
+    wait_for_gitlab
 fi
 
 # ============================================
 # Step 4: Configure GitLab (users, groups, repos)
 # ============================================
-if [ "$SKIP_GITLAB" != "y" ]; then
-    print_section "Configure GitLab"
+print_section "Configure GitLab"
 
-    if [ "$ssl_certs_self_signed" = "y" ]; then
-        ../lab-prep/configure-gitlab.sh --ssl_certs_self_signed=y
-    else
-        ../lab-prep/configure-gitlab.sh
-    fi
+if [[ "$INSECURE_SSL" == true ]]; then
+    ../lab-prep/configure-gitlab.sh -k
+else
+    ../lab-prep/configure-gitlab.sh
 fi
 
 # ============================================
@@ -271,8 +392,8 @@ fi
 # ============================================
 print_section "Configure GitLab OAuth and PAT"
 
-if [ "$ssl_certs_self_signed" = "y" ]; then
-    ./configure-rhdh-auth.sh --ssl_certs_self_signed=y
+if [[ "$INSECURE_SSL" == true ]]; then
+    ./configure-rhdh-auth.sh -k
 else
     ./configure-rhdh-auth.sh
 fi
@@ -281,24 +402,6 @@ fi
 # Step 8: Apply latest resource configurations
 # ============================================
 print_section "Apply latest resource configurations"
-
-# ============================================
-# Orchestrator (OpenShift Serverless Logic)
-# ============================================
-if [ "$SKIP_ORCHESTRATOR" != "y" ]; then
-
-    LOGIC_CSV_STATUS=$(oc get csv -n openshift-serverless-logic -o jsonpath='{.items[*].status.phase}' 2>/dev/null | grep -o "Succeeded" | head -1 || echo "")
-
-    if [ "$LOGIC_CSV_STATUS" = "Succeeded" ]; then
-        log_skip "OpenShift Serverless Logic Operator already installed"
-    else
-        log_info "Installing OpenShift Serverless Logic Operator..."
-        apply_resource "../lab-prep/logic-operator-rhel8-operator.yaml"
-        wait_for_csv "openshift-serverless-logic" "logic-operator"
-    fi
-else
-    log_skip "Orchestrator installation (--skip-orchestrator flag set)"
-fi
 
 # Apply rhdh-secrets (generated by configure-rhdh-auth.sh)
 if [ -f "${CONFIG_DIR}/gitlab-secrets.yaml" ]; then
@@ -367,105 +470,73 @@ patch_secret "rhdh-secrets" "BASEDOMAIN" "$BASEDOMAIN" "$RHDH_NAMESPACE"
 log_ok "BASEDOMAIN patched into rhdh-secrets"
 
 # ============================================
-# TechDocs Setup (ODF, Bucket, GitLab Runner)
+# TechDocs Setup (ODF Configuration, Bucket, GitLab Runner)
 # ============================================
-if [ "$SKIP_TECHDOCS" != "y" ]; then
+if [[ "$SKIP_TECHDOCS" == false ]]; then
     print_section "TechDocs Setup"
 
-    # Step 1: Install ODF Operator
-    if [ "$SKIP_ODF" != "y" ]; then
-        log_info "Checking OpenShift Data Foundation..."
+    # ODF Configuration (operator already installed in parallel)
+    log_info "Configuring OpenShift Data Foundation..."
 
-        ODF_COUNT=0
-        if oc get csv -n openshift-storage &>/dev/null; then
-            ODF_COUNT=$(oc get csv -n openshift-storage --no-headers 2>/dev/null | grep -c "Succeeded" || echo 0)
-            ODF_COUNT=$(echo "$ODF_COUNT" | tr -d '[:space:]')
-            [ -z "$ODF_COUNT" ] && ODF_COUNT=0
-        fi
-
-        if [ "$ODF_COUNT" -ge 5 ] 2>/dev/null; then
-            log_skip "ODF already installed ($ODF_COUNT CSVs)"
-        else
-            log_info "Installing OpenShift Data Foundation operator..."
-            apply_resource "../lab-prep/odf-operator.yaml"
-            wait_for_odf_operator
-        fi
-
-        # Enable ODF Console Plugin (check regardless of whether ODF was just installed)
-        if oc get console.operator cluster -o jsonpath='{.spec.plugins}' 2>/dev/null | grep -q "odf-console"; then
-            log_skip "ODF console plugin already enabled"
-        else
-            log_info "Enabling ODF console plugin..."
-            # Check if plugins array exists
-            EXISTING_PLUGINS=$(oc get console.operator cluster -o jsonpath='{.spec.plugins}' 2>/dev/null || echo "")
-            if [ -z "$EXISTING_PLUGINS" ] || [ "$EXISTING_PLUGINS" = "null" ]; then
-                # Initialize plugins array with odf-console
-                oc patch console.operator cluster --type json \
-                    -p '[{"op": "add", "path": "/spec/plugins", "value": ["odf-console"]}]'
-            else
-                # Append to existing plugins array
-                oc patch console.operator cluster --type json \
-                    -p '[{"op": "add", "path": "/spec/plugins/-", "value": "odf-console"}]'
-            fi
-        fi
-
-        # Step 2: Label worker nodes for ODF storage
-        log_info "Checking worker node labels for ODF..."
-        UNLABELED_NODES=$(oc get nodes -l 'node-role.kubernetes.io/worker,!cluster.ocs.openshift.io/openshift-storage' --no-headers -o name 2>/dev/null | wc -l | tr -d '[:space:]')
-
-        if [ "$UNLABELED_NODES" -gt 0 ] 2>/dev/null; then
-            log_info "Labeling $UNLABELED_NODES worker node(s) for ODF storage..."
-            oc get nodes -l 'node-role.kubernetes.io/worker' --no-headers -o name | \
-                xargs -I {} oc label {} cluster.ocs.openshift.io/openshift-storage='' --overwrite
-            log_ok "Worker nodes labeled for ODF"
-        else
-            log_skip "Worker nodes already labeled for ODF"
-        fi
-
-        # Step 3: Create Storage System/Cluster
-        STORAGE_STATUS=$(oc get storagecluster ocs-storagecluster -n openshift-storage -o jsonpath='{.status.phase}' 2>/dev/null || echo "")
-
-        if [ "$STORAGE_STATUS" = "Ready" ]; then
-            log_skip "Storage cluster already ready"
-        else
-            wait_for_crd "storageclusters.ocs.openshift.io"
-
-            log_info "Creating ODF storage cluster..."
-            log_info "NOTE: This may take 10-20 minutes to complete."
-            apply_resource "../lab-prep/odf-storagesystem.yaml"
-            wait_for_storage_cluster
-        fi
+    # Enable ODF Console Plugin
+    if oc get console.operator cluster -o jsonpath='{.spec.plugins}' 2>/dev/null | grep -q "odf-console"; then
+        log_skip "ODF console plugin already enabled"
     else
-        log_skip "ODF installation (--skip-odf flag set)"
-        ODF_READY=$(oc get storagecluster ocs-storagecluster -n openshift-storage -o jsonpath='{.status.phase}' 2>/dev/null || echo "")
-        if [ "$ODF_READY" != "Ready" ]; then
-            log_warn "ODF is not ready. TechDocs bucket claim may fail."
+        log_info "Enabling ODF console plugin..."
+        # Check if plugins array exists
+        EXISTING_PLUGINS=$(oc get console.operator cluster -o jsonpath='{.spec.plugins}' 2>/dev/null || echo "")
+        if [ -z "$EXISTING_PLUGINS" ] || [ "$EXISTING_PLUGINS" = "null" ]; then
+            # Initialize plugins array with odf-console
+            oc patch console.operator cluster --type json \
+                -p '[{"op": "add", "path": "/spec/plugins", "value": ["odf-console"]}]'
+        else
+            # Append to existing plugins array
+            oc patch console.operator cluster --type json \
+                -p '[{"op": "add", "path": "/spec/plugins/-", "value": "odf-console"}]'
         fi
     fi
 
-    # Step 4: TechDocs bucket claim
+    # Label worker nodes for ODF storage
+    log_info "Checking worker node labels for ODF..."
+    UNLABELED_NODES=$(oc get nodes -l 'node-role.kubernetes.io/worker,!cluster.ocs.openshift.io/openshift-storage' --no-headers -o name 2>/dev/null | wc -l | tr -d '[:space:]')
+
+    if [ "$UNLABELED_NODES" -gt 0 ] 2>/dev/null; then
+        log_info "Labeling $UNLABELED_NODES worker node(s) for ODF storage..."
+        oc get nodes -l 'node-role.kubernetes.io/worker' --no-headers -o name | \
+            xargs -I {} oc label {} cluster.ocs.openshift.io/openshift-storage='' --overwrite
+        log_ok "Worker nodes labeled for ODF"
+    else
+        log_skip "Worker nodes already labeled for ODF"
+    fi
+
+    # Create Storage System/Cluster
+    STORAGE_STATUS=$(oc get storagecluster ocs-storagecluster -n openshift-storage -o jsonpath='{.status.phase}' 2>/dev/null || echo "")
+
+    if [ "$STORAGE_STATUS" = "Ready" ]; then
+        log_skip "Storage cluster already ready"
+    else
+        wait_for_crd "storageclusters.ocs.openshift.io"
+
+        log_info "Creating ODF storage cluster..."
+        log_info "NOTE: This may take 10-20 minutes to complete."
+        apply_resource "../lab-prep/odf-storagesystem.yaml"
+        wait_for_storage_cluster
+    fi
+
+    # TechDocs bucket claim
     LATEST_TECHDOCS=$(find_latest_version "rhdh-techdocs-bucket-claim-obc" "$CONFIG_DIR")
     [ -n "$LATEST_TECHDOCS" ] && apply_resource "$LATEST_TECHDOCS" "$RHDH_NAMESPACE"
 
-    # Step 5: GitLab Runner operator
-    LATEST_RUNNER_OP=$(find_latest_version "gitlab-runner-operator" "$CONFIG_DIR")
-    if [ -n "$LATEST_RUNNER_OP" ]; then
-        apply_resource "$LATEST_RUNNER_OP"
-
-        log_wait "Waiting for GitLab Runner Operator..."
-        wait_for_crd "runners.apps.gitlab.com" 300
-    fi
-
-    # Step 6: GitLab Runner
+    # GitLab Runner instance (operator already installed in parallel)
     LATEST_RUNNER=$(ls -1 "${CONFIG_DIR}"/gitlab-runner-[0-9]*.yaml 2>/dev/null | \
         sed 's/.*-\([0-9]*\)\.yaml/\1 &/' | \
         sort -rn | head -1 | cut -d' ' -f2)
     [ -n "$LATEST_RUNNER" ] && apply_resource_envsubst "$LATEST_RUNNER" "gitlab-system"
 
-    # Step 7: Configure GitLab CI/CD variables for TechDocs
+    # Configure GitLab CI/CD variables for TechDocs
     log_info "Configuring GitLab CI/CD variables for TechDocs..."
-    if [ "$ssl_certs_self_signed" = "y" ]; then
-        ./configure-techdocs-cicd.sh --ssl_certs_self_signed=y
+    if [[ "$INSECURE_SSL" == true ]]; then
+        ./configure-techdocs-cicd.sh -k
     else
         ./configure-techdocs-cicd.sh
     fi
@@ -481,10 +552,10 @@ LATEST_PVC=$(find_latest_version "dynamic-plugins-root-pvc" "$CONFIG_DIR")
 # Lightspeed Configuration (Red Hat Demo Platform MaaS)
 # ============================================
 LIGHTSPEED_CONFIGURED=false
-if [ "$SKIP_LIGHTSPEED" != "y" ]; then
+if [[ "$SKIP_LIGHTSPEED" == false ]]; then
     print_section "Lightspeed Configuration"
 
-    if [ -n "$VLLM_URL" ] && [ -n "$VLLM_API_KEY" ] && [ -n "$VALIDATION_MODEL_NAME" ]; then
+    if [[ -n "${VLLM_URL:-}" ]] && [[ -n "${VLLM_API_KEY:-}" ]] && [[ -n "${VALIDATION_MODEL_NAME:-}" ]]; then
         log_info "Configuring Lightspeed with provided MaaS credentials..."
 
         cat <<EOF | oc apply -n "$RHDH_NAMESPACE" -f -
@@ -534,9 +605,61 @@ else
     log_skip "Lightspeed configuration (--skip-lightspeed flag set)"
 fi
 
-# Apply latest rhdh-instance (triggers restart)
+# Apply latest rhdh-instance (triggers restart and deploys sonataflow platform)
 LATEST_INSTANCE=$(find_latest_version "rhdh-instance" "$CONFIG_DIR")
 [ -n "$LATEST_INSTANCE" ] && apply_resource "$LATEST_INSTANCE" "$RHDH_NAMESPACE"
+
+# ============================================
+# Orchestrator (Sample Workflow Deployment)
+# ============================================
+# NOTE: Deployed AFTER rhdh-instance to ensure sonataflow platform services
+# (data-index, jobs-service) are running and the database exists.
+print_section "Orchestrator Workflow"
+
+# Wait for sonataflow platform to be ready (deployed by RHDH operator)
+log_info "Waiting for Sonataflow platform services..."
+if wait_for_condition \
+    "Sonataflow data-index service" \
+    "oc get deployment sonataflow-platform-data-index-service -n '$RHDH_NAMESPACE' -o jsonpath='{.status.readyReplicas}' 2>/dev/null" \
+    "1" \
+    120 \
+    10 \
+    "minimum" 2>/dev/null; then
+    : # Success message already printed by wait_for_condition
+else
+    log_warn "Sonataflow data-index not ready yet, workflow may need time to start"
+fi
+
+# Deploy sample Orchestrator workflow (operator already installed in parallel)
+log_info "Deploying sample Orchestrator workflow..."
+
+# Check if greeting-workflow is already deployed
+if helm status greeting-workflow -n "$RHDH_NAMESPACE" &>/dev/null; then
+    log_skip "greeting-workflow already deployed"
+else
+    # Ensure helm is available
+    if ! command -v helm &>/dev/null; then
+        log_warn "Helm is not installed. Skipping sample workflow deployment."
+        log_info "To install manually, run:"
+        log_info "  helm repo add workflows https://redhat-ads-tech.github.io/orchestrator-workflows/"
+        log_info "  helm install greeting-workflow workflows/greeting -n $RHDH_NAMESPACE"
+    else
+        # Add helm repo if not already added
+        if ! helm repo list 2>/dev/null | grep -q "workflows"; then
+            log_info "Adding orchestrator-workflows helm repo..."
+            helm repo add workflows https://redhat-ads-tech.github.io/orchestrator-workflows/
+        fi
+        helm repo update workflows
+
+        log_info "Installing greeting-workflow..."
+        if helm install greeting-workflow workflows/greeting -n "$RHDH_NAMESPACE"; then
+            log_ok "greeting-workflow deployed successfully"
+        else
+            log_warn "Failed to deploy greeting-workflow. You can install it manually later."
+        fi
+    fi
+fi
+log_info "See README-orchestrator.md for more details."
 
 # ============================================
 # Summary
@@ -608,15 +731,3 @@ echo "  export MCP_TOKEN=\$(oc get secret rhdh-secrets -n $RHDH_NAMESPACE -o jso
 echo ""
 echo "See README-ai-mcp.md for integration with Continue, Cursor, or other AI clients."
 echo ""
-
-# Orchestrator sample workflow reminder
-if [ "$SKIP_ORCHESTRATOR" != "y" ]; then
-    print_banner "OPTIONAL: Deploy Sample Orchestrator Workflow"
-    echo "To deploy a sample workflow and test the Orchestrator:"
-    echo ""
-    echo "  helm repo add workflows https://redhat-ads-tech.github.io/orchestrator-workflows/"
-    echo "  helm install greeting-workflow workflows/greeting -n $RHDH_NAMESPACE"
-    echo ""
-    echo "See README-orchestrator.md for more details."
-    echo ""
-fi

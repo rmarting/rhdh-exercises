@@ -1,30 +1,57 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
 # Running from same folder
-cd $(dirname $0)
+cd "$(dirname "$0")"
 
-# Set default values
-ssl_certs_self_signed="n"
+# ============================================
+# Usage
+# ============================================
+usage() {
+    cat <<EOF
+Usage: $0 [options]
 
-# Iterate over command-line arguments
-for arg in "$@"; do
-    case $arg in
-        --ssl_certs_self_signed=*)
-            ssl_certs_self_signed="${arg#*=}"
+Configures GitLab with users, groups, and sample repositories.
+
+Options:
+  -k, --insecure-ssl    Bypass SSL verification for self-signed certs
+  -h, --help            Show this help message
+
+Examples:
+  $0                    # Configure with default SSL verification
+  $0 -k                 # Bypass SSL verification (self-signed certs)
+EOF
+    exit "${1:-0}"
+}
+
+# ============================================
+# Default Values
+# ============================================
+INSECURE_SSL=false
+CURL_DISABLE_SSL_VERIFICATION=""
+GIT_DISABLE_SSL_VERIFICATION=""
+
+# ============================================
+# Parse Arguments
+# ============================================
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -k|--insecure-ssl)
+            INSECURE_SSL=true
+            CURL_DISABLE_SSL_VERIFICATION="-k"
+            GIT_DISABLE_SSL_VERIFICATION="-c http.sslVerify=false"
+            echo "SSL verification bypass enabled (self-signed certs)"
+            shift
+            ;;
+        -h|--help)
+            usage 0
             ;;
         *)
-            # Other arguments are ignored
+            echo "Unknown option: $1"
+            usage 1
             ;;
     esac
 done
-
-# Check if insecure flag is set to 'y'
-if [ "$ssl_certs_self_signed" = "y" ]; then
-    # Declare local variables
-    echo "SSL Certificates self signed enabled."
-    CURL_DISABLE_SSL_VERIFICATION="-k"
-    GIT_DISABLE_SSL_VERIFICATION="-c http.sslVerify=false"
-fi
 
 # Check required CLI's
 command -v jq >/dev/null 2>&1 || { echo >&2 "jq is required but not installed.  Aborting."; exit 1; }
@@ -42,7 +69,7 @@ GITLAB_URL=https://$(oc get ingress -n $GITLAB_NAMESPACE -l app=webservice -o js
 if [ "401" == $(curl $CURL_DISABLE_SSL_VERIFICATION --header "PRIVATE-TOKEN: $GITLAB_TOKEN" -s -I "${GITLAB_URL}/api/v4/user" -w "%{http_code}" -o /dev/null) ]; then
     echo "Registering Token"
     # Create root token
-    oc exec -it -n $GITLAB_NAMESPACE -c toolbox $(oc get pods -n $GITLAB_NAMESPACE -l=app=toolbox -o jsonpath='{ .items[0].metadata.name }') -- sh -c "$(cat << EOF
+    oc exec -n $GITLAB_NAMESPACE -c toolbox $(oc get pods -n $GITLAB_NAMESPACE -l=app=toolbox -o jsonpath='{ .items[0].metadata.name }') -- sh -c "$(cat << EOF
     gitlab-rails runner "User.find_by_username('root').personal_access_tokens.create(scopes: [:api], name: 'Automation token', expires_at: 365.days.from_now, token_digest: Gitlab::CryptoHelper.sha256('${GITLAB_TOKEN}'))"
 EOF
     )"

@@ -1,12 +1,11 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Common functions and utilities for RHDH Workshop scripts
 # Source this file at the beginning of each script:
 #   source "$(dirname "$0")/common.sh"
 
-# Exit on error and catch pipeline failures
-set -e
-set -o pipefail
+# Exit on error, undefined variables, and catch pipeline failures
+set -euo pipefail
 
 # Track script start time for duration reporting
 SCRIPT_START_TIME=$(date +%s)
@@ -64,18 +63,22 @@ log_error() {
 # ============================================
 
 # Global variable for SSL verification
-CURL_DISABLE_SSL_VERIFICATION=""
-ssl_certs_self_signed="n"
+CURL_DISABLE_SSL_VERIFICATION="${CURL_DISABLE_SSL_VERIFICATION:-}"
+INSECURE_SSL="${INSECURE_SSL:-false}"
 
-parse_ssl_arg() {
-    for arg in "$@"; do
-        case $arg in
-            --ssl_certs_self_signed=*)
-                ssl_certs_self_signed="${arg#*=}"
-                if [ "$ssl_certs_self_signed" = "y" ]; then
-                    log_info "SSL Certificates self signed enabled."
-                    CURL_DISABLE_SSL_VERIFICATION="-k"
-                fi
+# Parse common arguments (--insecure-ssl)
+# Usage: parse_common_args "$@"
+parse_common_args() {
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --insecure-ssl)
+                INSECURE_SSL=true
+                CURL_DISABLE_SSL_VERIFICATION="-k"
+                log_info "SSL verification bypass enabled (self-signed certs)"
+                shift
+                ;;
+            *)
+                shift
                 ;;
         esac
     done
@@ -188,7 +191,7 @@ puts token.token
 
 get_gitlab_token() {
     # If GITLAB_TOKEN is already set in environment, use it
-    if [ -n "$GITLAB_TOKEN" ]; then
+    if [[ -n "${GITLAB_TOKEN:-}" ]]; then
         echo "$GITLAB_TOKEN"
         return 0
     fi
