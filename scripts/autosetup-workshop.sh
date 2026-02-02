@@ -63,6 +63,17 @@ SKIP_LIGHTSPEED=false
 PARALLEL_OPERATORS=true
 INSECURE_SSL=false
 
+# Initialize summary variables (used in final output)
+LATEST_APP_CONFIGMAP=""
+LATEST_DYNAMIC_PLUGINS=""
+LATEST_RBAC=""
+LATEST_LS_APP=""
+LATEST_LS_STACK=""
+LATEST_TECHDOCS=""
+LATEST_PVC=""
+LATEST_INSTANCE=""
+LIGHTSPEED_CONFIGURED=false
+
 # ============================================
 # Parse Arguments
 # ============================================
@@ -111,6 +122,44 @@ export BASEDOMAIN=$(get_basedomain)
 log_info "Base Domain: $BASEDOMAIN"
 
 print_banner "RHDH Workshop Auto Setup"
+
+# ============================================
+# Operator Check Helper Functions
+# ============================================
+
+# Check if Serverless Logic operator is installed
+is_serverless_logic_installed() {
+    local status
+    status=$(oc get csv -n openshift-serverless-logic -o jsonpath='{.items[*].status.phase}' 2>/dev/null | grep -o "Succeeded" | head -1 || echo "")
+    [[ "$status" == "Succeeded" ]]
+}
+
+# Check if ODF operator is installed (requires 5+ CSVs in Succeeded state)
+is_odf_installed() {
+    local count=0
+    if oc get csv -n openshift-storage &>/dev/null; then
+        count=$(oc get csv -n openshift-storage --no-headers 2>/dev/null | grep -c "Succeeded" || echo 0)
+        count=$(echo "$count" | tr -d '[:space:]')
+        [[ -z "$count" ]] && count=0
+    fi
+    [[ "$count" -ge 5 ]] 2>/dev/null
+}
+
+# Get ODF CSV count for display
+get_odf_csv_count() {
+    local count=0
+    if oc get csv -n openshift-storage &>/dev/null; then
+        count=$(oc get csv -n openshift-storage --no-headers 2>/dev/null | grep -c "Succeeded" || echo 0)
+        count=$(echo "$count" | tr -d '[:space:]')
+        [[ -z "$count" ]] && count=0
+    fi
+    echo "$count"
+}
+
+# Check if GitLab Runner operator is installed
+is_gitlab_runner_installed() {
+    oc get crd runners.apps.gitlab.com &>/dev/null
+}
 
 # ============================================
 # Parallel Operator Installation Function
@@ -166,8 +215,7 @@ install_operators_parallel() {
 
     # Start OpenShift Serverless Logic operator installation in background
     if [[ "$SKIP_OPERATORS" == false ]]; then
-        LOGIC_CSV_STATUS=$(oc get csv -n openshift-serverless-logic -o jsonpath='{.items[*].status.phase}' 2>/dev/null | grep -o "Succeeded" | head -1 || echo "")
-        if [ "$LOGIC_CSV_STATUS" = "Succeeded" ]; then
+        if is_serverless_logic_installed; then
             log_skip "OpenShift Serverless Logic operator already installed"
         else
             log_info "Installing OpenShift Serverless Logic operator (background)..."
@@ -182,15 +230,8 @@ install_operators_parallel() {
 
     # Start ODF operator installation in background
     if [[ "$SKIP_OPERATORS" == false ]] && [[ "$SKIP_TECHDOCS" == false ]]; then
-        ODF_COUNT=0
-        if oc get csv -n openshift-storage &>/dev/null; then
-            ODF_COUNT=$(oc get csv -n openshift-storage --no-headers 2>/dev/null | grep -c "Succeeded" || echo 0)
-            ODF_COUNT=$(echo "$ODF_COUNT" | tr -d '[:space:]')
-            [ -z "$ODF_COUNT" ] && ODF_COUNT=0
-        fi
-
-        if [ "$ODF_COUNT" -ge 5 ] 2>/dev/null; then
-            log_skip "ODF operator already installed ($ODF_COUNT CSVs)"
+        if is_odf_installed; then
+            log_skip "ODF operator already installed ($(get_odf_csv_count) CSVs)"
         else
             log_info "Installing ODF operator (background)..."
             (
@@ -204,8 +245,7 @@ install_operators_parallel() {
 
     # Start GitLab Runner operator installation in background
     if [[ "$SKIP_OPERATORS" == false ]] && [[ "$SKIP_TECHDOCS" == false ]]; then
-        RUNNER_CRD_EXISTS=$(oc get crd runners.apps.gitlab.com &>/dev/null && echo "yes" || echo "no")
-        if [ "$RUNNER_CRD_EXISTS" = "yes" ]; then
+        if is_gitlab_runner_installed; then
             log_skip "GitLab Runner operator already installed"
         else
             LATEST_RUNNER_OP=$(find_latest_version "gitlab-runner-operator" "$CONFIG_DIR")
@@ -245,7 +285,7 @@ install_operators_parallel() {
 # Sequential Operator Installation (fallback)
 # ============================================
 install_operators_sequential() {
-    # Step 1: Install cert-manager operator
+    # Install cert-manager operator
     if [[ "$SKIP_OPERATORS" == false ]]; then
         print_section "Install cert-manager operator"
 
@@ -258,7 +298,7 @@ install_operators_sequential() {
         fi
     fi
 
-    # Step 2: Install GitLab operator
+    # Install GitLab operator
     if [[ "$SKIP_OPERATORS" == false ]]; then
         print_section "Install GitLab operator"
 
@@ -271,7 +311,7 @@ install_operators_sequential() {
         fi
     fi
 
-    # Step 3: Install RHDH operator
+    # Install RHDH operator
     if [[ "$SKIP_OPERATORS" == false ]]; then
         print_section "Install RHDH operator"
 
@@ -284,12 +324,11 @@ install_operators_sequential() {
         fi
     fi
 
-    # Step 4: Install OpenShift Serverless Logic operator
+    # Install OpenShift Serverless Logic operator
     if [[ "$SKIP_OPERATORS" == false ]]; then
         print_section "Install OpenShift Serverless Logic operator"
 
-        LOGIC_CSV_STATUS=$(oc get csv -n openshift-serverless-logic -o jsonpath='{.items[*].status.phase}' 2>/dev/null | grep -o "Succeeded" | head -1 || echo "")
-        if [ "$LOGIC_CSV_STATUS" = "Succeeded" ]; then
+        if is_serverless_logic_installed; then
             log_skip "OpenShift Serverless Logic operator already installed"
         else
             log_info "Installing OpenShift Serverless Logic operator..."
@@ -298,19 +337,12 @@ install_operators_sequential() {
         fi
     fi
 
-    # Step 5: Install ODF operator
+    # Install ODF operator
     if [[ "$SKIP_OPERATORS" == false ]] && [[ "$SKIP_TECHDOCS" == false ]]; then
         print_section "Install ODF operator"
 
-        ODF_COUNT=0
-        if oc get csv -n openshift-storage &>/dev/null; then
-            ODF_COUNT=$(oc get csv -n openshift-storage --no-headers 2>/dev/null | grep -c "Succeeded" || echo 0)
-            ODF_COUNT=$(echo "$ODF_COUNT" | tr -d '[:space:]')
-            [ -z "$ODF_COUNT" ] && ODF_COUNT=0
-        fi
-
-        if [ "$ODF_COUNT" -ge 5 ] 2>/dev/null; then
-            log_skip "ODF operator already installed ($ODF_COUNT CSVs)"
+        if is_odf_installed; then
+            log_skip "ODF operator already installed ($(get_odf_csv_count) CSVs)"
         else
             log_info "Installing ODF operator..."
             oc apply -f ../lab-prep/odf-operator.yaml
@@ -318,12 +350,11 @@ install_operators_sequential() {
         fi
     fi
 
-    # Step 6: Install GitLab Runner operator
+    # Install GitLab Runner operator
     if [[ "$SKIP_OPERATORS" == false ]] && [[ "$SKIP_TECHDOCS" == false ]]; then
         print_section "Install GitLab Runner operator"
 
-        RUNNER_CRD_EXISTS=$(oc get crd runners.apps.gitlab.com &>/dev/null && echo "yes" || echo "no")
-        if [ "$RUNNER_CRD_EXISTS" = "yes" ]; then
+        if is_gitlab_runner_installed; then
             log_skip "GitLab Runner operator already installed"
         else
             LATEST_RUNNER_OP=$(find_latest_version "gitlab-runner-operator" "$CONFIG_DIR")
@@ -349,12 +380,12 @@ else
 fi
 
 # ============================================
-# Step 3: Deploy GitLab
+# Deploy GitLab
 # ============================================
 print_section "Deploy GitLab"
 
 GITLAB_STATUS=$(oc get gitlabs gitlab -o jsonpath='{.status.phase}' -n "$GITLAB_NAMESPACE" 2>/dev/null || echo "")
-if [ "$GITLAB_STATUS" = "Running" ]; then
+if [[ "$GITLAB_STATUS" == "Running" ]]; then
     log_skip "GitLab already running"
 else
     log_info "Deploying GitLab..."
@@ -363,7 +394,7 @@ else
 fi
 
 # ============================================
-# Step 4: Configure GitLab (users, groups, repos)
+# Configure GitLab (users, groups, repos)
 # ============================================
 print_section "Configure GitLab"
 
@@ -374,12 +405,12 @@ else
 fi
 
 # ============================================
-# Step 6: Install initial RHDH instance
+# Deploy RHDH Instance
 # ============================================
-print_section "Install initial RHDH instance"
+print_section "Deploy RHDH Instance"
 
 RHDH_STATUS=$(oc get backstage developer-hub -o jsonpath='{.status.conditions[0].type}' -n "$RHDH_NAMESPACE" 2>/dev/null || echo "")
-if [ "$RHDH_STATUS" = "Deployed" ]; then
+if [[ "$RHDH_STATUS" == "Deployed" ]]; then
     log_skip "RHDH already deployed"
 else
     log_info "Deploying initial RHDH instance..."
@@ -388,7 +419,7 @@ else
 fi
 
 # ============================================
-# Step 7: Configure GitLab OAuth and PAT
+# Configure GitLab OAuth and PAT
 # ============================================
 print_section "Configure GitLab OAuth and PAT"
 
@@ -399,7 +430,7 @@ else
 fi
 
 # ============================================
-# Step 8: Apply latest resource configurations
+# Apply Resource Configurations
 # ============================================
 print_section "Apply latest resource configurations"
 
@@ -485,7 +516,7 @@ if [[ "$SKIP_TECHDOCS" == false ]]; then
         log_info "Enabling ODF console plugin..."
         # Check if plugins array exists
         EXISTING_PLUGINS=$(oc get console.operator cluster -o jsonpath='{.spec.plugins}' 2>/dev/null || echo "")
-        if [ -z "$EXISTING_PLUGINS" ] || [ "$EXISTING_PLUGINS" = "null" ]; then
+        if [[ -z "$EXISTING_PLUGINS" ]] || [[ "$EXISTING_PLUGINS" == "null" ]]; then
             # Initialize plugins array with odf-console
             oc patch console.operator cluster --type json \
                 -p '[{"op": "add", "path": "/spec/plugins", "value": ["odf-console"]}]'
@@ -500,7 +531,7 @@ if [[ "$SKIP_TECHDOCS" == false ]]; then
     log_info "Checking worker node labels for ODF..."
     UNLABELED_NODES=$(oc get nodes -l 'node-role.kubernetes.io/worker,!cluster.ocs.openshift.io/openshift-storage' --no-headers -o name 2>/dev/null | wc -l | tr -d '[:space:]')
 
-    if [ "$UNLABELED_NODES" -gt 0 ] 2>/dev/null; then
+    if [[ "$UNLABELED_NODES" -gt 0 ]] 2>/dev/null; then
         log_info "Labeling $UNLABELED_NODES worker node(s) for ODF storage..."
         oc get nodes -l 'node-role.kubernetes.io/worker' --no-headers -o name | \
             xargs -I {} oc label {} cluster.ocs.openshift.io/openshift-storage='' --overwrite
@@ -512,7 +543,7 @@ if [[ "$SKIP_TECHDOCS" == false ]]; then
     # Create Storage System/Cluster
     STORAGE_STATUS=$(oc get storagecluster ocs-storagecluster -n openshift-storage -o jsonpath='{.status.phase}' 2>/dev/null || echo "")
 
-    if [ "$STORAGE_STATUS" = "Ready" ]; then
+    if [[ "$STORAGE_STATUS" == "Ready" ]]; then
         log_skip "Storage cluster already ready"
     else
         wait_for_crd "storageclusters.ocs.openshift.io"
@@ -551,14 +582,14 @@ LATEST_PVC=$(find_latest_version "dynamic-plugins-root-pvc" "$CONFIG_DIR")
 # ============================================
 # Lightspeed Configuration (Red Hat Demo Platform MaaS)
 # ============================================
-LIGHTSPEED_CONFIGURED=false
 if [[ "$SKIP_LIGHTSPEED" == false ]]; then
     print_section "Lightspeed Configuration"
 
     if [[ -n "${VLLM_URL:-}" ]] && [[ -n "${VLLM_API_KEY:-}" ]] && [[ -n "${VALIDATION_MODEL_NAME:-}" ]]; then
         log_info "Configuring Lightspeed with provided MaaS credentials..."
 
-        cat <<EOF | oc apply -n "$RHDH_NAMESPACE" -f -
+        # Define secret template once (DRY)
+        LIGHTSPEED_SECRET_YAML=$(cat <<EOF
 apiVersion: v1
 kind: Secret
 metadata:
@@ -573,26 +604,14 @@ stringData:
   VLLM_API_KEY: "$VLLM_API_KEY"
   VALIDATION_MODEL_NAME: "$VALIDATION_MODEL_NAME"
 EOF
-
+)
+        # Apply to cluster
+        echo "$LIGHTSPEED_SECRET_YAML" | oc apply -n "$RHDH_NAMESPACE" -f -
         log_ok "Lightspeed secret 'llama-stack-secrets' created!"
         LIGHTSPEED_CONFIGURED=true
 
         # Save to file for reference
-        cat > "${CONFIG_DIR}/ls-llama-stack-secrets.yaml" <<EOF
-apiVersion: v1
-kind: Secret
-metadata:
-  name: llama-stack-secrets
-  namespace: $RHDH_NAMESPACE
-type: Opaque
-stringData:
-  VLLM_TLS_VERIFY: ""
-  VALIDATION_PROVIDER: "vllm"
-  VLLM_MAX_TOKENS: ""
-  VLLM_URL: "$VLLM_URL"
-  VLLM_API_KEY: "$VLLM_API_KEY"
-  VALIDATION_MODEL_NAME: "$VALIDATION_MODEL_NAME"
-EOF
+        echo "$LIGHTSPEED_SECRET_YAML" > "${CONFIG_DIR}/ls-llama-stack-secrets.yaml"
         log_info "File ${CONFIG_DIR}/ls-llama-stack-secrets.yaml generated."
     else
         log_info "Lightspeed credentials not provided via environment variables."
@@ -700,7 +719,7 @@ echo "  oc get pods -n $RHDH_NAMESPACE -w"
 echo ""
 
 # Lightspeed status
-if [ "$LIGHTSPEED_CONFIGURED" = true ]; then
+if [[ "$LIGHTSPEED_CONFIGURED" == true ]]; then
     print_banner "Lightspeed Configured!"
     echo "Lightspeed has been configured with the provided MaaS credentials."
     echo "  Model: $VALIDATION_MODEL_NAME"
