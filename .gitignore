@@ -7,3 +7,4 @@ custom-app-config/
 # MPC clients and credentials
 .continue/mcpServers/
 .cursor/mcp.json
+.claude
