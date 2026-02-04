@@ -127,7 +127,7 @@ helm upgrade -i postgresql-imagestreams \
   --namespace rhdh-gitlab
 
 helm upgrade -i rhdh-postgresql-ls \
-  -f ./custom-app-config-gitlab/postgresql-values.yaml \
+  -f ./custom-app-config-gitlab/postgresql-ls-values.yaml \
   openshift-helm-charts/redhat-postgresql-persistent \
   --history-max=4 \
   --namespace rhdh-gitlab
