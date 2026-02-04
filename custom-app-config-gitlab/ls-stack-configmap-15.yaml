@@ -24,9 +24,13 @@ data:
     authentication:
       module: "noop"
     conversation_cache:
-      type: "sqlite"
-      sqlite:
-        db_path: "/tmp/data/conversations/lcs_cache.db"
+      type: "postgres"
+      postgres:
+        host: "rhdh-ls-postgresql.rhdh-gitlab.svc.cluster.local"
+        port: "5432"
+        db: "rhdh-ls"
+        user: "${env.RHDH_LS_POSTGRESQL_USER}"
+        password: "${env.RHDH_LS_POSTGRESQL_PASSWORD}"
     mcp_servers:
       - name: mcp::backstage
         provider_id: model-context-protocol

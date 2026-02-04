@@ -15,11 +15,13 @@ For detailed information, refer to the [official documentation](https://docs.red
 - [Verify the Installation](#verify-the-installation)
 - [Test Developer Lightspeed](#test-developer-lightspeed)
 - [References](#references)
+
 ## Overview
 
 The Lightspeed integration consists of several components:
 
 - **Lightspeed Core Service (LCS)**: The backend service that handles AI interactions
+- **PostgreSQL Database**: (Optional) External database to store chat histories from users and managed by LCS
 - **Llama Stack**: Provides the LLM (Large Language Model) capabilities for processing queries
 - **MCP (Model Context Protocol) Tools**: Enable Lightspeed to interact with Red Hat Developer Hub catalog and TechDocs
 - **Dynamic Plugin**: The UI component that provides the chat interface in Developer Hub
@@ -47,7 +49,7 @@ Apply the updated RBAC policy ConfigMap that includes Lightspeed permissions:
 oc apply -f ./custom-app-config-gitlab/rbac-policy-configmap-15.yaml
 ```
 
-## Configure Lightspeed Services
+## Configure Lightspeed Core Services
 
 This step creates the necessary secrets and configuration for the Lightspeed backend services.
 
@@ -84,6 +86,60 @@ You can create the `ls-llama-stack-secrets.yaml` inside of `custom-app-config-gi
 
 ```bash
 oc apply -f ./custom-app-config-gitlab/ls-llama-stack-secrets.yaml -n rhdh-gitlab
+```
+
+By default LCS will use a SQLlite instance to persist the chat histories. However, if the pod is restarted,
+all conversations will be lost. In this scenario, we will create an external PostgreSQL database to persist
+all conversations independently of Red Hat Developer Hub pod lifecycle.
+
+**NOTE**: There are different ways to install a PostgreSQL database on OpenShift. For demo purposes of this
+workshop, we will use an experimental Helm Chart available in Red Hat OpenShift. Don't use it in production
+environments.
+
+Enable in your terminal the OpenShift Helm Charts repository, or update it if you have already installed:
+
+```bash
+helm repo add openshift-helm-charts https://charts.openshift.io/
+helm repo update openshift-helm-charts
+```
+
+To setup the configuration of the PostgreSQL database instance, the [postgresql-values.yaml](./custom-app-config-gitlab/postgresql-values.yaml)
+provides an initial configuration like this:
+
+```yaml
+database_service_name: rhdh-ls-postgresql
+config:
+  port: 5432
+  postgresql_database: rhdh-ls
+  postgresql_user: lightspeed
+  postgresql_password: l1ghtsp33d
+image:
+  tag: "15-el9"
+memory_limit: 512Mi
+volume_capacity: 1Gi
+```
+
+To install the PostgreSQL database instance will require to install the following Helm Releases:
+
+```bash
+helm upgrade -i postgresql-imagestreams \
+  openshift-helm-charts/redhat-postgresql-imagestreams \
+  --namespace rhdh-gitlab
+
+helm upgrade -i rhdh-postgresql-ls \
+  -f ./custom-app-config-gitlab/postgresql-values.yaml \
+  openshift-helm-charts/redhat-postgresql-persistent \
+  --history-max=4 \
+  --namespace rhdh-gitlab
+```
+
+Export the default configuration to be used in the LCS connection configuration:
+
+```bash
+export RHDH_LS_POSTGRESQL_USER_B64=$(echo -n "lightspeed" | base64 -w0)
+export RHDH_LS_POSTGRESQL_PASSWORD_B64=$(echo -n "l1ghtsp33d" | base64 -w0)
+
+oc patch secret rhdh-secrets -n rhdh-gitlab -p '{"data":{"RHDH_LS_POSTGRESQL_USER":"'"$RHDH_LS_POSTGRESQL_USER_B64"'","RHDH_LS_POSTGRESQL_PASSWORD":"'"$RHDH_LS_POSTGRESQL_PASSWORD_B64"'"}}'
 ```
 
 The Lightspeed Stack ConfigMap contains the configuration for the Lightspeed Core Service, including service
