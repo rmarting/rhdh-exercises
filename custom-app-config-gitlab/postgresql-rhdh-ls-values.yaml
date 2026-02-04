@@ -1,4 +1,4 @@
-database_service_name: rhdh-ls-postgresql
+database_service_name: postgresql-rhdh-ls
 config:
   port: 5432
   postgresql_database: rhdh-ls
@@ -6,5 +6,5 @@ config:
   postgresql_password: l1ghtsp33d
 image:
   tag: "15-el9"
-memory_limit: 512Mi
+memory_limit: 1Gi
 volume_capacity: 1Gi

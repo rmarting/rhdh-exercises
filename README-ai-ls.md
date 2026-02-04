@@ -103,11 +103,11 @@ helm repo add openshift-helm-charts https://charts.openshift.io/
 helm repo update openshift-helm-charts
 ```
 
-To setup the configuration of the PostgreSQL database instance, the [postgresql-values.yaml](./custom-app-config-gitlab/postgresql-values.yaml)
+To setup the configuration of the PostgreSQL database instance, the [postgresql-rhdh-ls-values.yaml](./custom-app-config-gitlab/postgresql-rhdh-ls-values.yaml)
 provides an initial configuration like this:
 
 ```yaml
-database_service_name: rhdh-ls-postgresql
+database_service_name: postgresql-rhdh-ls
 config:
   port: 5432
   postgresql_database: rhdh-ls
@@ -115,7 +115,7 @@ config:
   postgresql_password: l1ghtsp33d
 image:
   tag: "15-el9"
-memory_limit: 512Mi
+memory_limit: 1Gi
 volume_capacity: 1Gi
 ```
 
@@ -126,20 +126,22 @@ helm upgrade -i postgresql-imagestreams \
   openshift-helm-charts/redhat-postgresql-imagestreams \
   --namespace rhdh-gitlab
 
-helm upgrade -i rhdh-postgresql-ls \
-  -f ./custom-app-config-gitlab/postgresql-ls-values.yaml \
+helm upgrade -i postgresql-rhdh-ls \
+  -f ./custom-app-config-gitlab/postgresql-rhdh-ls-values.yaml \
   openshift-helm-charts/redhat-postgresql-persistent \
   --history-max=4 \
   --namespace rhdh-gitlab
 ```
 
+**TIP**: The `postgresql-rhdh-ls` secret is values to connect to the database: `database-name`, `database-password`, `database-user`.
+
 Export the default configuration to be used in the LCS connection configuration:
 
 ```bash
-export RHDH_LS_POSTGRESQL_USER_B64=$(echo -n "lightspeed" | base64 -w0)
-export RHDH_LS_POSTGRESQL_PASSWORD_B64=$(echo -n "l1ghtsp33d" | base64 -w0)
+export POSTGRESQL_RHDH_LS_USER_B64=$(echo -n "lightspeed" | base64 -w0)
+export POSTGRESQL_RHDH_LS_PASSWORD_B64=$(echo -n "l1ghtsp33d" | base64 -w0)
 
-oc patch secret rhdh-secrets -n rhdh-gitlab -p '{"data":{"RHDH_LS_POSTGRESQL_USER":"'"$RHDH_LS_POSTGRESQL_USER_B64"'","RHDH_LS_POSTGRESQL_PASSWORD":"'"$RHDH_LS_POSTGRESQL_PASSWORD_B64"'"}}'
+oc patch secret rhdh-secrets -n rhdh-gitlab -p '{"data":{"POSTGRESQL_RHDH_LS_USER":"'"$POSTGRESQL_RHDH_LS_USER_B64"'","POSTGRESQL_RHDH_LS_PASSWORD":"'"$POSTGRESQL_RHDH_LS_PASSWORD_B64"'"}}'
 ```
 
 The Lightspeed Stack ConfigMap contains the configuration for the Lightspeed Core Service, including service
@@ -163,7 +165,7 @@ The Lightspeed App Config contains the frontend configuration for the Lightspeed
 including MCP server tokens, custom prompts, and Content Security Policy (CSP) settings.
 
 ```bash
-oc apply -f ./custom-app-config-gitlab/ls-app-config-configmap-15.yaml
+oc apply -f ./custom-app-config-gitlab/ls-app-config-configmap-15.yaml -n rhdh-gitlab
 ```
 
 The `lightspeed-app-config` ConfigMap named contains:
@@ -180,13 +182,13 @@ This step updates the Developer Hub instance to enable Lightspeed plugins and de
 Enable the Lightspeed plugins:
 
 ```bash
-oc apply -f ./custom-app-config-gitlab/dynamic-plugins-15.yaml
+oc apply -f ./custom-app-config-gitlab/dynamic-plugins-15.yaml -n rhdh-gitlab
 ```
 
 Apply the updated Backstage Custom Resource that adds the Lightspeed sidecar containers and configuration:
 
 ```bash
-oc apply -f ./custom-app-config-gitlab/rhdh-instance-15.yaml
+oc apply -f ./custom-app-config-gitlab/rhdh-instance-15.yaml -n rhdh-gitlab
 ```
 
 This part is required to add manually a set of new init containers and side container to create the full architecture
