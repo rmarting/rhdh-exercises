@@ -41,6 +41,7 @@ data:
                   - importName: DevQuote
                     menuItem:
                       text: Quote
+                      icon: star
                     path: /devquote
       # Adoptions Insights - Installed by default from Red Hat Developer Hub 1.7
       #- package: ./dynamic-plugins/dist/backstage-community-plugin-analytics-provider-segment

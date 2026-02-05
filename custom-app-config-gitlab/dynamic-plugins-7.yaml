@@ -41,5 +41,6 @@ data:
                   - importName: DevQuote
                     menuItem:
                       text: Quote
+                      icon: star
                     path: /devquote
 

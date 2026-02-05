@@ -1,0 +1,10 @@
+database_service_name: rhdh-ls-postgresql
+config:
+  port: 5432
+  postgresql_database: rhdh-ls
+  postgresql_user: lightspeed
+  postgresql_password: l1ghtsp33d
+image:
+  tag: "15-el9"
+memory_limit: 512Mi
+volume_capacity: 1Gi
