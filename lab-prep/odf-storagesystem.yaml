@@ -1,0 +1,53 @@
+---
+# OpenShift Data Foundation StorageCluster
+# This creates a storage cluster using dynamic storage devices on AWS
+# Adjust the storageClassName and deviceSets based on your cluster configuration
+apiVersion: ocs.openshift.io/v1
+kind: StorageCluster
+metadata:
+  name: ocs-storagecluster
+  namespace: openshift-storage
+spec:
+  # Adjust resources based on your cluster size
+  # For demo/lab environments, use minimal resources
+  arbiter: {}
+  encryption:
+    kms: {}
+  externalStorage: {}
+  flexibleScaling: true
+  monDataDirHostPath: /var/lib/rook
+  managedResources:
+    cephObjectStoreUsers: {}
+    cephCluster: {}
+    cephBlockPools: {}
+    cephNonResilientPools: {}
+    cephObjectStores: {}
+    cephFilesystems: {}
+    cephRBDMirror: {}
+    cephToolbox: {}
+    cephDashboard: {}
+    cephConfig: {}
+  resourceProfile: balanced
+  mirroring: {}
+  nodeTopologies: {}
+  storageDeviceSets:
+    - config: {}
+      count: 1
+      dataPVCTemplate:
+        metadata: {}
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Ti
+          storageClassName: gp3-csi
+          volumeMode: Block
+        status: {}
+      name: ocs-deviceset-gp3-csi
+      placement: {}
+      portable: true
+      preparePlacement: {}
+      replica: 3
+      resources: {}
+  version: 4.20.0

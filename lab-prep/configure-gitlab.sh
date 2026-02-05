@@ -1,37 +1,64 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
 # Running from same folder
-cd $(dirname $0)
+cd "$(dirname "$0")"
 
-# Set default values
-ssl_certs_self_signed="n"
+# ============================================
+# Usage
+# ============================================
+usage() {
+    cat <<EOF
+Usage: $0 [options]
 
-# Iterate over command-line arguments
-for arg in "$@"; do
-    case $arg in
-        --ssl_certs_self_signed=*)
-            ssl_certs_self_signed="${arg#*=}"
+Configures GitLab with users, groups, and sample repositories.
+
+Options:
+  -k, --insecure-ssl    Bypass SSL verification for self-signed certs
+  -h, --help            Show this help message
+
+Examples:
+  $0                    # Configure with default SSL verification
+  $0 -k                 # Bypass SSL verification (self-signed certs)
+EOF
+    exit "${1:-0}"
+}
+
+# ============================================
+# Default Values
+# ============================================
+INSECURE_SSL=false
+CURL_DISABLE_SSL_VERIFICATION=""
+GIT_DISABLE_SSL_VERIFICATION=""
+
+# ============================================
+# Parse Arguments
+# ============================================
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -k|--insecure-ssl)
+            INSECURE_SSL=true
+            CURL_DISABLE_SSL_VERIFICATION="-k"
+            GIT_DISABLE_SSL_VERIFICATION="-c http.sslVerify=false"
+            echo "SSL verification bypass enabled (self-signed certs)"
+            shift
+            ;;
+        -h|--help)
+            usage 0
             ;;
         *)
-            # Other arguments are ignored
+            echo "Unknown option: $1"
+            usage 1
             ;;
     esac
 done
-
-# Check if insecure flag is set to 'y'
-if [ "$ssl_certs_self_signed" = "y" ]; then
-    # Declare local variables
-    echo "SSL Certificates self signed enabled."
-    CURL_DISABLE_SSL_VERIFICATION="-k"
-    GIT_DISABLE_SSL_VERIFICATION="-c http.sslVerify=false"
-fi
 
 # Check required CLI's
 command -v jq >/dev/null 2>&1 || { echo >&2 "jq is required but not installed.  Aborting."; exit 1; }
 command -v oc >/dev/null 2>&1 || { echo >&2 "OpenShift CLI is required but not installed.  Aborting."; exit 1; }
 
 #GitLab token must be 20 characters
-DEFAULT_GITLAB_TOKEN="KbfdXFhoX407c0v5ZP2Y"
+DEFAULT_GITLAB_TOKEN="KbfdXFhoX407c0v5ZP2Y" #notsecret
 
 GITLAB_TOKEN=${GITLAB_TOKEN:=$DEFAULT_GITLAB_TOKEN}
 GITLAB_NAMESPACE=${GITLAB_NAMESPACE:=gitlab-system}
@@ -42,7 +69,7 @@ GITLAB_URL=https://$(oc get ingress -n $GITLAB_NAMESPACE -l app=webservice -o js
 if [ "401" == $(curl $CURL_DISABLE_SSL_VERIFICATION --header "PRIVATE-TOKEN: $GITLAB_TOKEN" -s -I "${GITLAB_URL}/api/v4/user" -w "%{http_code}" -o /dev/null) ]; then
     echo "Registering Token"
     # Create root token
-    oc exec -it -n $GITLAB_NAMESPACE -c toolbox $(oc get pods -n $GITLAB_NAMESPACE -l=app=toolbox -o jsonpath='{ .items[0].metadata.name }') -- sh -c "$(cat << EOF
+    oc exec -n $GITLAB_NAMESPACE -c toolbox $(oc get pods -n $GITLAB_NAMESPACE -l=app=toolbox -o jsonpath='{ .items[0].metadata.name }') -- sh -c "$(cat << EOF
     gitlab-rails runner "User.find_by_username('root').personal_access_tokens.create(scopes: [:api], name: 'Automation token', expires_at: 365.days.from_now, token_digest: Gitlab::CryptoHelper.sha256('${GITLAB_TOKEN}'))"
 EOF
     )"
@@ -115,9 +142,33 @@ if [ "0" == $(curl $CURL_DISABLE_SSL_VERIFICATION --header "PRIVATE-TOKEN: $GITL
 fi
 
 # Add some content to the repo
-git $GIT_DISABLE_SSL_VERIFICATION clone ${GITLAB_URL}/team-a/sample-app.git /tmp/sample-app
-cp catalog-info.yaml users-groups.yaml systems.yaml /tmp/sample-app/
-git $GIT_DISABLE_SSL_VERIFICATION -C /tmp/sample-app/ add .
-git $GIT_DISABLE_SSL_VERIFICATION -C /tmp/sample-app commit -m "initial commit" --author="user1 <user1@redhat.com>"
-echo enter user1/@abc1cde2
-git $GIT_DISABLE_SSL_VERIFICATION -C /tmp/sample-app push
+# Check if content already exists in the repo
+REPO_FILES=$(curl $CURL_DISABLE_SSL_VERIFICATION --header "PRIVATE-TOKEN: $GITLAB_TOKEN" -s "${GITLAB_URL}/api/v4/projects/team-a%2Fsample-app/repository/tree" | jq length 2>/dev/null || echo "0")
+
+if [ "$REPO_FILES" = "0" ] || [ "$REPO_FILES" = "null" ]; then
+    echo "Adding initial content to sample-app repository..."
+    
+    # Clean up any existing temp directory
+    rm -rf /tmp/sample-app
+    
+    # Clone the repo
+    git $GIT_DISABLE_SSL_VERIFICATION clone ${GITLAB_URL}/team-a/sample-app.git /tmp/sample-app
+    
+    # Copy files
+    cp catalog-info.yaml users-groups.yaml systems.yaml /tmp/sample-app/
+    
+    # Commit
+    git $GIT_DISABLE_SSL_VERIFICATION -C /tmp/sample-app/ add .
+    git $GIT_DISABLE_SSL_VERIFICATION -C /tmp/sample-app commit -m "initial commit" --author="user1 <user1@redhat.com>"
+    
+    # Push using token-based URL (no interactive password prompt)
+    GITLAB_HOST=$(echo $GITLAB_URL | sed 's|https://||')
+    git $GIT_DISABLE_SSL_VERIFICATION -C /tmp/sample-app remote set-url origin "https://root:${GITLAB_TOKEN}@${GITLAB_HOST}/team-a/sample-app.git"
+    git $GIT_DISABLE_SSL_VERIFICATION -C /tmp/sample-app push
+    
+    # Clean up
+    rm -rf /tmp/sample-app
+    echo "Repository initialized successfully!"
+else
+    echo "Repository already has content, skipping initialization..."
+fi
