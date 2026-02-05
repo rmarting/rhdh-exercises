@@ -58,7 +58,7 @@ command -v jq >/dev/null 2>&1 || { echo >&2 "jq is required but not installed.  
 command -v oc >/dev/null 2>&1 || { echo >&2 "OpenShift CLI is required but not installed.  Aborting."; exit 1; }
 
 #GitLab token must be 20 characters
-DEFAULT_GITLAB_TOKEN="KbfdXFhoX407c0v5ZP2Y"
+DEFAULT_GITLAB_TOKEN="KbfdXFhoX407c0v5ZP2Y" #notsecret
 
 GITLAB_TOKEN=${GITLAB_TOKEN:=$DEFAULT_GITLAB_TOKEN}
 GITLAB_NAMESPACE=${GITLAB_NAMESPACE:=gitlab-system}
