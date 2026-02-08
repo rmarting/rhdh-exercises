@@ -22,6 +22,8 @@
 - [Enable Notifications](#enable-notifications)
 - [Enable Orchestrator](#enable-orchestrator)
 - [AI Labs - Enable Model Context Protocol (MCP)](#ai-labs---enable-model-context-protocol-mcp)
+- [AI Labs - Integrate with Red Hat Developer Lightspeed](#ai-labs---integrate-with-red-hat-developer-lightspeed)
+- [Enterprise Labs - Use an External Database](#enterprise-labs---use-an-external-database)
 
 ## Mandatory settings
 
@@ -821,3 +823,7 @@ Follow [this guide](./README-ai-mcp.md).
 ## AI Labs - Integrate with Red Hat Developer Lightspeed
 
 Follow [this guide](./README-ai-ls.md).
+
+## Enterprise Labs - Use an External Database
+
+Follow [this guide](./README-ee-database.md).

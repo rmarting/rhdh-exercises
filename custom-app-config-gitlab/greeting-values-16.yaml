@@ -1,0 +1,15 @@
+persistence:
+  postgresql:
+    secretRef:
+      name: my-backstage-psql-secret-developer-hub
+      userKey: POSTGRES_USER
+      passwordKey: POSTGRES_PASSWORD
+    serviceRef:
+      name: my-backstage-psql-developer-hub
+      port: 5432
+      databaseName: backstage_plugin_orchestrator
+      databaseSchema: greeting
+
+image: 
+  repository: quay.io/orchestrator/serverless-workflow-greeting
+  tag: aed62dee57d8b9f52caa01fd1283e161c3c89614
