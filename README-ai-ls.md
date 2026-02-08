@@ -46,7 +46,7 @@ p, role:default/team-b, lightspeed.chat.delete, delete, allow
 Apply the updated RBAC policy ConfigMap that includes Lightspeed permissions:
 
 ```bash
-oc apply -f ./custom-app-config-gitlab/rbac-policy-configmap-15.yaml
+oc apply -f ./custom-app-config-gitlab/rbac-policy-configmap-15.yaml -n rhdh-gitlab
 ```
 
 ## Configure Lightspeed Core Services
@@ -93,55 +93,15 @@ all conversations will be lost. In this scenario, we will create an external Pos
 all conversations independently of Red Hat Developer Hub pod lifecycle.
 
 **NOTE**: There are different ways to install a PostgreSQL database on OpenShift. For demo purposes of this
-workshop, we will use an experimental Helm Chart available in Red Hat OpenShift. Don't use it in production
-environments.
+workshop, we will use the default PostgreSQL database used by Red Hat Developer Hub. This database is
+configured in the `backstage-psql-secret-developer-hub` secret, and available by the
+`backstage-psql-developer-hub` service.
 
-Enable in your terminal the OpenShift Helm Charts repository, or update it if you have already installed:
-
-```bash
-helm repo add openshift-helm-charts https://charts.openshift.io/
-helm repo update openshift-helm-charts
-```
-
-To setup the configuration of the PostgreSQL database instance, the [postgresql-rhdh-ls-values.yaml](./custom-app-config-gitlab/postgresql-rhdh-ls-values.yaml)
-provides an initial configuration like this:
-
-```yaml
-database_service_name: postgresql-rhdh-ls
-config:
-  port: 5432
-  postgresql_database: rhdh-ls
-  postgresql_user: lightspeed
-  postgresql_password: l1ghtsp33d
-image:
-  tag: "15-el9"
-memory_limit: 1Gi
-volume_capacity: 1Gi
-```
-
-To install the PostgreSQL database instance will require to install the following Helm Releases:
+It is needed to create the `rhdh-ls` database instance to persist the chat histories. Run the following
+command to create it:
 
 ```bash
-helm upgrade -i postgresql-imagestreams \
-  openshift-helm-charts/redhat-postgresql-imagestreams \
-  --namespace rhdh-gitlab
-
-helm upgrade -i postgresql-rhdh-ls \
-  -f ./custom-app-config-gitlab/postgresql-rhdh-ls-values.yaml \
-  openshift-helm-charts/redhat-postgresql-persistent \
-  --history-max=4 \
-  --namespace rhdh-gitlab
-```
-
-**TIP**: The `postgresql-rhdh-ls` secret is values to connect to the database: `database-name`, `database-password`, `database-user`.
-
-Export the default configuration to be used in the LCS connection configuration:
-
-```bash
-export POSTGRESQL_RHDH_LS_USER_B64=$(echo -n "lightspeed" | base64 -w0)
-export POSTGRESQL_RHDH_LS_PASSWORD_B64=$(echo -n "l1ghtsp33d" | base64 -w0)
-
-oc patch secret rhdh-secrets -n rhdh-gitlab -p '{"data":{"POSTGRESQL_RHDH_LS_USER":"'"$POSTGRESQL_RHDH_LS_USER_B64"'","POSTGRESQL_RHDH_LS_PASSWORD":"'"$POSTGRESQL_RHDH_LS_PASSWORD_B64"'"}}'
+oc exec -n rhdh-gitlab backstage-psql-developer-hub-0 -- env PGPASSWORD="$PG_ADMIN_PASS" psql -U postgres -h 127.0.0.1 -p 5432 -c "CREATE DATABASE \"rhdh-ls\";"
 ```
 
 The Lightspeed Stack ConfigMap contains the configuration for the Lightspeed Core Service, including service
@@ -177,7 +137,8 @@ The `lightspeed-app-config` ConfigMap named contains:
 
 ## Update Red Hat Developer Hub Configuration
 
-This step updates the Developer Hub instance to enable Lightspeed plugins and deploy the necessary sidecar containers.
+This step updates the Developer Hub instance to enable Lightspeed plugins and deploy
+the necessary sidecar containers.
 
 Enable the Lightspeed plugins:
 
@@ -185,14 +146,15 @@ Enable the Lightspeed plugins:
 oc apply -f ./custom-app-config-gitlab/dynamic-plugins-15.yaml -n rhdh-gitlab
 ```
 
-Apply the updated Backstage Custom Resource that adds the Lightspeed sidecar containers and configuration:
+Apply the updated Backstage Custom Resource that adds the Lightspeed sidecar containers
+and configuration, adding the secrets with the credentials to access to the database:
 
 ```bash
 oc apply -f ./custom-app-config-gitlab/rhdh-instance-15.yaml -n rhdh-gitlab
 ```
 
-This part is required to add manually a set of new init containers and side container to create the full architecture
-of this solution:
+This part is required to add manually a set of new init containers and side container to create
+the full architecture of this solution:
 
 - Add an **init container** (`init-rag-data`) that copies RAG (Retrieval-Augmented Generation) data and embeddings model to a shared volume
 - Add **llama-stack sidecar container** that provides LLM capabilities

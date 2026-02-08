@@ -38,7 +38,9 @@ spec:
                   - secretRef:
                       name: llama-stack-secrets
                   - secretRef:
-                      name: rhdh-secrets                      
+                      name: rhdh-secrets
+                  - secretRef:
+                      name: backstage-psql-secret-developer-hub
                 volumeMounts:
                   - mountPath: /app-root/.llama
                     name: shared-storage
@@ -53,6 +55,8 @@ spec:
                 envFrom:
                   - secretRef:
                       name: rhdh-secrets
+                  - secretRef:
+                      name: backstage-psql-secret-developer-hub
                 volumeMounts:
                   - mountPath: /app-root/lightspeed-stack.yaml
                     name: lightspeed-stack
@@ -94,8 +98,6 @@ spec:
         - name: rhdh-techdocs-bucket-claim
     route:
       enabled: true
-    # RHDH 1.8.2
-    #image: registry.redhat.io/rhdh/rhdh-hub-rhel9:1.8.2
   database:
     enableLocalDb: true
   monitoring:
