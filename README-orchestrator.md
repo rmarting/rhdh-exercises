@@ -33,7 +33,7 @@ And confirm its successful installation:
 ```bash
 on 🎩 ❯ oc get csv -n openshift-serverless-logic
 NAME                            DISPLAY                               VERSION   REPLACES                              PHASE
-logic-operator-rhel8.v1.36.0    OpenShift Serverless Logic Operator   1.36.0    logic-operator-rhel8.v1.35.0          Succeeded
+logic-operator-rhel8.v1.36.1    OpenShift Serverless Logic Operator   1.36.1    logic-operator-rhel8.v1.36.0          Succeeded
 ```
 
 To enable the Orchestrator feature, we need to enable the following dynamic plugins:
@@ -45,8 +45,12 @@ To enable the Orchestrator feature, we need to enable the following dynamic plug
 
 After enabling the Orchestrator plugin, the RHDH Operator automatically provisions the following required dependencies:
 
-* A `SonataflowPlatform` CR
+* A `SonataflowPlatform` CR. By default will use the Postgresql configuration of Red Hat Developer Hub to create
+the database to persist workflow results and other metadata.
 * `NetworkPolicies` that allow traffic between infrastructure resources (Knative, Serverless Logic Operator), monitoring traffic, and intra-namespace traffic.
+
+**NOTE**: The database configuration is loaded from the `backstage-psql-secret-developer-hub` secret
+and the connectivity will be by the `backstage-psql-developer-hub` service. Details [Here](https://github.com/redhat-developer/rhdh-operator/blob/main/config/profile/rhdh/plugin-deps/sonataflow.yaml#L121).
 
 As RBAC is enabled, it is needed to add some extra rules to manage the new plugin to allow users to operate with the workflows
 installed. Basically we need to extend the RBAC configuration adding the `orchestrator` plugin:
@@ -90,6 +94,7 @@ So, to complete the installation run:
 oc apply -f ./custom-app-config-gitlab/dynamic-plugins-13.yaml -n rhdh-gitlab
 oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-13.yaml -n rhdh-gitlab
 oc apply -f ./custom-app-config-gitlab/rbac-policy-configmap-13.yaml -n rhdh-gitlab
+oc apply -f ./custom-app-config-gitlab/rhdh-instance-13.yaml -n rhdh-gitlab
 ```
 
 Return to the Topology View for the `rhdh-gitlab` namespace and wait for the `SonataFlowPlatform` pods to become ready.
@@ -107,6 +112,7 @@ this sample of Red Hat Advanced Developer Suite repository:
 
 ```bash
 helm repo add workflows https://redhat-ads-tech.github.io/orchestrator-workflows/
+helm repo update workflows
 helm install greeting-workflow workflows/greeting -n rhdh-gitlab
 ```
 
