@@ -8,18 +8,14 @@ StatefulSet approach.
 
 ## Table of Contents
 
-- [Important: Demo-Only Approach](#important-demo-only-approach)
 - [Activity Overview](#activity-overview)
-- [Step 1: Destroy the Current Red Hat Developer Hub](#step-1-destroy-the-current-red-hat-developer-hub)
-- [Step 2: Create the External Database](#step-2-create-the-external-database)
-- [Step 3: Create the Lightspeed Database (Optional)](#step-3-create-the-lightspeed-database-optional)
-- [Step 4: Configure Backstage to Use the External Database](#step-4-configure-backstage-to-use-the-external-database)
-- [Step 5: Create the SonataFlowPlatform (Initial)](#step-5-create-the-sonataflowplatform-initial)
-- [Step 6: Enable Orchestrator Plugins and Recreate SonataFlowPlatform](#step-6-enable-orchestrator-plugins-and-recreate-sonataflowplatform)
-- [Step 7: Install the Greeting Workflow](#step-7-install-the-greeting-workflow)
+- [Destroy the Current Red Hat Developer Hub](#destroy-the-current-red-hat-developer-hub)
+- [Create the External Database](#create-the-external-database)
+- [Configure Red Hat Developer Hub to Use the External Database](#configure-red-hat-developer-hub-to-use-the-external-database)
+- [Create the SonataFlowPlatform](#create-the-sonataflowplatform)
+- [Enable Orchestrator Plugins](#enable-orchestrator-plugins)
 - [Verification](#verification)
 - [References](#references)
-
 
 > **Demo-Only Approach: This exercise uses a destroy-then-recreate approach for demonstration purposes only.**
 > 

@@ -2,7 +2,7 @@
 
 ## Table of Contents
 
-- [Overview](#enable-orchestrator)
+- [Enable Orchestrator](#enable-orchestrator)
 - [Installation](#installation)
 - [Deploy a Sample Workflow](#deploy-a-sample-workflow)
 - [References](#references)
