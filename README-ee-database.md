@@ -136,15 +136,14 @@ Wait for the SonataFlowPlatform and its pods to be ready.
 ## Enable Orchestrator Plugins
 
 After the new Red Hat Developer Hub instance is running correctly, enable the Orchestrator plugins
-(which use the new database configuration) and remove any dependencies on the previous
-SonataFlow setup. Then recreate the SonataFlowPlatform with the final configuration:
+(which use the new database configuration) and remove any dependencies of `SonataFlowPlatform`.
 
 ```bash
 oc apply -f ./custom-app-config-gitlab/dynamic-plugins-16-orchestrator.yaml -n rhdh-gitlab
-oc apply -f ./custom-app-config-gitlab/orchestrator-sonataflowplatform-16.yaml -n rhdh-gitlab
 ```
 
-This creates new SonataFlow instances using the external database. Wait for pods to stabilize.
+Red Hat Developer Hub will reuse the previous `SonataFlowPlatform` instance created and connected to
+the external database. Wait for pods to stabilize.
 
 Install the greeting workflow, configured to use the new database connection (e.g. via the
 values in `greeting-values-16.yaml`):

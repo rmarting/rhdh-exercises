@@ -60,12 +60,14 @@ data:
           orchestrator:
             dataIndexService:
               url: http://sonataflow-platform-data-index-service.rhdh-gitlab.svc.cluster.local
+        dependencies: [{}]
       - package: "@redhat/backstage-plugin-scaffolder-backend-module-orchestrator-dynamic@1.8.2"
         disabled: false
         pluginConfig:
           orchestrator:
             dataIndexService:
               url: http://sonataflow-platform-data-index-service.rhdh-gitlab.svc.cluster.local
+        dependencies: [{}]
       - package: "@redhat/backstage-plugin-orchestrator-form-widgets@1.8.2"
         disabled: false
       # MCP Server & Tools

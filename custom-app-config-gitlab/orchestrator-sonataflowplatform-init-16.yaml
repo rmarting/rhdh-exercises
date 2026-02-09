@@ -1,0 +1,139 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-infra-ns-to-workflow-ns # hardcoded
+spec:
+  podSelector: {}
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              # Allow knative events to be delivered to workflows.
+              kubernetes.io/metadata.name: knative-eventing
+        - namespaceSelector:
+            matchLabels:
+              # Allow auxiliary knative function for workflow (such as m2k-save-transformation)
+              kubernetes.io/metadata.name: knative-serving
+        - namespaceSelector:
+            matchLabels:
+              # Allow openshift serverless logic operator controller pod to access all pods in sonataflow
+              kubernetes.io/metadata.name: openshift-serverless-logic
+---
+# NetworkPolicy to unblock incoming traffic to the namespace
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-external-communication # hardcoded
+spec:
+  podSelector: {}
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              # Allow knative events to be delivered to workflows.
+              policy-group.network.openshift.io/ingress: ""
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-intra-network # hardcoded
+spec:
+  # Apply this policy to all pods in the namespace
+  podSelector: {}
+  # Specify policy type as 'Ingress' to control incoming traffic rules
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        # Allow ingress from any pod within the same namespace
+        - podSelector: {}
+---
+# NetworkPolicy to allow openshift-user-workload-monitoring pods to access all pods within the workflow's namespace
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-monitoring-to-sonataflow-and-workflows # hardcoded
+spec:
+  # Apply this policy to all pods in the namespace
+  podSelector: {}
+  # Specify policy type as 'Ingress' to control incoming traffic rules
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              # Allow openshift-user-workload-monitoring pods to access the workflow.
+              kubernetes.io/metadata.name: openshift-user-workload-monitoring
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-sonataflow-database-developer-hub
+spec:
+  ttlSecondsAfterFinished: 30
+  activeDeadlineSeconds: 120
+  template:
+    spec:
+      containers:
+        - name: psql
+          image: quay.io/fedora/postgresql-15:latest
+          resources:
+            limits:
+              cpu: "100m"
+              memory: "128Mi"
+            requests:
+              cpu: "100m"
+              memory: "64Mi"
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - ALL
+          envFrom:
+            - secretRef:
+                name: my-backstage-psql-secret-developer-hub
+          command: [ "sh", "-c" ]
+          args:
+            - |
+              set -e
+              DB_EXISTS=$(PGPASSWORD=${POSTGRES_PASSWORD} psql -h ${POSTGRES_HOST} -p ${POSTGRES_PORT} -U ${POSTGRES_USER} -tAc "SELECT 1 FROM pg_database WHERE datname='backstage_plugin_orchestrator'" postgres)
+              if [ -z "$DB_EXISTS" ]; then
+                PGPASSWORD=${POSTGRES_PASSWORD} psql -h ${POSTGRES_HOST} -p ${POSTGRES_PORT} -U ${POSTGRES_USER} -c "CREATE DATABASE backstage_plugin_orchestrator;" postgres
+              fi
+      restartPolicy: Never
+---
+apiVersion: sonataflow.org/v1alpha08
+kind: SonataFlowPlatform
+metadata:
+  name: sonataflow-platform
+spec:
+  monitoring:
+    enabled: true
+  services:
+    dataIndex:
+      enabled: true
+      persistence:
+        postgresql:
+          secretRef:
+            name: my-backstage-psql-secret-developer-hub
+            userKey: POSTGRES_USER
+            passwordKey: POSTGRES_PASSWORD
+          serviceRef:
+            name: my-backstage-psql-developer-hub
+            namespace: rhdh-gitlab
+            databaseName: backstage_plugin_orchestrator
+    jobService:
+      enabled: true
+      persistence:
+        postgresql:
+          secretRef:
+            name: my-backstage-psql-secret-developer-hub
+            userKey: POSTGRES_USER
+            passwordKey: POSTGRES_PASSWORD
+          serviceRef:
+            name: my-backstage-psql-developer-hub
+            namespace: rhdh-gitlab
+            databaseName: backstage_plugin_orchestrator
