@@ -828,6 +828,6 @@ Follow [this guide](./README-ai-ls.md).
 
 Follow [this guide](./README-ee-database.md).
 
-# Enterprise Labs - Enable CI/CD Pipelines
+## Enterprise Labs - Enable CI/CD Pipelines
 
 Follow [this guide](./README-ee-cicd.md).
