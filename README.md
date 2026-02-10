@@ -52,6 +52,8 @@ The full list of actions implemented in this exercise is:
 13. Enable Orchestrator
 14. AI Labs - Enable Model Context Protocol (MCP)
 15. AI Labs - Integrate with Red Hat Developer Lightspeed
+16. Enterprise Labs - Use an External Database
+17. Enterprise Labs - Enable CI/CD Pipelines
 
 Follow the exercises steps [here](./README-gitlab.md).
 

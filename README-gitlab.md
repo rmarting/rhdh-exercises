@@ -827,3 +827,7 @@ Follow [this guide](./README-ai-ls.md).
 ## Enterprise Labs - Use an External Database
 
 Follow [this guide](./README-ee-database.md).
+
+# Enterprise Labs - Enable CI/CD Pipelines
+
+Follow [this guide](./README-ee-cicd.md).

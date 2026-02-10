@@ -46,6 +46,44 @@ data:
           token: ${GITLAB_TOKEN}
           apiBaseUrl: https://gitlab.${BASEDOMAIN}/api/v4
           baseUrl: https://gitlab.${BASEDOMAIN}
+    argocd:
+      appLocatorMethods:
+        - type: 'config'
+          instances:
+            - name: openshift-gitops
+              url: ${ARGOCD_URL}
+              username: ${ARGOCD_USERNAME}
+              password: ${ARGOCD_PASSWORD}
+    kubernetes:
+      serviceLocatorMethod:
+        type: multiTenant
+      clusterLocatorMethods:
+        - type: config
+          clusters:
+            - name: ocp
+              authProvider: serviceAccount              
+              serviceAccountToken: ${RHDH_TOKEN_SERVICE_ACCOUNT}
+              skipTLSVerify: true
+              url: https://${APIDOMAIN}:6443
+      customResources:
+        - group: 'route.openshift.io'
+          apiVersion: 'v1'
+          plural: 'routes'
+        - group: 'tekton.dev'
+          apiVersion: 'v1'
+          plural: 'pipelines'
+        - group: 'tekton.dev'
+          apiVersion: 'v1'
+          plural: 'pipelineruns'
+        - group: 'tekton.dev'
+          apiVersion: 'v1'
+          plural: 'taskruns'
+        #- group: 'argoproj.io'
+        #  apiVersion: 'v1alpha1'
+        #  plural: 'Rollouts'
+        #- group: 'argoproj.io'
+        #  apiVersion: 'v1alpha1'
+        #  plural: 'analysisruns'          
     catalog:
       locations:
         - type: url
@@ -57,25 +95,22 @@ data:
       providers:
         gitlab:
           myGitLab:
-            host: gitlab.${BASEDOMAIN} # Identifies one of the hosts set up in the integrations
+            host: gitlab.${BASEDOMAIN}
             apiBaseUrl: https://gitlab.${BASEDOMAIN}/api/v4
-            branch: main # Optional. Used to discover on a specific branch
-            fallbackBranch: master # Optional. Fallback to be used if there is no default branch configured at the Gitlab repository. It is only used, if `branch` is undefined. Uses `master` as default
-            skipForkedRepos: false # Optional. If the project is a fork, skip repository
-            entityFilename: catalog-info.yaml # Optional. Defaults to `catalog-info.yaml`
-            projectPattern: '[\s\S]*' # Optional. Filters found projects based on provided patter. Defaults to `[\s\S]*`, which means to not filter anything
-            schedule: # optional; same options as in TaskScheduleDefinition
-              # supports cron, ISO duration, "human duration" as used in code
+            branch: main
+            fallbackBranch: master
+            skipForkedRepos: false
+            entityFilename: catalog-info.yaml
+            projectPattern: '[\s\S]*'
+            schedule:
               frequency: { minutes: 5 }
-              # supports ISO duration, "human duration" as used in code
               timeout: { minutes: 15 }
             orgEnabled: true
-            #group: org/teams # Required for gitlab.com when `orgEnabled: true`. Optional for self managed. Must not end with slash. Accepts only groups under the provided path (which will be stripped)
-            allowInherited: true # Allow groups to be ingested even if there are no direct members.
+            allowInherited: true
             groupPattern: '[\s\S]*'
             restrictUsersToGroup: false
     permission:
-      enabled: true
+      enabled: false
       rbac:
         admin:
           users:
@@ -88,6 +123,7 @@ data:
           - scaffolder
           - permission
           - orchestrator
+          - kubernetes
     techdocs:
       builder: 'external'
       generator:
