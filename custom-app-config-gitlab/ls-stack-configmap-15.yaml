@@ -26,11 +26,11 @@ data:
     conversation_cache:
       type: "postgres"
       postgres:
-        host: "rhdh-ls-postgresql.rhdh-gitlab.svc.cluster.local"
-        port: "5432"
+        host: "${env.POSTGRES_HOST}"
+        port: "${env.POSTGRES_PORT}"
+        user: "${env.POSTGRES_USER}"
+        password: "${env.POSTGRES_PASSWORD}"
         db: "rhdh-ls"
-        user: "${env.RHDH_LS_POSTGRESQL_USER}"
-        password: "${env.RHDH_LS_POSTGRESQL_PASSWORD}"
     mcp_servers:
       - name: mcp::backstage
         provider_id: model-context-protocol

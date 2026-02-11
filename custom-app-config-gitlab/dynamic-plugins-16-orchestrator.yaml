@@ -1,0 +1,107 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: dynamic-plugins-rhdh
+data:
+  dynamic-plugins.yaml: |
+    includes:
+      - dynamic-plugins.default.yaml
+    plugins:
+      - package: './dynamic-plugins/dist/backstage-plugin-catalog-backend-module-gitlab-dynamic'
+        disabled: false
+      # GitLab Plugins
+      - package: ./dynamic-plugins/dist/immobiliarelabs-backstage-plugin-gitlab-backend-dynamic
+        disabled: false
+      - package: ./dynamic-plugins/dist/immobiliarelabs-backstage-plugin-gitlab
+        disabled: false
+      # GitLab Organization Discovery
+      - package: './dynamic-plugins/dist/backstage-plugin-catalog-backend-module-gitlab-org-dynamic'
+        disabled: false
+      - package: './dynamic-plugins/dist/backstage-community-plugin-rbac'
+        disabled: false
+      - package: './dynamic-plugins/dist/backstage-plugin-scaffolder-backend-module-gitlab-dynamic'
+        disabled: false
+      # DevQuotes Dynamic Plugin
+      - package: oci://quay.io/rhdh-adventure-organization/parsifal-m-plugin-dev-quotes-homepage:3.0.8!parsifal-m-plugin-dev-quotes-homepage
+        disabled: false
+        pluginConfig:
+          dynamicPlugins:
+            frontend:
+              parsifal-m.plugin-dev-quotes-homepage:
+                mountPoints:
+                  - mountPoint: entity.page.overview/cards
+                    importName: DevQuote
+                    config:
+                      layout:
+                        gridColumnEnd:
+                          lg: span 4
+                          md: span 6
+                          xs: span 12
+                dynamicRoutes:
+                  - importName: DevQuote
+                    menuItem:
+                      text: Quote
+                      icon: star
+                    path: /devquote
+      # Scaffolder Relation Processor
+      - package: ./dynamic-plugins/dist/backstage-community-plugin-catalog-backend-module-scaffolder-relation-processor-dynamic
+        disabled: false
+      # Notifications
+      - package: ./dynamic-plugins/dist/backstage-plugin-notifications
+        disabled: false
+      - package: ./dynamic-plugins/dist/backstage-plugin-notifications-backend-dynamic
+        disabled: false
+      # Orchestrator
+      - package: "@redhat/backstage-plugin-orchestrator@1.8.2"
+        disabled: false
+      - package: "@redhat/backstage-plugin-orchestrator-backend-dynamic@1.8.2"
+        disabled: false
+        pluginConfig:
+          orchestrator:
+            dataIndexService:
+              url: http://sonataflow-platform-data-index-service.rhdh-gitlab.svc.cluster.local
+        dependencies: [{}]
+      - package: "@redhat/backstage-plugin-scaffolder-backend-module-orchestrator-dynamic@1.8.2"
+        disabled: false
+        pluginConfig:
+          orchestrator:
+            dataIndexService:
+              url: http://sonataflow-platform-data-index-service.rhdh-gitlab.svc.cluster.local
+        dependencies: [{}]
+      - package: "@redhat/backstage-plugin-orchestrator-form-widgets@1.8.2"
+        disabled: false
+      # MCP Server & Tools
+      - package: oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-plugin-mcp-actions-backend:bs_1.42.5__0.1.2!backstage-plugin-mcp-actions-backend
+        disabled: false
+      - package: oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-software-catalog-mcp-tool:bs_1.42.5__0.2.3!red-hat-developer-hub-backstage-plugin-software-catalog-mcp-tool
+        disabled: false
+      - package: oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-techdocs-mcp-tool:bs_1.42.5__0.3.0!red-hat-developer-hub-backstage-plugin-techdocs-mcp-tool
+        disabled: false
+      # Lightspeed for Red Hat Developer Hub
+      - package: oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-lightspeed:bs_1.42.5__1.0.3!red-hat-developer-hub-backstage-plugin-lightspeed
+        disabled: false
+        pluginConfig:
+          #lightspeed:
+          #  prompts:
+          #    - title: 'Getting Started with Red Hat Developer Hub'
+          #      message: Can you guide me through the first steps to start using Developer Hub as a developer, like exploring the Software Catalog and adding my service?
+          dynamicPlugins:
+            frontend:
+              red-hat-developer-hub.backstage-plugin-lightspeed:
+                translationResources:
+                  - importName: lightspeedTranslations
+                    module: Alpha
+                    ref: lightspeedTranslationRef
+                appIcons:
+                  - name: LightspeedIcon
+                    module: LightspeedPlugin
+                    importName: LightspeedIcon
+                dynamicRoutes:
+                  - path: /lightspeed
+                    importName: LightspeedPage
+                    module: LightspeedPlugin
+                    menuItem:
+                      icon: LightspeedIcon
+                      text: Lightspeed
+      - package: oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-lightspeed-backend:bs_1.42.5__1.0.3!red-hat-developer-hub-backstage-plugin-lightspeed-backend
+        disabled: false

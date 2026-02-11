@@ -6,7 +6,7 @@ spec:
   deployment:
     patch:
       spec:
-        replicas: 1
+        replicas: 2
         template:
           spec:
             volumes:
@@ -40,7 +40,7 @@ spec:
                   - secretRef:
                       name: rhdh-secrets
                   - secretRef:
-                      name: backstage-psql-secret-developer-hub
+                      name: my-backstage-psql-secret-developer-hub
                 volumeMounts:
                   - mountPath: /app-root/.llama
                     name: shared-storage
@@ -56,7 +56,7 @@ spec:
                   - secretRef:
                       name: rhdh-secrets
                   - secretRef:
-                      name: backstage-psql-secret-developer-hub
+                      name: my-backstage-psql-secret-developer-hub
                 volumeMounts:
                   - mountPath: /app-root/lightspeed-stack.yaml
                     name: lightspeed-stack
@@ -67,11 +67,6 @@ spec:
                     name: shared-storage
                   - mountPath: /tmp/data/conversations
                     name: shared-storage
-        #strategy:
-        #  #rollingUpdate: null
-        #  rollingUpdate:
-        #    $patch: delete
-        #  type: Recreate                            
   application:
     dynamicPluginsConfigMapName: dynamic-plugins-rhdh
     appConfig:
@@ -90,15 +85,18 @@ spec:
           value: '0'
           containers:
             - '*'
+        - name: LOG_LEVEL
+          value: info
       configMaps:
         - name: rhdh-techdocs-bucket-claim        
       secrets:
         - name: gitlab-secrets
         - name: rhdh-secrets
         - name: rhdh-techdocs-bucket-claim
+        - name: my-backstage-psql-secret-developer-hub
     route:
       enabled: true
   database:
-    enableLocalDb: true
+    enableLocalDb: false
   monitoring:
     enabled: true
