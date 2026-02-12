@@ -2,7 +2,9 @@ custom-app-config/github-secrets.yaml
 custom-app-config-gitlab/gitlab-secrets.yaml
 custom-app-config-gitlab/ls-llama-stack-secrets.yaml
 custom-app-config/
+.vscode
 
 # MPC clients and credentials
 .continue/mcpServers/
 .cursor/mcp.json
+.claude
