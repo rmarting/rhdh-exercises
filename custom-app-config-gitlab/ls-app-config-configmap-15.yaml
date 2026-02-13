@@ -13,6 +13,7 @@ data:
           - https://img.freepik.com
           - https://cdn.dribbble.com
           - https://avatars.githubusercontent.com # This is to load GitHub avatars in the UI
+          - https://secure.gravatar.com # This is to load Gitlab Gravatar in the UI 
         script-src:
           - "'self'"
           - "'unsafe-eval'"
