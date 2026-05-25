@@ -13,14 +13,13 @@
 
 This repository was tested and verified in the following environments provided by the [Red Hat Demo Platform](https://demo.redhat.com/):
 
-* [Red Hat OpenShift Container Platform Cluster](https://demo.redhat.com/catalog?item=babylon-catalog-prod/sandboxes-gpte.ocp-wksp.prod)
-* [OpenShift Single Node Cluster](https://demo.redhat.com/catalog?item=babylon-catalog-prod%2Fopenshift-cnv.ocpmulti-single-node-cnv.prod)
+* [Red Hat OpenShift Container Platform Cluster](https://catalog.demo.redhat.com/catalog/all?item=babylon-catalog-prod%2Fpublished.ocp4-cluster.prod)
 
 In both cases, request at least 64GB RAM memory.
 
 **NOTE**: You must `cluster-admin` privileges to install the different operators required for this technical exercise.
 
-The content of this repo was tested in Red Hat Developer Hub 1.8 on Red Hat OpenShift Container Platform 4.20.
+The content of this repo was tested in Red Hat Developer Hub 1.9.4 on Red Hat OpenShift Container Platform 4.21.
 
 ## Install cert-manager operator
 
@@ -29,7 +28,7 @@ Check if the Cert Manager operator is already available in your cluster:
 ```bash
 on 🎩 ❯ oc get csv -n cert-manager-operator
 NAME                            DISPLAY                                       VERSION   REPLACES                        PHASE
-cert-manager-operator.v1.18.0   cert-manager Operator for Red Hat OpenShift   1.18.0    cert-manager-operator.v1.17.0   Succeeded
+cert-manager-operator.v1.19.1   cert-manager Operator for Red Hat OpenShift   1.18.1    cert-manager-operator.v1.18.0   Succeeded
 ```
 
 If you don't get a response similar to the previous output, then execute this command:
@@ -43,7 +42,7 @@ Once the operator is ready you can continue. This command shows the status of th
 ```bash
 on 🎩 ❯ oc get csv -n cert-manager-operator
 NAME                            DISPLAY                                       VERSION   REPLACES                        PHASE
-cert-manager-operator.v1.18.0   cert-manager Operator for Red Hat OpenShift   1.18.0    cert-manager-operator.v1.17.0   Succeeded
+cert-manager-operator.v1.19.0   cert-manager Operator for Red Hat OpenShift   1.19.0    cert-manager-operator.v1.18.1   Succeeded
 ```
 
 **NOTE:** Please, wait until the operator is installed successfully before continue with the preparations. Otherwise, you can face other issues.
@@ -61,7 +60,7 @@ The operator is installed in the `gitlab-system` namespace. Check the status of 
 ```bash
 on 🎩 ❯ oc get csv -n gitlab-system
 NAME                                DISPLAY   VERSION   REPLACES                            PHASE
-gitlab-operator-kubernetes.v2.7.0   GitLab    2.7.1     gitlab-operator-kubernetes.v2.7.0   Succeeded
+gitlab-operator-kubernetes.v3.0.0   GitLab    3.0.0     gitlab-operator-kubernetes.v2.11.3Succeeded
 ```
 
 ## Deploy GitLab
@@ -132,7 +131,7 @@ The operator is installed in the `rhdh-operator` namespace:
 ```bash
 on 🎩 ❯ oc get csv -n rhdh-operator
 NAME                   DISPLAY                          VERSION   REPLACES               PHASE
-rhdh-operator.v1.8.2   Red Hat Developer Hub Operator   1.8.2     rhdh-operator.v1.8.0   Succeeded
+rhdh-operator.v1.9.4   Red Hat Developer Hub Operator   1.9.4     rhdh-operator.v1.9.3   Succeeded
 ```
 
 ## Install Red Hat Developer Hub instance

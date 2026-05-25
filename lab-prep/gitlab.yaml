@@ -6,20 +6,20 @@ metadata:
 spec:
   chart:
     values:
-      certmanager:
-        install: false
       prometheus:
         install: false
+      certmanager:
+        install: false
+      nginx-ingress:
+        enabled: false
       global:
         hosts:
           domain: ${BASEDOMAIN}
         ingress:
-          annotations:
-            route.openshift.io/termination: edge
           class: none
           configureCertmanager: false
+          annotations:
+            route.openshift.io/termination: edge
           tls:
             enabled: false
-      nginx-ingress:
-        enabled: false
-    version: 9.7.1
+    version: "9.10.6"

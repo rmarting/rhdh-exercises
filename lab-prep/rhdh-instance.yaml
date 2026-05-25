@@ -3,7 +3,7 @@ kind: Namespace
 metadata:
   name: rhdh-gitlab
 ---
-apiVersion: rhdh.redhat.com/v1alpha2
+apiVersion: rhdh.redhat.com/v1alpha5
 kind: Backstage
 metadata:
   name: developer-hub
@@ -23,6 +23,10 @@ spec:
       envs:
         - name: NODE_TLS_REJECT_UNAUTHORIZED
           value: '0'
+        #- name: CATALOG_INDEX_IMAGE
+        #  value: 'registry.access.redhat.com/rhdh/plugin-catalog-index@sha256:1026e4c63ed82cbe546dae87d516e2db71b590a1b59ee62c73674a535e826070'
+        #  containers:
+        #    - install-dynamic-plugins
     route:
       enabled: true
   database:
