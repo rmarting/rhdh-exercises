@@ -101,3 +101,4 @@ data:
       notifications:
         templateUpdate:
           enabled: true
+

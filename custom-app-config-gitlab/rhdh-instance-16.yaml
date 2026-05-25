@@ -1,4 +1,4 @@
-apiVersion: rhdh.redhat.com/v1alpha4
+apiVersion: rhdh.redhat.com/v1alpha5
 kind: Backstage
 metadata:
   name: developer-hub
@@ -6,7 +6,7 @@ spec:
   deployment:
     patch:
       spec:
-        replicas: 2
+        replicas: 1
         template:
           spec:
             volumes:
@@ -23,7 +23,7 @@ spec:
                 emptyDir: {}            
             initContainers:
               - name: init-rag-data
-                image: 'quay.io/redhat-ai-dev/rag-content:release-1.8-lcs'
+                image: 'quay.io/redhat-ai-dev/rag-content:release-1.9-lcs'
                 command:
                   - "sh"
                   - "-c"
@@ -87,6 +87,10 @@ spec:
             - '*'
         - name: LOG_LEVEL
           value: info
+        #- name: CATALOG_INDEX_IMAGE
+        #  value: 'registry.access.redhat.com/rhdh/plugin-catalog-index@sha256:1026e4c63ed82cbe546dae87d516e2db71b590a1b59ee62c73674a535e826070'
+        #  containers:
+        #    - install-dynamic-plugins          
       configMaps:
         - name: rhdh-techdocs-bucket-claim        
       secrets:
@@ -96,6 +100,8 @@ spec:
         - name: my-backstage-psql-secret-developer-hub
     route:
       enabled: true
+    # Optional: custom image for the main Backstage container (and init containers if not overridden by deployment.patch)
+    #image: quay.io/rhdh/rhdh-hub-rhel9:1.9
   database:
     enableLocalDb: false
   monitoring:

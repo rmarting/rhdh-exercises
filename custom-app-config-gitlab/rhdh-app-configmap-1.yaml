@@ -17,6 +17,12 @@ data:
       #  origin: https://backstage-developer-hub-rhdh-gitlab.${BASEDOMAIN}
     auth:
       environment: development
+      autologout:
+        enabled: true
+        idleTimeoutMinutes: 60
+        promptBeforeIdleSeconds: 10
+        useWorkerTimers: false
+        logoutIfDisconnected: true      
       providers:
         guest:
           dangerouslyAllowOutsideDevelopment: true

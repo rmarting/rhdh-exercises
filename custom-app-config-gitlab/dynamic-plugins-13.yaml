@@ -10,9 +10,11 @@ data:
       - package: './dynamic-plugins/dist/backstage-plugin-catalog-backend-module-gitlab-dynamic'
         disabled: false
       # GitLab Plugins
-      - package: ./dynamic-plugins/dist/immobiliarelabs-backstage-plugin-gitlab-backend-dynamic
+      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/immobiliarelabs-backstage-plugin-gitlab:bs_1.45.3__6.13.0'
+        integrity: 'sha256:36b15f74c207839bd59de964030867b5ef7cfadb80fadf38b87d401c7aac5cf1'
         disabled: false
-      - package: ./dynamic-plugins/dist/immobiliarelabs-backstage-plugin-gitlab
+      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/immobiliarelabs-backstage-plugin-gitlab-backend:bs_1.45.3__6.13.0'
+        integrity: 'sha256:0c5b9ade408c824e957a683e808195177936c58928cd0ee25724079abff53cda'
         disabled: false
       # GitLab Organization Discovery
       - package: './dynamic-plugins/dist/backstage-plugin-catalog-backend-module-gitlab-org-dynamic'
@@ -51,15 +53,20 @@ data:
         disabled: false
       - package: ./dynamic-plugins/dist/backstage-plugin-notifications-backend-dynamic
         disabled: false
-      # Orchestrator
-      - package: "@redhat/backstage-plugin-orchestrator@1.8.2"
+      # Signals
+      - package: ./dynamic-plugins/dist/backstage-plugin-signals
         disabled: false
-      - package: "@redhat/backstage-plugin-orchestrator-backend-dynamic@1.8.2"
+      - package: ./dynamic-plugins/dist/backstage-plugin-signals-backend-dynamic
+        disabled: false
+      # Orchestrator
+      - package: 'oci://registry.access.redhat.com/rhdh/red-hat-developer-hub-backstage-plugin-orchestrator:{{inherit}}'
+        disabled: false
+      - package: 'oci://registry.access.redhat.com/rhdh/red-hat-developer-hub-backstage-plugin-orchestrator-backend:{{inherit}}'
         disabled: false
         dependencies:
           - ref: sonataflow
-      - package: "@redhat/backstage-plugin-scaffolder-backend-module-orchestrator-dynamic@1.8.2"
+      - package: 'oci://registry.access.redhat.com/rhdh/red-hat-developer-hub-backstage-plugin-scaffolder-backend-module-orchestrator:{{inherit}}'
         disabled: false
-      - package: "@redhat/backstage-plugin-orchestrator-form-widgets@1.8.2"
+      - package: 'oci://registry.access.redhat.com/rhdh/red-hat-developer-hub-backstage-plugin-orchestrator-form-widgets:{{inherit}}'
         disabled: false
 

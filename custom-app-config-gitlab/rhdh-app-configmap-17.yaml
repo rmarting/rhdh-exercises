@@ -110,7 +110,7 @@ data:
             groupPattern: '[\s\S]*'
             restrictUsersToGroup: false
     permission:
-      enabled: false
+      enabled: true
       rbac:
         admin:
           users:

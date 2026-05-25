@@ -1,4 +1,4 @@
-apiVersion: rhdh.redhat.com/v1alpha4
+apiVersion: rhdh.redhat.com/v1alpha5
 kind: Backstage
 metadata:
   name: developer-hub
@@ -6,7 +6,7 @@ spec:
   deployment:
     patch:
       spec:
-        replicas: 1
+        replicas: 1 # Scaled down to avoid too many clients error - Review FAQ.
         template:
           spec:
             volumes:
@@ -23,7 +23,7 @@ spec:
                 emptyDir: {}            
             initContainers:
               - name: init-rag-data
-                image: 'quay.io/redhat-ai-dev/rag-content:release-1.8-lcs'
+                image: 'quay.io/redhat-ai-dev/rag-content:release-1.9-lcs'
                 command:
                   - "sh"
                   - "-c"

@@ -5,7 +5,7 @@ metadata:
 data:
   rbac-conditional-policies.yaml: |
     # References:
-    # https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.4/html-single/authorization/index#con-rbac-conditional-policies-rhdh_title-authorization
+    # https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/authorization/index#con-rbac-conditional-policies-rhdh_title-authorization
     # https://backstage.io/docs/features/software-catalog/descriptor-format/#common-to-all-kinds-the-metadata
     ---
     # Team B can only see 'sample' templates
@@ -103,6 +103,8 @@ data:
     p, role:default/team-a, kubernetes.clusters.read, read, allow
     p, role:default/team-a, kubernetes.resources.read, read, allow
     p, role:default/team-a, kubernetes.proxy, use, allow
+    # Argo CD permissions
+    p, role:default/team-a, argocd.view.read, read, allow
 
     # Team-B Role
     # Catalog permissions
@@ -134,6 +136,8 @@ data:
     p, role:default/team-b, kubernetes.clusters.read, read, allow
     p, role:default/team-b, kubernetes.resources.read, read, allow
     p, role:default/team-b, kubernetes.proxy, use, allow
+    # Argo CD permissions
+    p, role:default/team-b, argocd.view.read, read, allow
 
     # Groups
     g, group:default/team-a, role:default/team-a

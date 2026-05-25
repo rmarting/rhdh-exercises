@@ -5,7 +5,7 @@ metadata:
 data:
   rbac-conditional-policies.yaml: |
     # References:
-    # https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.4/html-single/authorization/index#con-rbac-conditional-policies-rhdh_title-authorization
+    # https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/authorization/index#con-rbac-conditional-policies-rhdh_title-authorization
     # https://backstage.io/docs/features/software-catalog/descriptor-format/#common-to-all-kinds-the-metadata
     ---
     # Team B can only see 'sample' templates
