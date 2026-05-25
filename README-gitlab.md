@@ -94,7 +94,7 @@ an automatic redeploy will start, and it will few minutes until
 the new pod is ready to serve request. Please, be patient after any change before confirming they are
 correctly applied.
 
-More detailed information about this step [here](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.8/html-single/configuring_red_hat_developer_hub/index#provisioning-and-using-your-custom-configuration).
+More detailed information about this step [here](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/configuring_red_hat_developer_hub/index#provision-and-use-your-custom-rhdh-configuration_configuring-rhdh).
 
 ## Enable GitLab authentication
 
@@ -179,7 +179,7 @@ The GitLab integration has a special entity provider for discovering catalog ent
 will crawl the GitLab instance and register entities matching the configured paths. This can be useful as an alternative
 to static locations or manually adding things to the catalog.
 
-More information about Dynamic Plugins [here](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.8/html-single/installing_and_viewing_plugins_in_red_hat_developer_hub/index).
+More information about Dynamic Plugins [here](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/installing_and_viewing_plugins_in_red_hat_developer_hub/index).
 
 To enable the GitLab integration and discovery capabilities a Personal Access Token (aka PAT) is required.
 
@@ -296,9 +296,11 @@ tabs shows the issues, merge requests and other useful information from the repo
 
 ```yaml
       # GitLab Integration Plugins
-      - package: ./dynamic-plugins/dist/immobiliarelabs-backstage-plugin-gitlab-backend-dynamic
+      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/immobiliarelabs-backstage-plugin-gitlab:bs_1.45.3__6.13.0'
+        integrity: 'sha256:36b15f74c207839bd59de964030867b5ef7cfadb80fadf38b87d401c7aac5cf1'
         disabled: false
-      - package: ./dynamic-plugins/dist/immobiliarelabs-backstage-plugin-gitlab
+      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/immobiliarelabs-backstage-plugin-gitlab-backend:bs_1.45.3__6.13.0'
+        integrity: 'sha256:0c5b9ade408c824e957a683e808195177936c58928cd0ee25724079abff53cda'
         disabled: false
 ```
 
@@ -394,7 +396,7 @@ that this user can't create anything. This user has not any `Self-Service` butto
 
 References:
 
-* [Authorization in Red Hat Developer Hub](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.8/html-single/authorization_in_red_hat_developer_hub/index)
+* [Authorization in Red Hat Developer Hub](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/authorization_in_red_hat_developer_hub/index)
 
 ## Import Software Template
 
@@ -499,26 +501,26 @@ Verify first if the OpenShift Data Foundation operator is installed on your clus
 ```bash
 on 🎩 ❯ oc get csv -n openshift-storage
 NAME                                              DISPLAY                            VERSION        REPLACES                                          PHASE
-cephcsi-operator.v4.20.4-rhodf                    CephCSI operator                   4.20.4-rhodf   cephcsi-operator.v4.20.3-rhodf                    Succeeded
-mcg-operator.v4.20.4-rhodf                        NooBaa Operator                    4.20.4-rhodf   mcg-operator.v4.20.3-rhodf                        Succeeded
-ocs-client-operator.v4.20.4-rhodf                 OpenShift Data Foundation Client   4.20.4-rhodf   ocs-client-operator.v4.20.3-rhodf                 Succeeded
-ocs-operator.v4.20.4-rhodf                        OpenShift Container Storage        4.20.4-rhodf   ocs-operator.v4.20.3-rhodf                        Succeeded
-odf-csi-addons-operator.v4.20.4-rhodf             CSI Addons                         4.20.4-rhodf   odf-csi-addons-operator.v4.20.3-rhodf             Succeeded
-odf-dependencies.v4.20.4-rhodf                    Data Foundation Dependencies       4.20.4-rhodf   odf-dependencies.v4.20.3-rhodf                    Succeeded
-odf-external-snapshotter-operator.v4.20.4-rhodf   Snapshot Controller                4.20.4-rhodf   odf-external-snapshotter-operator.v4.20.3-rhodf   Succeeded
-odf-operator.v4.20.4-rhodf                        OpenShift Data Foundation          4.20.4-rhodf   odf-operator.v4.20.3-rhodf                        Succeeded
-odf-prometheus-operator.v4.20.4-rhodf             Prometheus Operator                4.20.4-rhodf   odf-prometheus-operator.v4.20.3-rhodf             Succeeded
-recipe.v4.20.4-rhodf                              Recipe                             4.20.4-rhodf   recipe.v4.20.3-rhodf                              Succeeded
-rhdh-operator.v1.8.2                              Red Hat Developer Hub Operator     1.8.2          rhdh-operator.v1.8.0                              Succeeded
-rook-ceph-operator.v4.20.4-rhodf                  Rook-Ceph                          4.20.4-rhodf   rook-ceph-operator.v4.20.3-rhodf                  Succeeded
+cephcsi-operator.v4.21.0-rhodf                    CephCSI operator                   4.21.0-rhodf   cephcsi-operator.v4.21.0-rhodf                    Succeeded
+mcg-operator.v4.21.0-rhodf                        NooBaa Operator                    4.21.0-rhodf   mcg-operator.v4.21.0-rhodf                        Succeeded
+ocs-client-operator.v4.21.0-rhodf                 OpenShift Data Foundation Client   4.21.0-rhodf   ocs-client-operator.v4.21.0-rhodf                 Succeeded
+ocs-operator.v4.21.0-rhodf                        OpenShift Container Storage        4.21.0-rhodf   ocs-operator.v4.21.0-rhodf                        Succeeded
+odf-csi-addons-operator.v4.21.0-rhodf             CSI Addons                         4.21.0-rhodf   odf-csi-addons-operator.v4.21.0-rhodf             Succeeded
+odf-dependencies.v4.21.0-rhodf                    Data Foundation Dependencies       4.21.0-rhodf   odf-dependencies.v4.21.0-rhodf                    Succeeded
+odf-external-snapshotter-operator.v4.21.0-rhodf   Snapshot Controller                4.21.0-rhodf   odf-external-snapshotter-operator.v4.21.0-rhodf   Succeeded
+odf-operator.v4.21.0-rhodf                        OpenShift Data Foundation          4.21.0-rhodf   odf-operator.v4.21.0-rhodf                        Succeeded
+odf-prometheus-operator.v4.21.0-rhodf             Prometheus Operator                4.21.0-rhodf   odf-prometheus-operator.v4.21.0-rhodf             Succeeded
+recipe.v4.21.0-rhodf                              Recipe                             4.21.0-rhodf   recipe.v4.21.0-rhodf                              Succeeded
+rhdh-operator.v1.9.4                              Red Hat Developer Hub Operator     1.9.4          rhdh-operator.v1.9.3                              Succeeded
+rook-ceph-operator.v4.21.0-rhodf                  Rook-Ceph                          4.21.0-rhodf   rook-ceph-operator.v4.21.0-rhodf                  Succeeded
 ```
 
 If you get a similar output, then your system is already prepared to continue. Otherwise, you must install following
-this [instructions](https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation/4.20/html-single/deploying_openshift_data_foundation_using_amazon_web_services/index#installing-openshift-data-foundation-operator-using-the-operator-hub_cloud-storage).
+this [instructions](https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation/4.21/html-single/deploying_openshift_data_foundation_using_amazon_web_services/index#installing-openshift-data-foundation-operator-using-the-operator-hub_cloud-storage).
 
 Installing this operator takes a while, so, wait until all of them are successfully installed before continuing with the next step.
 
-Create the storage system following this [instructions](https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation/4.20/html/deploying_openshift_data_foundation_using_amazon_web_services/deploy-using-dynamic-storage-devices-aws#creating-an-openshift-data-foundation-service_cloud-storage).
+Create the storage system following this [instructions](https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation/4.21/html/deploying_openshift_data_foundation_using_amazon_web_services/deploy-using-dynamic-storage-devices-aws#creating-an-openshift-data-foundation-service_cloud-storage).
 
 ### Create Storage
 
@@ -548,7 +550,7 @@ oc apply -f ./custom-app-config-gitlab/gitlab-runner-operator-8.yaml -n gitlab-s
 ```bash
 on 🎩 ❯ oc get csv -n gitlab-system
 NAME                                DISPLAY          VERSION   REPLACES                            PHASE
-gitlab-runner-operator.v1.43.3      GitLab Runner    1.43.3    gitlab-runner-operator.v1.43.2      Succeeded
+gitlab-runner-operator.v1.49.0      GitLab Runner    1.49.0    gitlab-runner-operator.v1.48.3      Succeeded
 ```
 
 The technical docs will be created as part of the CI pipelines of the components, so
@@ -644,7 +646,7 @@ oc apply -f ./custom-app-config-gitlab/rhdh-instance-9.yaml -n rhdh-gitlab
 
 References:
 
-* [Configuring high availability](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.8/html-single/configuring_red_hat_developer_hub/index#HighAvailability)
+* [Configuring high availability](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/configuring_red_hat_developer_hub/index#configure-high-availability-in-rhdh_configuring-rhdh)
 
 ## Enable Dynamics Plugin Cache
 
@@ -676,7 +678,7 @@ oc apply -f ./custom-app-config-gitlab/rhdh-instance-10.yaml -n rhdh-gitlab
 
 References:
 
-* [Enabling the dynamic plugins cache](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.8/html-single/configuring_red_hat_developer_hub/index#using-the-dynamic-plugins-cache_configuring-and-operating)
+* [Enabling the dynamic plugins cache](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/configuring_red_hat_developer_hub/index#use-the-dynamic-plugins-cache_configuring-rhdh)
 
 ## Enable Monitoring and Observability
 
@@ -696,14 +698,14 @@ oc apply -f ./custom-app-config-gitlab/rhdh-app-configmap-11.yaml -n rhdh-gitlab
 
 References:
 
-* [About Adoption Insights](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.8/html-single/adoption_insights_in_red_hat_developer_hub/index#con-about-adoption-insights_title-adoption-insights)
+* [About Adoption Insights](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/adoption_insights_in_red_hat_developer_hub/index#con-about-adoption-insights_title-adoption-insights)
 
-Since Red Hat Developer Hub 1.8 is easy to integrate it with the OpenShift Monitoring services using
+Since Red Hat Developer Hub 1.9 is easy to integrate it with the OpenShift Monitoring services using
 the user-defined projects. OpenShift can monitor user-defined projects in addition to the default platform monitoring.
 This feature allows monitoring your own projects in OpenShift without the need for an additional monitoring solution.
 Using this feature centralizes monitoring for core platform components and user-defined projects.
 
-For detailed information, check the [official documentation](https://docs.redhat.com/en/documentation/monitoring_stack_for_red_hat_openshift/4.20/html/configuring_user_workload_monitoring/index).
+For detailed information, check the [official documentation](https://docs.redhat.com/en/documentation/monitoring_stack_for_red_hat_openshift/4.21/html/configuring_user_workload_monitoring/index).
 
 **NOTE**: As cluster-admin enable the user-monitoring capabilities of OpenShift adding the `enableUserWorkload` variable in
 the configuration of the OpenShift Monitoring. This configuration is described in the `cluster-monitoring-config` ConfigMap
@@ -775,7 +777,7 @@ This procedure is similar to:
 
 References:
 
-* [Monitoring and Logging](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.8/html-single/monitoring_and_logging/index#proc-admin-enabling-metrics-ocp-operator_assembly-rhdh-observability)
+* [Monitoring and Logging](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/monitoring_and_logging/index#proc-admin-enabling-metrics-ocp-operator_assembly-rhdh-observability)
 
 ## Enable Notifications
 
@@ -810,7 +812,7 @@ of the component.
 
 References: 
 
-* [Enabling Software Template version update notifications in Red Hat Developer Hub](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.8/html-single/customizing_red_hat_developer_hub/index#proc-enabling-software-template-version-update-notifications_configuring-templates)
+* [Enabling Software Template version update notifications in Red Hat Developer Hub](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/customizing_red_hat_developer_hub/index#enable-software-template-version-update-notifications-in-rhdh_about-software-templates)
 
 ## Enable Orchestrator
 

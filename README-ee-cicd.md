@@ -41,7 +41,7 @@ The operator is installed in the `openshift-operators` namespace. Verify the sta
 ```bash
 on 🎩 ❯ oc get csv -n openshift-operators -l operators.coreos.com/openshift-pipelines-operator-rh.openshift-operators=
 NAME                                      DISPLAY                       VERSION   REPLACES                                  PHASE
-openshift-pipelines-operator-rh.v1.21.0   Red Hat OpenShift Pipelines   1.21.0    openshift-pipelines-operator-rh.v1.20.2   Succeeded
+openshift-pipelines-operator-rh.v1.22.0   Red Hat OpenShift Pipelines   1.22.0    openshift-pipelines-operator-rh.v1.21.1   Succeeded
 ```
 
 Wait until the **PHASE** is `Succeeded` before continuing. You can also verify that the
@@ -50,7 +50,7 @@ Wait until the **PHASE** is `Succeeded` before continuing. You can also verify t
 ```bash
 on 🎩 ❯ oc get tektonconfig -A
 NAME     VERSION   READY   REASON
-config   1.21.0    True  
+config   1.22.0    True  
 ```
 
 ### Install Red Hat OpenShift GitOps operator
@@ -70,7 +70,7 @@ The operator is installed in the `openshift-gitops-operator` namespace. Verify t
 ```bash
 on 🎩 ❯ oc get csv -n openshift-gitops-operator
 NAME                                      DISPLAY                        VERSION    REPLACES                                  PHASE
-openshift-gitops-operator.v1.19.1         Red Hat OpenShift GitOps       1.19.1     openshift-gitops-operator.v1.19.0         Succeeded
+openshift-gitops-operator.v1.20.3         Red Hat OpenShift GitOps       1.20.3     openshift-gitops-operator.v1.20.2         Succeeded
 ```
 
 Wait until the **PHASE** is `Succeeded`.
@@ -99,6 +99,23 @@ The instance is deployed in the `openshift-gitops` namespace and available at:
 
 ```bash
 echo https://$(oc get route openshift-gitops-server -n openshift-gitops -o jsonpath='{.spec.host}')
+```
+
+The default instance is automatically configured for a specific set of permissions but as stated earlier
+typically this will need to be expanded in order for Argo CD to be able to deploy all of the resources
+required. Red Hat recommends using the default `openshift-gitops` instance for cluster configuration so
+for simplicity we will give the appropriate Argo CD service account cluster-admin level permissions.
+
+**NOTE**: If you want to provide Argo CD as a service to application/developer teams Red Hat recommends
+standing up a separate Argo CD instance dedicated for this in a different namespace with restricted
+cluster permissions. 
+
+To provide `cluster-admin` permissions to Argo CD, we need to create a ClusterRoleBinding for the
+`openshift-gitops-argocd-application-controller` service account as this is the one Argo CD uses for
+interacting with the Kubernetes API to deploy resources. To do so, run this command:
+
+```bash
+oc adm policy add-cluster-role-to-user --rolebinding-name="openshift-gitops-cluster-admin" cluster-admin -z openshift-gitops-argocd-application-controller -n openshift-gitops
 ```
 
 ## Integration with Argo CD
@@ -130,7 +147,7 @@ export ARGOCD_PASSWORD_B64=$(echo -n "$ARGOCD_PASSWORD" | base64 -w0)
 oc patch secret rhdh-secrets -n rhdh-gitlab -p '{"data":{"ARGOCD_URL":"'"$ARGOCD_URL_B64"'","ARGOCD_USERNAME":"'"$ARGOCD_USERNAME_B64"'","ARGOCD_PASSWORD":"'"$ARGOCD_PASSWORD_B64"'"}}'
 ```
 
-## Integration with Tokens
+## Integration with Tekton
 
 The integration with Tekton requires to add some credentials to be used also by the
 Kubernetes plugin. It is needed to add some privileges to get objects from the OpenShift API.
@@ -274,11 +291,11 @@ metadata:
 
 ## References
 
-- [Configuring dynamic plugins (RHDH 1.8)](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.8/html-single/configuring_dynamic_plugins/index)
-- [Installing and configuring Argo CD](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.8/html/configuring_dynamic_plugins/assembly-installing-configuring-argo-cd)
-- [Dynamic plugins reference (Tekton, Argo CD, Kubernetes)](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.8/html-single/dynamic_plugins_reference/index)
+- [Configuring dynamic plugins (RHDH 1.9)](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/configuring_dynamic_plugins/index)
+- [Installing and configuring Argo CD](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/configuring_dynamic_plugins/index#install-and-configure-argo-cd_configuring-dynamic-plugins)
+- [Dynamic plugins reference (Tekton, Argo CD, Kubernetes)](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/dynamic_plugins_reference/index#supported-plugins_dynamic-plugins-reference)
 - [Red Hat OpenShift Pipelines](https://docs.redhat.com/en/documentation/red_hat_openshift_pipelines/)
 - [Red Hat OpenShift GitOps](https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/)
-- [Installing Red Hat OpenShift GitOps](https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/1.19/html-single/installing_gitops/)
-- [Setting up an Argo CD instance](https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/1.19/html-single/argo_cd_instance/) (default instance is in `openshift-gitops`)
+- [Installing Red Hat OpenShift GitOps](https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/1.20/html-single/installing_gitops/)
+- [Setting up an Argo CD instance](https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/1.20/html-single/argo_cd_instance/) (default instance is in `openshift-gitops`)
 - [Backstage Kubernetes plugin — cluster service account token](https://backstage.io/docs/features/kubernetes/configuration#clustersserviceaccounttoken-optional)

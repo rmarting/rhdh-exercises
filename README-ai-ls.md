@@ -4,7 +4,7 @@ Red Hat Developer Lightspeed is an AI-powered assistant integrated into Red Hat 
 interact with the Software Catalog, TechDocs, and other Developer Hub features through natural language queries.
 This exercise walks you through the integration process.
 
-For detailed information, refer to the [official documentation](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.8/html-single/interacting_with_red_hat_developer_lightspeed_for_red_hat_developer_hub/index#con-about-developer-lightspeed_developer-lightspeed).
+For detailed information, refer to the [official documentation](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/interacting_with_red_hat_developer_lightspeed_for_red_hat_developer_hub/index#con-about-developer-lightspeed_developer-lightspeed).
 
 ## Table of Contents
 
@@ -65,12 +65,15 @@ metadata:
   namespace: rhdh-gitlab
 type: Opaque
 stringData:
+  ENABLE_VLLM: "true"
   VLLM_TLS_VERIFY: ""
   VALIDATION_PROVIDER: "vllm"
   VLLM_MAX_TOKENS: ""
   VLLM_URL: REPLACE_IT
   VLLM_API_KEY: REPLACE_IT
-  VALIDATION_MODEL_NAME: REPLACE_IT
+  SAFETY_MODEL: REPLACE_IT
+  SAFETY_URL: REPLACE_IT
+  SAFETY_API_KEY: REPLACE_IT
 ```
 
 The `llama-stack-secrets` Secret contains:
@@ -78,7 +81,9 @@ The `llama-stack-secrets` Secret contains:
 - `VLLM_URL`: The endpoint URL for the LLM service
 - `VLLM_API_KEY`: Authentication key for the LLM service
 - `VALIDATION_MODEL_NAME`: The specific model to use
-- `VALIDATION_PROVIDER`: The provider type (e.g., `vllm`)
+- `SAFETY_MODEL`:
+- `SAFETY_URL`: 
+- `SAFETY_API_KEY`: 
 
 **NOTE**: Review and update the values in this file to match your LLM service configuration before applying.
 
@@ -217,5 +222,5 @@ the MCP tools, providing AI-powered assistance for navigating and understanding 
 
 ## References
 
-- [Interacting with Red Hat Developer Lightspeed for Red Hat Developer Hub](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.8/html-single/interacting_with_red_hat_developer_lightspeed_for_red_hat_developer_hub/index)
-- [About Developer Lightspeed](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.8/html-single/interacting_with_red_hat_developer_lightspeed_for_red_hat_developer_hub/index#con-about-developer-lightspeed_developer-lightspeed)
+- [Interacting with Red Hat Developer Lightspeed for Red Hat Developer Hub](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/interacting_with_red_hat_developer_lightspeed_for_red_hat_developer_hub/index)
+- [About Developer Lightspeed](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/interacting_with_red_hat_developer_lightspeed_for_red_hat_developer_hub/index#con-about-developer-lightspeed_developer-lightspeed)

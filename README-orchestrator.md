@@ -33,15 +33,15 @@ And confirm its successful installation:
 ```bash
 on 🎩 ❯ oc get csv -n openshift-serverless-logic
 NAME                            DISPLAY                               VERSION   REPLACES                              PHASE
-logic-operator-rhel8.v1.36.1    OpenShift Serverless Logic Operator   1.36.1    logic-operator-rhel8.v1.36.0          Succeeded
+logic-operator-rhel8.v1.37.1    OpenShift Serverless Logic Operator   1.37.0    logic-operator-rhel8.v1.37.0          Succeeded
 ```
 
-To enable the Orchestrator feature, we need to enable the following dynamic plugins:
+To enable the Orchestrator feature, we need to enable the following dynamic plugins (OCI images; `{{inherit}}` resolves to the RHDH 1.9 version provided by the operator):
 
-* `@redhat/backstage-plugin-orchestrator`
-* `@redhat/backstage-plugin-orchestrator-backend-dynamic`
-* `@redhat/backstage-plugin-scaffolder-backend-module-orchestrator-dynamic`
-* `@redhat/backstage-plugin-orchestrator-form-widgets`
+* `red-hat-developer-hub-backstage-plugin-orchestrator`
+* `red-hat-developer-hub-backstage-plugin-orchestrator-backend`
+* `red-hat-developer-hub-backstage-plugin-scaffolder-backend-module-orchestrator`
+* `red-hat-developer-hub-backstage-plugin-orchestrator-form-widgets`
 
 After enabling the Orchestrator plugin, the RHDH Operator automatically provisions the following required dependencies:
 
@@ -126,4 +126,4 @@ Run it and verify the results.
 
 ## References
 
-- [Orchestrator in Red Hat Developer Hub](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.8/html-single/orchestrator_in_red_hat_developer_hub/index)
+- [Orchestrator in Red Hat Developer Hub](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/orchestrator_in_red_hat_developer_hub/index)
