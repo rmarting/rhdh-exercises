@@ -5,8 +5,7 @@
 ![Last Commit](https://img.shields.io/github/last-commit/rmarting/rhdh-exercises?style=flat-square)
 ![Technology](https://img.shields.io/badge/tech-Red%20Hat%20Developer%20Hub-red?style=flat-square)
 ![Language](https://img.shields.io/github/languages/top/rmarting/rhdh-exercises?style=flat-square)
-[link=https://workspaces.openshift.com/#https://github.com/rmarting/rhdh-exercises.git]
-image::https://img.shields.io/static/v1?label=open%20in&message=developer%20sandbox&logo=eclipseche&color=FDB940&labelColor=525C86[Open Workspace]
+[![Dev Spaces](https://img.shields.io/static/v1?label=open%20in&message=developer%20sandbox&logo=eclipseche&color=FDB940&labelColor=525C86)](https://workspaces.openshift.com/#https://github.com/rmarting/rhdh-exercises.git)
 
 ## Table of Contents
 
