@@ -1,0 +1,17 @@
+name: modules
+title: Red Hat Developer Hub Workshop
+version: master
+nav:
+  - modules/ROOT/nav.adoc
+
+#start_page: modules::index.adoc  
+
+asciidoc:
+  attributes:
+    experimental: true
+    release-version: master
+    page-pagination: true
+    showroom-collection-version: v1.5.2
+    page-links:
+      - url: https://redhat.com
+        text: Red Hat

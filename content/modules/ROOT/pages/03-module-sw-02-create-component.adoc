@@ -1,0 +1,43 @@
+= Create a component
+:navtitle: Create a component
+:source-highlighter: rouge
+:toc: macro
+:toclevels: 1
+
+include::partial$_attributes.adoc[]
+
+Creating a new component from a Software Template is a simple process. Create a new component
+from the `Sample Software Template from Backstage` template.
+
+Fulfil the parameters requested:
+
+- Name - an unique name of this new component
+- Description (Optional)
+- Owner - Choose one from the list of options, or add one such as `team-a`, or `team-b`.
+- Repository Location:
++
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+echo gitlab.${BASEDOMAIN}
+----
++
+Another option:
++
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+echo gitlab.$(oc get ingresscontroller -n openshift-ingress-operator default -o jsonpath='{.status.domain}')
+----
++
+NOTE: Note that `https://` is not included.
+
+Verify that your new component is listed on the `Catalog` page.
+
+== Learning outcomes
+
+By completing this module, you should understand:
+
+* How to launch template from Self-service
+* How to provide owner, name, and GitLab repository location
+* How to verify new component in Catalog

@@ -1,0 +1,42 @@
+* xref:index.adoc[Home]
+* xref:00-overview.adoc[Workshop Overview]
+* xref:00-environment-setup.adoc[Environment Setup]
+* xref:00-rhdh-mandatory-settings.adoc[IDP Setup]
+
+* Module: GitLab Integration
+** xref:01-module-gitlab-01-authentication.adoc[Authentication]
+** xref:01-module-gitlab-02-plugin-integration.adoc[Integration]
+** xref:01-module-gitlab-03-catalog-autodiscovery.adoc[Catalog Discovery]
+** xref:01-module-gitlab-04-users-teams-autodiscovery.adoc[Users and teams autodiscovery]
+
+* Module: Authorization
+** xref:02-module-rbac.adoc[RBAC]
+
+* Module: Software Templates
+** xref:03-module-sw-01-software-template.adoc[Import software template]
+** xref:03-module-sw-02-create-component.adoc[Create a component]
+
+* Module: Dynamic Plugins
+** xref:04-module-dynamic-plugin.adoc[Deploy a dynamic plugin]
+
+* Module: Tech Docs
+** xref:05-module-techdocs.adoc[Tech-Docs]
+
+* Module: Extended Features
+** xref:06-module-feat-01-high-availability.adoc[High availability]
+** xref:06-module-feat-02-dynamic-plugins-cache.adoc[Dynamic plugins cache]
+** xref:06-module-feat-03-monitoring-observability.adoc[Monitoring and observability]
+** xref:06-module-feat-04-notifications.adoc[Notifications]
+
+* Module: Orchestrator
+** xref:07-module-orchestrator.adoc[Orchestrator]
+
+* Module: AI
+** xref:08-module-ai-01-mcp.adoc[Model Context Protocol (MCP)]
+** xref:08-module-ai-02-lightspeed.adoc[Red Hat Developer Lightspeed]
+
+* Module: Enterprise Features
+** xref:09-module-enterprise-01-external-database.adoc[External database]
+** xref:09-module-enterprise-02-cicd-pipelines.adoc[CI/CD pipelines]
+
+* xref:99-conclusion.adoc[Conclusion and references]

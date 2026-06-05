@@ -1,0 +1,56 @@
+name: github pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'content/**'
+      - 'site.yml'
+      - '.github/workflows/gh-pages.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'content/**'
+      - 'site.yml'
+      - '.github/workflows/gh-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: gh-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: install antora
+        run: npm i -g @antora/cli@3.1 @antora/site-generator@3.1
+      - name: antora generate
+        run: antora --fetch site.yml
+      - name: upload pages artifact
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: www
+  deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: deploy github pages
+      id: deployment
+      uses: actions/deploy-pages@v4

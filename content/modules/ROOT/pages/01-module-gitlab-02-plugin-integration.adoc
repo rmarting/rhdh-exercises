@@ -1,0 +1,81 @@
+= Module 3: Integration
+:navtitle: Integration
+:source-highlighter: rouge
+:toc: macro
+:toclevels: 1
+
+include::partial$_attributes.adoc[]
+
+The GitLab integration has a special entity provider for discovering catalog entities from GitLab. The entity provider
+will crawl the GitLab instance and register entities matching the configured paths. This can be useful as an alternative
+to static locations or manually adding things to the catalog.
+
+More information about Dynamic Plugins https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/installing_and_viewing_plugins_in_red_hat_developer_hub/index[here].
+
+To enable the GitLab integration and discovery capabilities a Personal Access Token (aka PAT) is required.
+
+Create new Personal Access Token (aka PAT) in menu `Access Tokens` of the GitLab user profile:
+
+- GitLab UI navigation: Edit Profile -> Access Tokens -> Add new token
+- name: `pat-rhdh-exercises`
+- expiration date: Disabled it or just one in the future
+- set the scopes: `api`, `read_api`, `read_repository`, `write_repository`
+
+NOTE: Use the `root` user of GitLab to create this application.
+
+Add the PAT to the previously created `gitlab-secrets` secret:
+
+[.console-input]
+[source, yaml, subs="+macros,+attributes"]
+----
+kind: Secret
+apiVersion: v1
+metadata:
+  name: gitlab-secrets
+  namespace: rhdh-gitlab
+stringData:
+  AUTH_GITLAB_CLIENT_ID: REPLACE_WITH_YOUR_GITLAB_CLIENT_ID
+  AUTH_GITLAB_CLIENT_SECRET: REPLACE_WITH_YOUR_GITLAB_CLIENT_SECRET
+  GITLAB_TOKEN: REPLACE_WITH_YOUR_PAT
+type: Opaque
+----
+
+Add the following to the `app-config-rhdh` ConfigMap:
+
+[.console-input]
+[source, yaml, subs="+macros,+attributes"]
+----
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: app-config-rhdh
+data:
+  app-config-rhdh.yaml: |
+    app:
+      title: My Red Hat Developer Hub Instance
+    integrations:
+      gitlab:
+        - host: gitlab.${BASEDOMAIN}
+          token: ${GITLAB_TOKEN}
+          apiBaseUrl: https://gitlab.${BASEDOMAIN}/api/v4
+          baseUrl: https://gitlab.${BASEDOMAIN}
+----
+
+Or execute:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc apply -f ./gitlab-secrets.yaml -n {rhdh_namespace}
+oc apply -f ./content/modules/ROOT/examples/exercises/rhdh-app-configmap-2.yaml -n {rhdh_namespace}
+----
+
+GitLab integration backend starts without auth errors in logs.
+
+== Learning outcomes
+
+By completing this module, you should understand:
+
+* How to create a GitLab PAT with required scopes
+* How to add GITLAB_TOKEN to gitlab-secrets
+* How to configure integrations.gitlab in app-config

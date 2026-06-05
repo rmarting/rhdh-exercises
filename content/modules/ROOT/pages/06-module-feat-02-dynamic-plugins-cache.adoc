@@ -1,0 +1,49 @@
+= Dynamic plugins cache
+:navtitle: Dynamic plugins cache
+:source-highlighter: rouge
+:toc: macro
+:toclevels: 1
+
+include::partial$_attributes.adoc[]
+
+
+The dynamic plugins cache in Red Hat Developer Hub enhances the installation process and reduces platform
+boot time by storing previously installed plugins. If the configuration remains unchanged, this feature prevents
+the need to re-download plugins on subsequent boots. This provides several benefits:
+
+* Faster deployments: Plugins are cached locally and don’t need to be downloaded when pods start
+* Reduced bandwidth consumption: Plugin packages are only downloaded once and reused across deployments
+* Improved reliability: Reduces dependency on external registries during pod startup
+* Better resource utilization: Reduces CPU and memory usage during plugin installation by avoiding repeated downloads
+
+Without dynamic plugin caching, the Red Hat Developer Hub downloads and installs plugins fresh with each pod restart.
+This process can be slow and bandwidth-intensive, especially in environments with many plugins and frequent deployments.
+
+A new storage layer is required to persist the content of the dynamic plugins installed.
+
+Run:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc apply -f ./content/modules/ROOT/examples/exercises/dynamic-plugins-root-pvc-10.yaml -n {rhdh_namespace}
+----
+
+We patch the deployment definition to add this new storage for the init container:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc apply -f ./content/modules/ROOT/examples/exercises/rhdh-instance-10.yaml -n {rhdh_namespace}
+----
+
+References:
+
+* https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/configuring_red_hat_developer_hub/index#use-the-dynamic-plugins-cache_configuring-rhdh[Enabling the dynamic plugins cache]
+
+== Learning outcomes
+
+By completing this module, you should understand:
+
+* How to create PVC for dynamic plugins root
+* How to patch deployment to use plugin cache volume

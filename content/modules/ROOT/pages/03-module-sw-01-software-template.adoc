@@ -1,0 +1,51 @@
+= Import software template
+:navtitle: Import software template
+:source-highlighter: rouge
+:toc: macro
+:toclevels: 1
+
+include::partial$_attributes.adoc[]
+
+Software templates are the way to create standard components integrated with the platform, and any tool
+related to that component. This https://github.com/rmarting/rhdh-exercises-software-templates/blob/main/templates.yaml[template]
+is a simple case of this kind of component.
+
+Templates can be registered from the `Self-service` menu. The `Import an existing Git repository` button opens a wizard to register the component
+from the remote url.
+
+Another alternative is to configure the location of the templates in the `catalog` definition. This is the
+configuration to add in the `app-config-rhdh` ConfigMap:
+
+```yaml
+    catalog:
+      locations:
+        - type: url
+          target: https://github.com/rmarting/rhdh-exercises-software-templates/blob/main/templates.yaml
+          rules:
+            - allow: [Template]
+```
+
+The templates provided as example, includes an integration to publish content into the GitLab server. To enable that
+capability is needed to enabled the `backstage-plugin-scaffolder-backend-module-gitlab-dynamic` plugin, which includes
+the actions to manage and operate GitLab repositories. This plugin is listed as another one in the `dynamic-plugins` ConfigMap.
+
+Or run:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc apply -f ./content/modules/ROOT/examples/exercises/dynamic-plugins-6.yaml -n {rhdh_namespace}
+oc apply -f ./content/modules/ROOT/examples/exercises/rhdh-app-configmap-6.yaml -n {rhdh_namespace}
+----
+
+Verify there is a new Software Template available on the `Self-service` page.
+
+Open Self-service in Red Hat Developer Hub. Confirm the sample software template is available.
+
+== Learning outcomes
+
+By completing this module, you should understand:
+
+* How to add catalog location for templates.yaml
+* How to enable scaffolder GitLab dynamic plugin
+* How to verify template appears on Self-service page

@@ -1,0 +1,106 @@
+= GitLab Authentication
+:navtitle: GitLab Authentication
+:source-highlighter: rouge
+:toc: macro
+:toclevels: 1
+
+include::partial$_attributes.adoc[]
+
+Enabling GitLab authentication requires to create a GitLab application within our GitLab instance. This
+process is described https://backstage.io/docs/auth/gitlab/provider[here], however, keep in mind to
+execute the actions in your GitLab instance:
+
+- GitLab UI navigation: Edit `Profile` -> `Applications` -> `Add new application`
+- name: `rhdh-exercises`
+- Redirect URI: copy output:
++
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+echo https://backstage-developer-hub-rhdh-gitlab.${BASEDOMAIN}/api/auth/gitlab/handler/frame
+----
+- set the correct permissions: `api`, `read_user`, `read_repository`, `write_repository`, `openid`, `profile`, `email`
+
+NOTE: Use the `root` user of GitLab to create this application.
+
+Create a secret with an app id and secret:
+
+[.console-input]
+[source, yaml, subs="+macros,+attributes"]
+----
+kind: Secret
+apiVersion: v1
+metadata:
+  name: gitlab-secrets
+  namespace: rhdh-gitlab
+stringData:
+  AUTH_GITLAB_CLIENT_ID: REPLACE_WITH_YOUR_GITLAB_CLIENT_ID
+  AUTH_GITLAB_CLIENT_SECRET: REPLACE_WITH_YOUR_GITLAB_CLIENT_SECRET
+type: Opaque
+----
+
+You can create the `gitlab-secrets.yaml` folder and run:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc apply -f ./gitlab-secrets.yaml -n {rhdh_namespace}
+----
+
+NOTE: If you want to create this secret in the OpenShift Web Console, you need to base64-decode the "`CLIENT ID`" and "`CLIENT SECRET`" values.
+
+Modify `app-config` section of the `app-config-rhdh` ConfigMap with environment variables from the new secret:
+
+[.console-input]
+[source, yaml, subs="+macros,+attributes"]
+----
+    signInPage: gitlab
+    auth:
+      environment: development
+      providers:
+        gitlab:
+          development:
+            clientId: ${AUTH_GITLAB_CLIENT_ID}
+            clientSecret: ${AUTH_GITLAB_CLIENT_SECRET}
+            audience: https://gitlab.${BASEDOMAIN}
+            signIn:
+              resolvers:
+                - resolver: usernameMatchingUserEntityName
+                  dangerouslyAllowSignInWithoutUserInCatalog: true
+----
+
+Notice that we set the `signInPage` to `gitlab`, the default is `github`.
+
+Next, add the new secret to the backstage manifests:
+
+[.console-input]
+[source, yaml, subs="+macros,+attributes"]
+----
+spec:
+  application:
+    ...
+    extraEnvs:
+      secrets:
+        - name: gitlab-secrets
+----
+
+Or execute:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc apply -f ./content/modules/ROOT/examples/exercises/rhdh-app-configmap-1.yaml -n {rhdh_namespace}
+oc apply -f ./content/modules/ROOT/examples/exercises/rhdh-instance-1.yaml -n {rhdh_namespace}
+----
+
+> TIP: To disable guest login set the `environment` to `production`!
+
+Verify that you can login with GitLab.
+
+== Learning outcomes
+
+By completing this module, you should understand:
+
+* How to register a GitLab OAuth application for Red Hat Developer Hub
+* How to store AUTH_GITLAB_CLIENT_ID and AUTH_GITLAB_CLIENT_SECRET securely
+* How to configure signInPage and GitLab auth provider in app-config

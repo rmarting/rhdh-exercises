@@ -1,0 +1,30 @@
+= High availability
+:navtitle: High availability
+:source-highlighter: rouge
+:toc: macro
+:toclevels: 1
+
+include::partial$_attributes.adoc[]
+
+Red Hat Developer Hub can provide high-availability capabilities adding more replicas
+into the deployment topology. Adding more than one replica in the `Backstage` definition
+your Red Hat Developer Hub will provide that capability.
+
+Run:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc apply -f ./content/modules/ROOT/examples/exercises/rhdh-instance-9.yaml -n {rhdh_namespace}
+----
+
+References:
+
+* https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/configuring_red_hat_developer_hub/index#configure-high-availability-in-rhdh_configuring-rhdh[Configuring high availability]
+
+== Learning outcomes
+
+By completing this module, you should understand:
+
+* How to patch Backstage CR with multiple replicas
+* How to verify multiple Red Hat Developer Hub pods are running

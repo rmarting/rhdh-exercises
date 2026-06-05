@@ -1,0 +1,97 @@
+= Catalog Discovery
+:navtitle: Ccatalog Discovery
+:source-highlighter: rouge
+:toc: macro
+:toclevels: 1
+
+include::partial$_attributes.adoc[]
+
+Once we have integrated GitLab with Red Hat Developer Hub, we need to enable the autodiscovery
+capabilities of this provider. Very useful to load our catalog with repositories already created in
+our GitLab server. That requires to enable the `backstage-plugin-catalog-backend-module-gitlab-dynamic`
+dynamic plugin provided by Red Hat Developer Hub.
+
+We will use a new ConfigMap to enable the dynamic plugins:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc apply -f ./content/modules/ROOT/examples/exercises/dynamic-plugins-3.yaml -n {rhdh_namespace}
+----
+
+Add this to the `app-config-rhdh` ConfigMap:
+
+[.console-input]
+[source, yaml, subs="+macros,+attributes"]
+----
+catalog:
+  providers:
+    gitlab:
+      myGitLab:
+        host: gitlab.${BASEDOMAIN} # Identifies one of the hosts set up in the integrations
+        apiBaseUrl: https://gitlab.${BASEDOMAIN}/api/v4
+        branch: main # Optional. Used to discover on a specific branch
+        fallbackBranch: master # Optional. Fallback to be used if there is no default branch configured at the Gitlab repository. It is only used, if `branch` is undefined. Uses `master` as default
+        skipForkedRepos: false # Optional. If the project is a fork, skip repository
+        entityFilename: catalog-info.yaml # Optional. Defaults to `catalog-info.yaml`
+        projectPattern: '[\s\S]*' # Optional. Filters found projects based on provided patter. Defaults to `[\s\S]*`, which means to not filter anything
+        schedule: # optional; same options as in TaskScheduleDefinition
+          # supports cron, ISO duration, "human duration" as used in code
+          frequency: { minutes: 5 }
+          # supports ISO duration, "human duration" as used in code
+          timeout: { minutes: 15 }
+----
+
+Update the Red Hat Developer Hub manifest to use the new ConfigMap for plugins:
+
+[.console-input]
+[source, yaml, subs="+macros,+attributes"]
+----
+spec:
+  application:
+  ...
+    dynamicPluginsConfigMapName: dynamic-plugins-rhdh
+----
+
+Or run:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc apply -f ./content/modules/ROOT/examples/exercises/rhdh-app-configmap-3.yaml -n {rhdh_namespace}
+oc apply -f ./content/modules/ROOT/examples/exercises/rhdh-instance-3.yaml -n {rhdh_namespace}
+----
+
+Verify that the `sample-app` component is located on the `Catalog` page.
+
+TIP: A similar message is registered in the Red Hat Developer Hub pod to confirm the number of projects scanned:
+
+[source, text, subs="+macros,+attributes"]
+----
+{"class":"GitlabDiscoveryEntityProvider","level":"\u001b[32minfo\u001b[39m","message":"Processed 1 from scanned 1 projects.","plugin":"catalog","service":"backstage","span_id":"f957c3084bb63955","target":"GitlabDiscoveryEntityProvider:myGitLab","taskId":"GitlabDiscoveryEntityProvider:myGitLab:refresh","taskInstanceId":"06e6c7f9-1f7f-4f2e-a61b-52bc2614b279","timestamp":"2025-03-05 09:27:24","trace_flags":"01","trace_id":"cb4b00f3c9465893e015c5c4b2233d36"}
+----
+
+NOTE: Enabling the following plugins shows some tabs in each component published in a GitLab server. Those
+tabs shows the issues, merge requests and other useful information from the repository hosted in the GitLab server.
+
+[.console-input]
+[source, yaml, subs="+macros,+attributes"]
+----
+      # GitLab Integration Plugins
+      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/immobiliarelabs-backstage-plugin-gitlab:bs_1.45.3__6.13.0'
+        integrity: 'sha256:36b15f74c207839bd59de964030867b5ef7cfadb80fadf38b87d401c7aac5cf1'
+        disabled: false
+      - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/immobiliarelabs-backstage-plugin-gitlab-backend:bs_1.45.3__6.13.0'
+        integrity: 'sha256:0c5b9ade408c824e957a683e808195177936c58928cd0ee25724079abff53cda'
+        disabled: false
+----
+
+Open Catalog in Red Hat Developer Hub and confirm the `sample-app` component from team-a is listed. Check pod logs for GitlabDiscoveryEntityProvider processed project count.
+
+== Learning outcomes
+
+By completing this module, you should understand:
+
+* How to enable backstage-plugin-catalog-backend-module-gitlab-dynamic
+* How to configure catalog.providers.gitlab in app-config
+* How to verify sample-app appears in the Software Catalog

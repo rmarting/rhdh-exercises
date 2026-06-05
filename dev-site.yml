@@ -1,0 +1,32 @@
+---
+site:
+  title: Red Hat Developer Hub Workshop (Dev Mode)
+  url: http://127.0.0.1:8080/modules/index.html
+
+content:
+  sources:
+    - url: .
+      start_path: content
+
+ui:
+  bundle:
+    url: https://github.com/rhpds/rhdp_showroom_theme/releases/download/latest/ui-bundle.zip
+    snapshot: true
+  supplemental_files:
+    - path: ./content/supplemental-ui
+    - path: ./content/lib
+    - path: .nojekyll
+    - path: ui.yml
+      contents: "static_files: [ .nojekyll ]"
+
+runtime:
+  cache_dir: ./.cache/antora
+
+antora:
+  extensions:
+    - id: dev-mode
+      require: ./content/lib/dev-mode.js
+      enabled: true
+      
+output:
+  dir: ./www

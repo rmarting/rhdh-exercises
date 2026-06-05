@@ -1,0 +1,50 @@
+= Conclusion and references
+:navtitle: Conclusion and references
+:toc:
+:icons: font
+
+include::partial$_attributes.adoc[]
+
+== Workshop summary
+
+You configured Red Hat Developer Hub on OpenShift with GitLab integration across twenty hands-on modules:
+
+* **Foundation** — Operators, GitLab, base Red Hat Developer Hub instance, mandatory secrets and app-config
+* **Identity and catalog** — GitLab auth, API integration, project and org autodiscovery
+* **Governance and self-service** — RBAC, software templates, component scaffolding
+* **Platform extensions** — Dynamic plugins, TechDocs, HA, plugin cache, monitoring, notifications
+* **Advanced topics** — Orchestrator, MCP, Lightspeed, external database, CI/CD visibility
+
+Manifests remain in `lab-prep/` (bootstrap) and `./content/modules/ROOT/examples/exercises/` (numbered steps 0–17) for reuse outside Showroom.
+
+== What you accomplished
+
+* Deployed Red Hat Developer Hub {rhdh_version} with the GitLab provider on OpenShift {ocp_version}
+* Connected GitLab OAuth, PAT integration, and catalog providers
+* Applied RBAC and validated team-scoped self-service access
+* Extended the portal with plugins, documentation, and observability features
+* Explored enterprise and AI integration paths appropriate to your environment
+
+== References
+
+* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/[Red Hat Developer Hub documentation]
+* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/configuring_red_hat_developer_hub/index[Configuring Red Hat Developer Hub]
+* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/authorization_in_red_hat_developer_hub/index[Authorization in Red Hat Developer Hub]
+* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/adoption_insights_in_red_hat_developer_hub/index[Adoption Insights]
+* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/monitoring_and_logging/index[Monitoring and logging]
+* link:https://rhdhorchestrator.io/[Orchestrator for Red Hat Developer Hub]
+* link:https://backstage.io/docs/auth/gitlab/provider[Backstage GitLab auth provider]
+
+== Legacy documentation
+
+The original Markdown exercise track is preserved for reference:
+
+* `README-preparation.md` — cluster bootstrap details
+* `README-gitlab.md` — full exercise narrative and YAML excerpts
+* `README-orchestrator.md`, `README-ai-mcp.md`, `README-ai-ls.md`, `README-ee-database.md`, `README-ee-cicd.md` — extended labs
+
+== Next steps
+
+* Run `/verify-content` (Showroom skill) for a full quality review of AsciiDoc modules
+* Publish this repository as Showroom content with `site.yml` and an AgnosticV catalog entry
+* Customize RBAC policies and templates for your organization's GitLab groups

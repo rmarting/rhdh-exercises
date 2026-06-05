@@ -1,0 +1,63 @@
+= RBAC
+:navtitle: RBAC
+:source-highlighter: rouge
+:toc: macro
+:toclevels: 1
+
+include::partial$_attributes.adoc[]
+
+Enable permissions by updating `app-config-rhdh` ConfigMap:
+
+[source, yaml, subs="+macros,+attributes"]
+----
+permission:
+  enabled: true
+  rbac:
+    admin:
+      users:
+        - name: user:default/root
+    policies-csv-file: /opt/app-root/src/rbac-policy.csv
+    conditionalPoliciesFile: /opt/app-root/src/rbac/rbac-conditional-policies.yaml
+    policyFileReload: true
+----
+
+Mount the new file in the `Backstage` manifests:
+
+[source, yaml, subs="+macros,+attributes"]
+----
+    extraFiles:
+      mountPath: /opt/app-root/src/rbac
+      configMaps:
+        - name: rbac-policy
+----
+
+Create a new permission file `rbac-policy-configmap-5.yaml` file.
+
+There is a dynamic plugin to allow manage the RBAC rules directly in the UI. This plugin is added in the list of the dynamic plugins
+to add into Red Hat Developer Hub.
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc apply -f ./content/modules/ROOT/examples/exercises/dynamic-plugins-5.yaml -n {rhdh_namespace}
+oc apply -f ./content/modules/ROOT/examples/exercises/rbac-policy-configmap-5.yaml -n {rhdh_namespace}
+oc apply -f ./content/modules/ROOT/examples/exercises/rhdh-app-configmap-5.yaml -n {rhdh_namespace}
+oc apply -f ./content/modules/ROOT/examples/exercises/rhdh-instance-5.yaml -n {rhdh_namespace}
+----
+
+Open an incognito window, or just logout, and login with `user2` (password: `@abc1cde2`) to confirm
+that this user can't create anything. This user has not any `Self-Service` button enabled.
+
+NOTE: If you login with the `root` user, you will be able to edit the RBAC policies from the `Administration` page.
+
+References:
+
+* https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/authorization_in_red_hat_developer_hub/index[Authorization in Red Hat Developer Hub]
+
+== Learning outcomes
+
+By completing this module, you should understand:
+
+* How to enable permission.rbac in app-config
+* How to mount rbac-policy ConfigMap into the Backstage pod
+* How to validate restricted access for user2 vs admin root

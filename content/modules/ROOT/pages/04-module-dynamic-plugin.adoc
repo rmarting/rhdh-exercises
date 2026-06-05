@@ -1,0 +1,61 @@
+= Module 9: Deploy a dynamic plugin
+:navtitle: Module 9: Deploy a dynamic plugin
+:source-highlighter: rouge
+:toc: macro
+:toclevels: 1
+
+include::partial$_attributes.adoc[]
+
+Another capability of Red Hat Developer Hub is add dynamic plugins easily. This exercise will deploy a dynamic
+plugin defined in this https://github.com/rmarting/rhdh-dynamic-devquote-plugin[repo].
+
+Previously we added the definition of the GitLab catalog backend plugin, now we will extend the list of dynamic
+plugins including the new one with the following configuration:
+
+[source,yaml,subs="+macros,+attributes"]
+----
+    plugins:
+      - package: './dynamic-plugins/dist/backstage-plugin-catalog-backend-module-gitlab-dynamic'
+        disabled: false
+      - package: './dynamic-plugins/dist/janus-idp-backstage-plugin-rbac'
+        disabled: false
+      # DevQuotes Dynamic Plugin
+      - package: oci://quay.io/rhdh-adventure-organization/parsifal-m-plugin-dev-quotes-homepage:3.0.8!parsifal-m-plugin-dev-quotes-homepage
+        disabled: false
+        pluginConfig:
+          dynamicPlugins:
+            frontend:
+              parsifal-m.plugin-dev-quotes-homepage:
+                mountPoints:
+                  - mountPoint: entity.page.overview/cards
+                    importName: DevQuote
+                    config:
+                      layout:
+                        gridColumnEnd:
+                          lg: span 4
+                          md: span 6
+                          xs: span 12
+                dynamicRoutes:
+                  - importName: DevQuote
+                    menuItem:
+                      text: Quote
+                    path: /devquote
+----
+
+Or run:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc apply -f ./content/modules/ROOT/examples/exercises/dynamic-plugins-7.yaml -n {rhdh_namespace}
+----
+
+Verify the `Quote` menu is listed, and a quote is showed in any component dashboard.
+
+== Learning outcomes
+
+By completing this module, you should understand:
+
+* How to add OCI-based dynamic plugin package to ConfigMap
+* How to configure mount points for entity overview cards
+* How to verify Quote menu and homepage card

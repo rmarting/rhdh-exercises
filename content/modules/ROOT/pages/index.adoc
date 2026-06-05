@@ -1,0 +1,138 @@
+= Red Hat Developer Hub Workshop
+:navtitle: Red Hat Developer Hub Workshop
+:source-highlighter: rouge
+:toc: macro
+:toclevels: 1
+
+include::partial$_attributes.adoc[]
+
+This guide delivers a hands-on Red Hat Developer Hub workshop including some of the most common
+configuration on Red Hat OpenShift.
+
+Participants will configure authentication, catalog discovery, RBAC, software templates, dynamic plugins, TechDocs,
+high availability, monitoring, notifications, Orchestrator, AI integrations, and enterprise extensions step by step.
+
+== Topology
+
+The topology of the components deployed on Red Hat OpenShift is:
+
+image::rhdh-gitlab-topology.png[Red Hat Developer Hub workshop topology]
+
+== Workshop overview
+
+This workshop shows how to set up a functional Internal Developer Portal based on Red Hat Developer Hub
+integrated with the most common features and use cases.
+
+[cols="1,3",options="header"]
+|===
+| Module | Topic
+
+| xref:00-environment-setup.adoc[Environment setup]
+| Operators, GitLab, base Red Hat Developer Hub
+
+| xref:00-rhdh-mandatory-settings.adoc[IDP Settings]
+| Set up application configuration and secrets
+
+| xref:01-module-gitlab-01-authentication.adoc[GitLab Integration]
+| Authentication, Catalog and users/teams autodiscovery
+
+| xref:02-module-rbac.adoc[Authorization]
+| Role-based access control (RBAC)
+
+| xref:03-module-sw-01-software-template.adoc[Software templates]
+| Software Templates and component creation
+
+| xref:04-module-dynamic-plugin.adoc[Dynamic plugins]
+| Use of dynamic plugins
+
+| xref:05-module-techdocs.adoc[Technical documentation]
+| Installation and configuration of TechDocs
+
+| xref:06-module-feat-01-high-availability.adoc[Extended features]
+| High availability, Dynamic plugins cache, Monitoring and observability and Notifications
+
+| xref:07-module-orchestrator.adoc[Orchestrator]
+| Workflows creation and execution
+
+| xref:08-module-ai-01-mcp.adoc[AI]
+| Model Context Protocol (MCP) and Developer Lightspeed
+
+| xref:09-module-enterprise-01-external-database.adoc[Enterprise extensions]
+| External database and CI/CD pipelines
+
+|===
+
+== Timing and schedule
+
+This workshop is designed to be completed in approximately one day.
+
+== Technical requirements
+
+This repository was tested and verified in the following environment provided by the link:https://demo.redhat.com/[Red Hat Demo Platform]:
+
+* link:https://catalog.demo.redhat.com/catalog/all?item=babylon-catalog-prod%2Fpublished.ocp4-cluster.prod[Red Hat OpenShift Container Platform Cluster (Multi-Cloud),window="_blank"]
+
+NOTE: You must have `cluster-admin` privileges to install the different operators required for this technical exercise.
+
+=== Environment setup
+
+Order a https://catalog.demo.redhat.com/catalog/babylon-catalog-prod/order/published.ocp4-cluster.prod[Red Hat OpenShift Container Platform Cluster (Multi-Cloud),window="_blank"] from the Red Hat Demo Platform with the following options:
+
+[cols="1,2",options="header"]
+|===
+| Option | Value
+
+| Activity
+| Practice / Enablement
+
+| Purpose
+| Conduct internal training/enablement
+
+| Cloud Provider
+| cnv
+
+| OpenShift Version
+| 4.21
+
+| Cluster Size
+| sno
+
+| Create Users on Cluster
+| Unchecked
+
+| Enable OpenShift Lightspeed
+| Unchecked
+|===
+
+IMPORTANT: Order your cluster *before* the lab begins -- provisioning can take up to 60 minutes.
+Once provisioning is complete you will receive an email with your cluster credentials and console URL.
+
+=== Software versions
+
+The content of this repo was tested:
+
+* Red Hat OpenShift Container Platform {ocp_version}
+* Red Hat Developer Hub Operator {rhdh_version}
+* GitLab Operator {gitlab_operator_version}
+* GitLab Server {gitlab_server_version}
+* Web browser (Chrome, Firefox, or Edge)
+
+=== Environment access
+
+Participants need:
+
+* OpenShift cluster with `cluster-admin` for operator installation
+* Terminal access (`oc`, `envsubst`, `git`)
+* GitLab `root` user access (password from cluster secret)
+* Namespace `{rhdh_namespace}` for the Red Hat Developer Hub instance
+
+=== Network requirements
+
+* Cluster ingress domain
+* Access to GitLab, Red Hat Developer Hub route, and OpenShift console URLs
+* OpenShift Data Foundation for TechDocs
+
+== Follow-up resources
+
+* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/[Red Hat Developer Hub documentation]
+* link:https://backstage.io/docs/[Backstage documentation]

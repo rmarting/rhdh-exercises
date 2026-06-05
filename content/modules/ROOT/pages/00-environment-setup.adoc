@@ -1,0 +1,191 @@
+= Environment setup
+:navtitle: Environment setup
+:source-highlighter: rouge
+:toc: macro
+:toclevels: 1
+
+include::partial$_attributes.adoc[]
+
+Before configuring Red Hat Developer Hub, install the operators and base platform services on OpenShift. This module prepares cert-manager, GitLab, and the Red Hat Developer Hub operator, then deploys an initial Developer Hub instance in the `{rhdh_namespace}` namespace.
+
+== Learning objectives
+By the end of this module, you will be able to:
+
+* Install cert-manager, GitLab, and Red Hat Developer Hub operators
+* Deploy GitLab and run initial group/user/repository setup
+* Deploy a base Backstage CR and verify the Red Hat Developer Hub route
+
+== Login OpenShift
+
+. Using the admin credentials, login to the OpenShift console:
++
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc login -u admin 
+oc login --token=sha256~p5UOTmRrdoLBiMmdIiFyWgiCL8XL7UIPC8qcsSsCAnk --server=https://api.cluster-8pn7c.dynamic2.redhatworkshops.io:6443
+----
+
+== Install platform operators
+
+. Verify or install cert-manager operator:
++
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc get csv -n cert-manager-operator
+----
++
+This output should show the Cert Manager operator is already installed.
++
+[source,bash,subs="+macros,+attributes"]
+----
+NAME                            DISPLAY                                       VERSION   REPLACES                        PHASE
+cert-manager-operator.v1.19.1   cert-manager Operator for Red Hat OpenShift   1.18.1    cert-manager-operator.v1.18.0   Succeeded
+----
++
+Install cert-manager operator if you don't have it:
++
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc apply -f ./content/modules/ROOT/examples/lab-prep/cert-manager-operator.yaml
+----
+
+. Install GitLab operator in the `{gitlab_namespace}` namespace:
++
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc apply -f ./content/modules/ROOT/examples/lab-prep/gitlab-operator.yaml
+oc get csv -n gitlab-system
+----
++
+This should be the output after the operator installation:
++
+[source,bash,subs="+macros,+attributes"]
+----
+NAME                                DISPLAY   VERSION   REPLACES                             PHASE
+gitlab-operator-kubernetes.v3.0.0   GitLab    3.0.0     gitlab-operator-kubernetes.v2.11.3   Succeeded
+----
+
+. Install Red Hat Developer Hub operator in the `{rhdh_operator_namespace}` namespace:
++
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc apply -f ./content/modules/ROOT/examples/lab-prep/rhdh-operator.yaml
+oc get csv -n rhdh-operator
+----
++
+This should be the output after the operator installation:
++
+[source,bash,subs="+macros,+attributes"]
+----
+NAME                   DISPLAY                          VERSION   REPLACES               PHASE
+rhdh-operator.v1.9.4   Red Hat Developer Hub Operator   1.9.4     rhdh-operator.v1.9.3   Succeeded
+----
+
+== Deploy and configure GitLab
+
+. Set the `BASEDOMAIN` environment variable and deploy GitLab:
++
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+export BASEDOMAIN=$(oc get ingresscontroller -n openshift-ingress-operator default -o jsonpath='{.status.domain}')
+envsubst < ./content/modules/ROOT/examples/lab-prep/gitlab.yaml | oc apply -f -
+----
+
+. Wait for GitLab Running phase:
++
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc get gitlabs gitlab -o jsonpath='{.status.phase}' -n gitlab-system
+----
+
+. Retrieve root password:
++
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc get secret gitlab-gitlab-initial-root-password -o jsonpath='{.data.password}' -n gitlab-system | base64 -d
+----
++
+IMPORTANT: You will need this password to setup GitLab in future steps.
+
+. Run GitLab bootstrap script:
++
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+./content/modules/ROOT/examples/lab-prep/configure-gitlab.sh
+----
+
+The initial configuration requires to push some content into GitLab, you should use the `user1` credentials to do it.
+
+[WARNING]
+====
+If GitLab is deployed using self-signed certificates, you can get the following exception:
+
+`SSL certificate problem: self-signed certificate in certificate chain`
+
+In that case, execute the script with the `--ssl_certs_self_signed=y` argument.
+====
+
+This script will do the following:
+
+[source,text,subs="+macros,+attributes"]
+----
+Create different groups:
+
+- team-a
+- team-b
+- rhdh
+
+Create two users/passwords:
+
+- user1/@abc1cde2
+- user2/@abc1cde2
+
+Ensure `user1` belongs to `team-a` and `user2` belongs to `team-b`.
+
+Create a repo called `sample-app` under `team-a` add the `catalog-info.yaml` and `users-groups.yaml` at the root of the repo.
+----
+
+== Deploy Red Hat Developer Hub instance
+
+. Apply the base Backstage CR to deploy the Red Hat Developer Hub instance in the `{rhdh_namespace}` namespace:
++
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc apply -f ./content/modules/ROOT/examples/lab-prep/rhdh-instance.yaml
+----
+
+. Verify deployment status:
++
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc get backstage developer-hub -o jsonpath='{.status.conditions[0].type}' -n {rhdh_namespace}
+----
+
+. Print the Red Hat Developer Hub URL:
++
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+echo https://$(oc get route backstage-developer-hub -n {rhdh_namespace} -o jsonpath='{.spec.host}')
+----
+
+. Verify that Red Hat Developer Hub is running.
+
+== Learning outcomes
+
+By completing this module, you should understand:
+
+* How to install cert-manager, GitLab, and Red Hat Developer Hub operators
+* How to deploy GitLab and run initial group/user/repository setup
+* How to deploy a base Backstage CR and verify the Red Hat Developer Hub route

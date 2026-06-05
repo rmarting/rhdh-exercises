@@ -1,8 +1,56 @@
-custom-app-config/github-secrets.yaml
-custom-app-config-gitlab/gitlab-secrets.yaml
-custom-app-config-gitlab/ls-llama-stack-secrets.yaml
-custom-app-config/
+# Local secret files
+gitlab-secrets.yaml
+ls-llama-stack-secrets.yaml
 
 # MPC clients and credentials
 .continue/mcpServers/
 .cursor/mcp.json
+
+# Ignore Claude Code local configuration
+.claude/settings.local.json
+
+# Ignore macOS system files
+.DS_Store
+
+# claude
+.claude
+
+# Ignore node_modules directory
+node_modules/
+
+# Ignore build output
+www/
+.cache/
+
+# Ignore IDE and editor files
+.vscode/
+.idea/
+
+# Ignore logs and temporary files
+*.log
+*.tmp
+
+# Ignore environment-specific files
+.env
+.env.local
+.env.*.local
+
+# Ignore sensitive or private information
+secrets.json
+
+# Ignore compiled binaries or executables
+*.exe
+*.dll
+*.so
+*.dylib
+*.core
+
+# Ignore package-lock.json for npm
+package-lock.json
+
+# Ignore yarn.lock for Yarn
+yarn.lock
+
+# Ignore utilities 
+# (wasn't in the original repo)
+utilities/

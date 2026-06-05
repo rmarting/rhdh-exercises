@@ -1,0 +1,87 @@
+= Module 1: IDP Setup
+:navtitle: IDP Setup
+:source-highlighter: rouge
+:toc: macro
+:toclevels: 1
+
+include::partial$_attributes.adoc[]
+
+When Red Hat Developer Hub is installed via the operator there are some mandatory settings that need to be set:
+
+- create mandatory backend secret
+- add the `BASEDOMAIN` to enable proper navigation and CORs settings
+
+Customizing the instance requires a custom application file defined in a ConfigMap object. Additionally we can use a
+Secret object to store sensitive data required by Red Hat Developer Hub. An example of sensitive data required is
+the `BACKEND_SECRET` variable. That variable contains a mandatory backend authentication key.
+
+Creating a Secret including that variable, and adding the base domain of our instance can be done running:
+
+. Apply `rhdh-secrets` template:
++
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc apply -f ./content/modules/ROOT/examples/exercises/rhdh-secrets.yaml -n {rhdh_namespace}
+----
+
+. Patch BASEDOMAIN into the secret:
++
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+export BASEDOMAIN=$(oc get ingresscontroller -n openshift-ingress-operator default -o jsonpath='{.status.domain}')
+oc patch secret rhdh-secrets -n {rhdh_namespace} -p '{"stringData":{"BASEDOMAIN":"'"${BASEDOMAIN}"'"}}'
+----
+
+TIP: Since Red Hat Developer Hub 1.6 is not longer required to define base URL for the instance. The operator will
+calculate the correct value an inject in the default configuration. If you need it, you can still override these settings.
+More details https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.6/html-single/red_hat_developer_hub_release_notes/index#enhancement-rhidp-6173[here].
+
+This is the structure of the `app-config-rhdh` ConfigMap to customize the configuration of our Red Hat Developer Hub instance:
+
+[.console-input]
+[source, yaml, subs="+macros,+attributes"]
+----
+include::example$exercises/rhdh-app-configmap-0.yaml[]
+----
+
+Once created the ConfigMap and Secret, we can add them into the `developer-hub` CR Red Hat Developer Hub manifest:
+
+```yaml
+spec:
+  application:
+    appConfig:
+      configMaps:
+      - name: app-config-rhdh
+    extraEnvs:
+      secrets:
+      - name: rhdh-secrets
+```
+
+Or run this:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc apply -f ./content/modules/ROOT/examples/exercises/rhdh-app-configmap-0.yaml -n {rhdh_namespace}
+oc apply -f ./content/modules/ROOT/examples/exercises/rhdh-instance-0.yaml -n {rhdh_namespace}
+----
+
+IMPORTANT: Red Hat Developer Hub has a slow startup as it is building and loading the dynamic plugins. Every time
+we apply a https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.3/html-single/release_notes/index#feature-rhidp-3569[change in the configuration],
+an automatic redeploy will start, and it will few minutes until
+the new pod is ready to serve request. Please, be patient after any change before confirming they are
+correctly applied.
+
+More detailed information about this step https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/configuring_red_hat_developer_hub/index#provision-and-use-your-custom-rhdh-configuration_configuring-rhdh[here].
+
+Wait for the Red Hat Developer Hub pod to restart and become Ready and confirm the custom app title appears.
+
+== Learning outcomes
+
+By completing this module, you should understand:
+
+* How to create the mandatory `BACKEND_SECRET` and `BASEDOMAIN` configuration
+* How to attach app-config and secrets to the Backstage CR
+* How to understand Red Hat Developer Hub restart behavior after configuration changes

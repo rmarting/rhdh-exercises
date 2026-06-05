@@ -5,57 +5,36 @@
 ![Last Commit](https://img.shields.io/github/last-commit/rmarting/rhdh-exercises?style=flat-square)
 ![Technology](https://img.shields.io/badge/tech-Red%20Hat%20Developer%20Hub-red?style=flat-square)
 ![Language](https://img.shields.io/github/languages/top/rmarting/rhdh-exercises?style=flat-square)
+[link=https://workspaces.openshift.com/#https://github.com/rmarting/rhdh-exercises.git]
+image::https://img.shields.io/static/v1?label=open%20in&message=developer%20sandbox&logo=eclipseche&color=FDB940&labelColor=525C86[Open Workspace]
 
 ## Table of Contents
 
 1. [Overview](#overview)
-2. [Topology](#topology)
-3. [Preparation Instructions](#preparation-instructions)
-4. [Exercise Steps](#exercise-steps)
-5. [FAQ](#faq)
-6. [Contributing](#contributing)
+2. [Workshop content (Showroom)](#workshop-content-showroom)
+3. [Topology](#topology)
+4. [Exercise modules](#exercise-modules)
+5. [Legacy Markdown track](#legacy-markdown-track)
+6. [FAQ](#faq)
+7. [Contributing](#contributing)
 
 ---
 
 ## Overview
 
-This workshop is about setting up Red Hat Developer Hub including some of the most common
-configurations.
+This repository is a hands-on workshop for installing and configuring **Red Hat Developer Hub (RHDH)**
+on **Red Hat OpenShift** with **GitLab** integration.
 
-## Topology
+## Workshop content (Showroom)
 
-The topology of the components deployed on Red Hat OpenShift is:
+The primary learner path is the Showroom workshop under `content/`:
 
-![Red Hat Developer Hub Workshop Topology (diagram showing deployed components on OpenShift)](./media/rhdh-gitlab-topology.png)
-
-## Preparation Instructions
-
-Before starting the exercises of this workshop, there are some [preparations to execute](./README-preparation.md). Please follow them.
-
-## Exercise Steps
-
-The full list of actions implemented in this exercise is:
-
-0. Install Red Hat Developer Hub
-1. Enable GitLab authentication
-2. Enable GitLab integrations
-3. Enable GitLab catalog autodiscovery
-4. Enable GitLab user/group autodiscovery
-5. Enable RBAC permissions
-6. Import Software Templates and create a component
-7. Deploy a dynamic plugin
-8. Enable Tech Docs
-9. Enable High-Availability
-10. Enable Dynamic Plugins Cache
-11. Enable Monitoring and Observability
-12. Enable Notifications
-13. Enable Orchestrator
-14. AI Labs - Enable Model Context Protocol (MCP)
-15. AI Labs - Integrate with Red Hat Developer Lightspeed
-16. Enterprise Labs - Use an External Database
-17. Enterprise Labs - Enable CI/CD Pipelines
-
-Follow the exercises steps [here](./README-gitlab.md).
+| File | Purpose |
+|------|---------|
+| [`site.yml`](./site.yml) | Antora playbook for Showroom publishing |
+| [`ui-config.yml`](./ui-config.yml) | Split-view tabs (Terminal, OCP Console, RHDH) |
+| [`content/modules/ROOT/pages/index.adoc`](./content/modules/ROOT/pages/index.adoc) | Facilitator index |
+| [`content/modules/ROOT/nav.adoc`](./content/modules/ROOT/nav.adoc) | Module navigation |
 
 ## FAQ
 
@@ -65,3 +44,23 @@ If you are facing some issues, please, review our [FAQ.md](./FAQ.md).
 
 We welcome contributions! Please see our [Contributing Guide](./CONTRIBUTING.md) for details on
 how to contribute to this project. This project follows the [Contributor Covenant Code of Conduct](./CODE_OF_CONDUCT.md).
+
+== Quick Start
+
+. Clone your new repo and preview locally:
++
+[source,sh]
+----
+podman run --rm --name antora -v $PWD:/antora -p 8080:8080 -i -t ghcr.io/juliaaano/antora-viewer
+----
++
+On SELinux systems, append `:z` to the volume mount.
+
+. Edit content in `content/modules/ROOT/pages/`
+. See the https://rhpds.github.io/showroom_template_nookbag/modules/content-repo.html[Content Repository] docs for directory layout, Podman Compose with live reload, dev mode, and more.
+
+== Create Content with AI
+
+The https://github.com/rhpds/rhdp-skills-marketplace[RHDP Skills Marketplace] provides skills for Cursor IDE and Claude Code that generate labs, demos, and validate content against Red Hat standards.
+
+See the https://rhpds.github.io/showroom_template_nookbag/modules/content-repo.html#_creating_content_with_ai_tools[AI Tools documentation] for details.

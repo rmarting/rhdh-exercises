@@ -1,22 +1,18 @@
-# Enabling Red Hat Developer Lightspeed
+= Red Hat Developer Lightspeed
+:navtitle: Red Hat Developer Lightspeed
+:source-highlighter: rouge
+:toc: macro
+:toclevels: 1
+
+include::partial$_attributes.adoc[]
 
 Red Hat Developer Lightspeed is an AI-powered assistant integrated into Red Hat Developer Hub that helps developers
 interact with the Software Catalog, TechDocs, and other Developer Hub features through natural language queries.
 This exercise walks you through the integration process.
 
-For detailed information, refer to the [official documentation](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/interacting_with_red_hat_developer_lightspeed_for_red_hat_developer_hub/index#con-about-developer-lightspeed_developer-lightspeed).
+For detailed information, refer to the https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/interacting_with_red_hat_developer_lightspeed_for_red_hat_developer_hub/index#con-about-developer-lightspeed_developer-lightspeed[official documentation].
 
-## Table of Contents
-
-- [Overview](#overview)
-- [Configure RBAC Permissions](#configure-rbac-permissions)
-- [Configure Lightspeed Services](#configure-lightspeed-services)
-- [Update Red Hat Developer Hub Configuration](#update-red-hat-developer-hub-configuration)
-- [Verify the Installation](#verify-the-installation)
-- [Test Developer Lightspeed](#test-developer-lightspeed)
-- [References](#references)
-
-## Overview
+== Overview
 
 The Lightspeed integration consists of several components:
 
@@ -26,14 +22,15 @@ The Lightspeed integration consists of several components:
 - **MCP (Model Context Protocol) Tools**: Enable Lightspeed to interact with Red Hat Developer Hub catalog and TechDocs
 - **Dynamic Plugin**: The UI component that provides the chat interface in Developer Hub
 
-## Configure RBAC Permissions
+== Configure RBAC Permissions
 
 Before applying the Lightspeed configuration, you need to add Lightspeed-specific permissions to your RBAC policy.
 These permissions allow users to interact with the Lightspeed chat feature.
 
 Add the following permissions to your RBAC policy ConfigMap to allow users to read, create and delete chat conversations:
 
-```text
+[source,text,subs="+macros,+attributes"]
+----
 # Lightspeed permissions
 p, role:default/team-a, lightspeed.chat.read, read, allow
 p, role:default/team-a, lightspeed.chat.create, create, allow
@@ -41,15 +38,17 @@ p, role:default/team-a, lightspeed.chat.delete, delete, allow
 p, role:default/team-b, lightspeed.chat.read, read, allow
 p, role:default/team-b, lightspeed.chat.create, create, allow
 p, role:default/team-b, lightspeed.chat.delete, delete, allow
-```
+----
 
 Apply the updated RBAC policy ConfigMap that includes Lightspeed permissions:
 
-```bash
-oc apply -f ./custom-app-config-gitlab/rbac-policy-configmap-15.yaml -n rhdh-gitlab
-```
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc apply -f ./content/modules/ROOT/examples/exercises/rbac-policy-configmap-15.yaml -n {rhdh_namespace}
+----
 
-## Configure Lightspeed Core Services
+== Configure Lightspeed Core Services
 
 This step creates the necessary secrets and configuration for the Lightspeed backend services.
 
@@ -57,7 +56,8 @@ The Llama Stack secret contains configuration for connecting to the LLM service 
 
 Create a secret with an app id and secret:
 
-```yaml
+[source,yaml,subs="+macros,+attributes"]
+----
 apiVersion: v1
 kind: Secret
 metadata:
@@ -71,33 +71,36 @@ stringData:
   VLLM_MAX_TOKENS: ""
   VLLM_URL: REPLACE_IT
   VLLM_API_KEY: REPLACE_IT
+  VALIDATION_MODEL_NAME: REPLACE_IT
   SAFETY_MODEL: REPLACE_IT
   SAFETY_URL: REPLACE_IT
   SAFETY_API_KEY: REPLACE_IT
-```
+----
 
 The `llama-stack-secrets` Secret contains:
 
 - `VLLM_URL`: The endpoint URL for the LLM service
 - `VLLM_API_KEY`: Authentication key for the LLM service
 - `VALIDATION_MODEL_NAME`: The specific model to use
-- `SAFETY_MODEL`:
-- `SAFETY_URL`: 
-- `SAFETY_API_KEY`: 
+- `SAFETY_MODEL`: The safety model to use
+- `SAFETY_URL`: The endpoint URL for the safety model service
+- `SAFETY_API_KEY`: Authentication key for the safety model service
 
-**NOTE**: Review and update the values in this file to match your LLM service configuration before applying.
+NOTE: Review and update the values in this file to match your LLM service configuration before applying.
 
-You can create the `ls-llama-stack-secrets.yaml` inside of `custom-app-config-gitlab` folder and run:
+You can create the `ls-llama-stack-secrets.yaml` and run:
 
-```bash
-oc apply -f ./custom-app-config-gitlab/ls-llama-stack-secrets.yaml -n rhdh-gitlab
-```
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc apply -f ./ls-llama-stack-secrets.yaml -n rhdh-gitlab
+----
 
 By default LCS will use a SQLlite instance to persist the chat histories. However, if the pod is restarted,
 all conversations will be lost. In this scenario, we will create an external PostgreSQL database to persist
 all conversations independently of Red Hat Developer Hub pod lifecycle.
 
-**NOTE**: There are different ways to install a PostgreSQL database on OpenShift. For demo purposes of this
+NOTE: There are different ways to install a PostgreSQL database on OpenShift. For demo purposes of this
 workshop, we will use the default PostgreSQL database used by Red Hat Developer Hub. This database is
 configured in the `backstage-psql-secret-developer-hub` secret, and available by the
 `backstage-psql-developer-hub` service.
@@ -105,16 +108,20 @@ configured in the `backstage-psql-secret-developer-hub` secret, and available by
 It is needed to create the `rhdh-ls` database instance to persist the chat histories. Run the following
 command to create it:
 
-```bash
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
 oc exec -n rhdh-gitlab backstage-psql-developer-hub-0 -- env PGPASSWORD="$PG_ADMIN_PASS" psql -U postgres -h 127.0.0.1 -p 5432 -c "CREATE DATABASE \"rhdh-ls\";"
-```
+----
 
 The Lightspeed Stack ConfigMap contains the configuration for the Lightspeed Core Service, including service
 settings, storage paths, and MCP server connections.
 
-```bash
-oc apply -f ./custom-app-config-gitlab/ls-stack-configmap-15.yaml -n rhdh-gitlab
-```
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc apply -f ./content/modules/ROOT/examples/exercises/ls-stack-configmap-15.yaml -n {rhdh_namespace}
+----
 
 The `lightspeed-stack` ConfigMap contains:
 
@@ -124,14 +131,16 @@ The `lightspeed-stack` ConfigMap contains:
 - Conversation cache configuration
 - MCP server endpoint configuration
 
-**NOTE**: Update the MCP server URL in the ConfigMap to match your Developer Hub route URL.
+NOTE: Update the MCP server URL in the ConfigMap to match your Developer Hub route URL.
 
 The Lightspeed App Config contains the frontend configuration for the Lightspeed plugin,
 including MCP server tokens, custom prompts, and Content Security Policy (CSP) settings.
 
-```bash
-oc apply -f ./custom-app-config-gitlab/ls-app-config-configmap-15.yaml -n rhdh-gitlab
-```
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc apply -f ./content/modules/ROOT/examples/exercises/ls-app-config-configmap-15.yaml -n {rhdh_namespace}
+----
 
 The `lightspeed-app-config` ConfigMap named contains:
 
@@ -140,23 +149,27 @@ The `lightspeed-app-config` ConfigMap named contains:
 - Optional custom user prompts for the chat interface
 - Optional service port and system prompt overrides
 
-## Update Red Hat Developer Hub Configuration
+== Update Red Hat Developer Hub Configuration
 
 This step updates the Developer Hub instance to enable Lightspeed plugins and deploy
 the necessary sidecar containers.
 
 Enable the Lightspeed plugins:
 
-```bash
-oc apply -f ./custom-app-config-gitlab/dynamic-plugins-15.yaml -n rhdh-gitlab
-```
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc apply -f ./content/modules/ROOT/examples/exercises/dynamic-plugins-15.yaml -n {rhdh_namespace}
+----
 
 Apply the updated Backstage Custom Resource that adds the Lightspeed sidecar containers
 and configuration, adding the secrets with the credentials to access to the database:
 
-```bash
-oc apply -f ./custom-app-config-gitlab/rhdh-instance-15.yaml -n rhdh-gitlab
-```
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc apply -f ./content/modules/ROOT/examples/exercises/rhdh-instance-15.yaml -n {rhdh_namespace}
+----
 
 This part is required to add manually a set of new init containers and side container to create
 the full architecture of this solution:
@@ -167,35 +180,39 @@ the full architecture of this solution:
 - Mount the `lightspeed-stack` ConfigMap and `lightspeed-app-config` ConfigMap
 - Create shared storage volumes for data persistence (feedback, transcripts, conversations, RAG data)
 
-## Verify the Installation
+== Verify the Installation
 
 After applying all configurations, verify that the Lightspeed integration is working:
 
-1. **Check that all pods are running**:
+. **Check that all pods are running**:
++
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc get pods -l rhdh.redhat.com/app=backstage-developer-hub -n rhdh-gitlab
+----
++
+You should see containers for `backstage-backend`, `llama-stack`, and `lightspeed-core` in the pod.
 
-   ```bash
-   oc get pods -l rhdh.redhat.com/app=backstage-developer-hub -n rhdh-gitlab
-   ```
+. **Verify the Lightspeed plugin is loaded**:
++
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc logs deployment/backstage-developer-hub -c backstage-backend -n rhdh-gitlab | grep -i lightspeed
+----
 
-   You should see containers for `backstage-backend`, `llama-stack`, and `lightspeed-core` in the pod.
+. **Access the Lightspeed UI**:
+  +
+  - Navigate to your Red Hat Developer Hub URL
+  - Look for the "Lightspeed" menu item in the navigation
+  - Click on it to open the chat interface
+  +
+  A similar interface like this one should appear:
+  +
+  image::rhdh-ls-ui.png[Red Hat Lightspeed Developer UI]
 
-2. **Verify the Lightspeed plugin is loaded**:
-
-   ```bash
-   oc logs deployment/backstage-developer-hub -c backstage-backend -n rhdh-gitlab | grep -i lightspeed
-   ```
-
-3. **Access the Lightspeed UI**:
-
-   - Navigate to your Red Hat Developer Hub URL
-   - Look for the "Lightspeed" menu item in the navigation
-   - Click on it to open the chat interface
-
-   A similar interface like this one should appear:
-
-   ![Red Hat Lightspeed Developer UI](./media/rhdh-ls-ui.png)
-
-## Test Developer Lightspeed
+== Test Developer Lightspeed
 
 Once the installation is complete and all pods are running, you can test the Lightspeed integration
 by asking questions in the chat interface. Here are some example queries you can try:
@@ -220,7 +237,15 @@ by asking questions in the chat interface. Here are some example queries you can
 These queries demonstrate how Lightspeed can interact with the Developer Hub catalog and TechDocs through
 the MCP tools, providing AI-powered assistance for navigating and understanding your software catalog.
 
-## References
+== References
 
-- [Interacting with Red Hat Developer Lightspeed for Red Hat Developer Hub](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/interacting_with_red_hat_developer_lightspeed_for_red_hat_developer_hub/index)
-- [About Developer Lightspeed](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/interacting_with_red_hat_developer_lightspeed_for_red_hat_developer_hub/index#con-about-developer-lightspeed_developer-lightspeed)
+- https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/interacting_with_red_hat_developer_lightspeed_for_red_hat_developer_hub/index[Interacting with Red Hat Developer Lightspeed for Red Hat Developer Hub]
+- https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/interacting_with_red_hat_developer_lightspeed_for_red_hat_developer_hub/index#con-about-developer-lightspeed_developer-lightspeed[About Developer Lightspeed]
+
+== Learning outcomes
+
+By completing this module, you should understand:
+
+* How to add Lightspeed RBAC permissions
+* How to configure Llama Stack secrets and Lightspeed configmaps
+* How to verify chat interface in Red Hat Developer Hub UI
