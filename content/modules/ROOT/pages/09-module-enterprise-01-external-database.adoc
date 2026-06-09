@@ -81,7 +81,7 @@ instance, as in the Lightspeed integration exercise:
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-oc exec -n rhdh-gitlab my-backstage-psql-developer-hub-0 -- env PGPASSWORD="$PG_ADMIN_PASS" psql -U postgres -h 127.0.0.1 -p 5432 -c "CREATE DATABASE \"rhdh-ls\";"
+oc exec -n {rhdh_namespace} my-backstage-psql-developer-hub-0 -- env PGPASSWORD="$PG_ADMIN_PASS" psql -U postgres -h 127.0.0.1 -p 5432 -c "CREATE DATABASE \"rhdh-ls\";"
 ----
 
 == Configure Red Hat Developer Hub to Use the External Database

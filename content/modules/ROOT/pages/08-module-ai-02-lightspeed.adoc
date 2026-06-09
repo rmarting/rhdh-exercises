@@ -94,7 +94,7 @@ You can create the `ls-llama-stack-secrets.yaml` and run:
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-oc apply -f ./ls-llama-stack-secrets.yaml -n rhdh-gitlab
+oc apply -f ./ls-llama-stack-secrets.yaml -n {rhdh_namespace}
 ----
 
 By default LCS will use a SQLlite instance to persist the chat histories. However, if the pod is restarted,
@@ -112,7 +112,7 @@ command to create it:
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-oc exec -n rhdh-gitlab backstage-psql-developer-hub-0 -- env PGPASSWORD="$PG_ADMIN_PASS" psql -U postgres -h 127.0.0.1 -p 5432 -c "CREATE DATABASE \"rhdh-ls\";"
+oc exec -n {rhdh_namespace} backstage-psql-developer-hub-0 -- env PGPASSWORD="$PG_ADMIN_PASS" psql -U postgres -h 127.0.0.1 -p 5432 -c "CREATE DATABASE \"rhdh-ls\";"
 ----
 
 The Lightspeed Stack ConfigMap contains the configuration for the Lightspeed Core Service, including service
@@ -190,7 +190,7 @@ After applying all configurations, verify that the Lightspeed integration is wor
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-oc get pods -l rhdh.redhat.com/app=backstage-developer-hub -n rhdh-gitlab
+oc get pods -l rhdh.redhat.com/app=backstage-developer-hub -n {rhdh_namespace}
 ----
 +
 You should see containers for `backstage-backend`, `llama-stack`, and `lightspeed-core` in the pod.
@@ -200,7 +200,7 @@ You should see containers for `backstage-backend`, `llama-stack`, and `lightspee
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-oc logs deployment/backstage-developer-hub -c backstage-backend -n rhdh-gitlab | grep -i lightspeed
+oc logs deployment/backstage-developer-hub -c backstage-backend -n {rhdh_namespace} | grep -i lightspeed
 ----
 
 . **Access the Lightspeed UI**:

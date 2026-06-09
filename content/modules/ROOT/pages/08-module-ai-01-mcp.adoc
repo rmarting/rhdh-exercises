@@ -63,7 +63,7 @@ Generate the token and add it into the Red Hat Developer Hub secrets configurati
 [source,bash,subs="+macros,+attributes"]
 ----
 export MCP_TOKEN=$(node -p 'require("crypto").randomBytes(24).toString("base64")' | base64 -w0)
-oc patch secret rhdh-secrets -n rhdh-gitlab -p '{"data":{"MCP_TOKEN":"'"${MCP_TOKEN}"'"}}'
+oc patch secret rhdh-secrets -n {rhdh_namespace} -p '{"data":{"MCP_TOKEN":"'"${MCP_TOKEN}"'"}}'
 ----
 
 Apply the changes
@@ -212,7 +212,7 @@ mkdir -p .cursor && cat > .cursor/mcp.json <<EOF
 {
   "mcpServers": {
     "rhdh-mcp-server": {
-      "url": "https://$(oc get route backstage-developer-hub -n rhdh-gitlab -o jsonpath='{.spec.host}')/api/mcp-actions/v1",
+      "url": "https://$(oc get route backstage-developer-hub -n {rhdh_namespace} -o jsonpath='{.spec.host}')/api/mcp-actions/v1",
       "headers": {
         "Authorization": "Bearer ${MCP_TOKEN}"
       },

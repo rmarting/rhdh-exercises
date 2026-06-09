@@ -111,8 +111,8 @@ Patch the `rhdh-secrets` secret to add the `AWS_REGION` and `BUCKET_URL` variabl
 ----
 export AWS_REGION=$(echo -n 'us-east-2' | base64 -w0)
 export BUCKET_URL=$(oc get route s3 -n openshift-storage -o jsonpath='https://{.spec.host}' | base64 -w0)
-oc patch secret rhdh-secrets -n rhdh-gitlab -p '{"data":{"AWS_REGION":"'"${AWS_REGION}"'"}}'
-oc patch secret rhdh-secrets -n rhdh-gitlab -p '{"data":{"BUCKET_URL":"'"${BUCKET_URL}"'"}}'
+oc patch secret rhdh-secrets -n {rhdh_namespace} -p '{"data":{"AWS_REGION":"'"${AWS_REGION}"'"}}'
+oc patch secret rhdh-secrets -n {rhdh_namespace} -p '{"data":{"BUCKET_URL":"'"${BUCKET_URL}"'"}}'
 ----
 
 Add the `rhdh-techdocs-bucket-claim` ConfigMap and Secret to the Red Hat Developer Hub deployment.

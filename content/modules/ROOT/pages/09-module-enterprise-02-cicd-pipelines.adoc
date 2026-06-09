@@ -158,7 +158,7 @@ export ARGOCD_URL_B64=$(echo -n "$ARGOCD_URL" | base64 -w0)
 export ARGOCD_USERNAME_B64=$(echo -n "$ARGOCD_USERNAME" | base64 -w0)
 export ARGOCD_PASSWORD_B64=$(echo -n "$ARGOCD_PASSWORD" | base64 -w0)
 
-oc patch secret rhdh-secrets -n rhdh-gitlab -p '{"data":{"ARGOCD_URL":"'"$ARGOCD_URL_B64"'","ARGOCD_USERNAME":"'"$ARGOCD_USERNAME_B64"'","ARGOCD_PASSWORD":"'"$ARGOCD_PASSWORD_B64"'"}}'
+oc patch secret rhdh-secrets -n {rhdh_namespace} -p '{"data":{"ARGOCD_URL":"'"$ARGOCD_URL_B64"'","ARGOCD_USERNAME":"'"$ARGOCD_USERNAME_B64"'","ARGOCD_PASSWORD":"'"$ARGOCD_PASSWORD_B64"'"}}'
 ----
 
 == Integration with Tekton
@@ -212,8 +212,8 @@ EOF
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-export RHDH_TOKEN_SERVICE_ACCOUNT=$(oc get secret rhdh-token -o go-template='{{.data.token | base64decode}}' -n rhdh-gitlab | base64 -w0)
-oc patch secret rhdh-secrets -n rhdh-gitlab -p '{"data":{"RHDH_TOKEN_SERVICE_ACCOUNT":"'"${RHDH_TOKEN_SERVICE_ACCOUNT}"'"}}'
+export RHDH_TOKEN_SERVICE_ACCOUNT=$(oc get secret rhdh-token -o go-template='{{.data.token | base64decode}}' -n {rhdh_namespace} | base64 -w0)
+oc patch secret rhdh-secrets -n {rhdh_namespace} -p '{"data":{"RHDH_TOKEN_SERVICE_ACCOUNT":"'"${RHDH_TOKEN_SERVICE_ACCOUNT}"'"}}'
 ----
 
 . Declare the API url of OpenShift into the `rhdh-secrets` secret:
@@ -222,7 +222,7 @@ oc patch secret rhdh-secrets -n rhdh-gitlab -p '{"data":{"RHDH_TOKEN_SERVICE_ACC
 [source,bash,subs="+macros,+attributes"]
 ----
 export APIDOMAIN="api.${BASEDOMAIN#apps.}"
-oc patch secret rhdh-secrets -n rhdh-gitlab -p '{"stringData":{"APIDOMAIN":"'"${APIDOMAIN}"'"}}'
+oc patch secret rhdh-secrets -n {rhdh_namespace} -p '{"stringData":{"APIDOMAIN":"'"${APIDOMAIN}"'"}}'
 ----
 
 == Apply Red Hat Developer Hub configuration
