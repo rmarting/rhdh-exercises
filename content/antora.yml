@@ -4,14 +4,13 @@ version: master
 nav:
   - modules/ROOT/nav.adoc
 
-#start_page: modules::index.adoc  
-
 asciidoc:
   attributes:
     experimental: true
     release-version: master
     page-pagination: true
     showroom-collection-version: v1.5.2
+    workshop_repo_url: https://github.com/rmarting/rhdh-exercises.git
     page-links:
       - url: https://redhat.com
         text: Red Hat

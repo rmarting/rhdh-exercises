@@ -15,13 +15,18 @@ ui:
     snapshot: true
   supplemental_files:
     - path: ./content/supplemental-ui
-    #- path: ./content/lib
 
 runtime:
   cache_dir: ./.cache/antora
 
 antora:
   extensions:
+    - require: '@sntke/antora-mermaid-extension'
+      mermaid_library_url: https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs
+      script_stem: header-scripts
+      mermaid_initialize_options:
+        start_on_load: true
+    #- require: '@andrew-jones/antora-tabs-extension'  
     - id: dev-mode
       require: ./content/lib/dev-mode.js
       enabled: true
