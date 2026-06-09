@@ -15,10 +15,7 @@ plugins including the new one with the following configuration:
 [source,yaml,subs="+macros,+attributes"]
 ----
     plugins:
-      - package: './dynamic-plugins/dist/backstage-plugin-catalog-backend-module-gitlab-dynamic'
-        disabled: false
-      - package: './dynamic-plugins/dist/janus-idp-backstage-plugin-rbac'
-        disabled: false
+      # ... Other previous plugins ...
       # DevQuotes Dynamic Plugin
       - package: oci://quay.io/rhdh-adventure-organization/parsifal-m-plugin-dev-quotes-homepage:3.0.8!parsifal-m-plugin-dev-quotes-homepage
         disabled: false

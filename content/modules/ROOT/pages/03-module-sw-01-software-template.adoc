@@ -16,14 +16,15 @@ from the remote url.
 Another alternative is to configure the location of the templates in the `catalog` definition. This is the
 configuration to add in the `app-config-rhdh` ConfigMap:
 
-```yaml
+[source,yaml,subs="+macros,+attributes"]
+----
     catalog:
       locations:
         - type: url
           target: https://github.com/rmarting/rhdh-exercises-software-templates/blob/main/templates.yaml
           rules:
             - allow: [Template]
-```
+----
 
 The templates provided as example, includes an integration to publish content into the GitLab server. To enable that
 capability is needed to enabled the `backstage-plugin-scaffolder-backend-module-gitlab-dynamic` plugin, which includes

@@ -6,9 +6,18 @@
 
 include::partial$_attributes.adoc[]
 
+Security is a core responsibility of any internal developer portal (IDP). After GitLab users and teams appear in the catalog,
+you must control who can run self-service actions, view sensitive data, and administer the platform.
+
+https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/authorization_in_red_hat_developer_hub/index[Role-based access control (RBAC)]
+maps users and groups to permissions on Red Hat Developer Hub resources.
+RBAC rules let platform teams grant the right level of access per team—for example, allowing `team-a` to scaffold components
+while restricting `team-b`—without giving every user the same capabilities. In this module you enable the Permissions framework,
+load CSV policy files, and validate that different GitLab users see different self-service options.
+
 Enable permissions by updating `app-config-rhdh` ConfigMap:
 
-[source, yaml, subs="+macros,+attributes"]
+[source,yaml,subs="+macros,+attributes"]
 ----
 permission:
   enabled: true
@@ -23,7 +32,7 @@ permission:
 
 Mount the new file in the `Backstage` manifests:
 
-[source, yaml, subs="+macros,+attributes"]
+[source,yaml,subs="+macros,+attributes"]
 ----
     extraFiles:
       mountPath: /opt/app-root/src/rbac
@@ -49,10 +58,6 @@ Open an incognito window, or just logout, and login with `user2` (password: `@ab
 that this user can't create anything. This user has not any `Self-Service` button enabled.
 
 NOTE: If you login with the `root` user, you will be able to edit the RBAC policies from the `Administration` page.
-
-References:
-
-* https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/authorization_in_red_hat_developer_hub/index[Authorization in Red Hat Developer Hub]
 
 == Learning outcomes
 

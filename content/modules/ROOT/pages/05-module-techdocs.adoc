@@ -61,12 +61,12 @@ Install GitLab Runner operator:
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-oc apply -f ./content/modules/ROOT/examples/exercises/gitlab-runner-operator-8.yaml -n gitlab-system
+oc apply -f ./content/modules/ROOT/examples/exercises/gitlab-runner-operator-8.yaml -n {gitlab_namespace}
 ----
 
 [source,bash,subs="+macros,+attributes"]
 ----
-on 🎩 ❯ oc get csv -n gitlab-system
+on 🎩 ❯ oc get csv -n {gitlab_namespace}
 NAME                                DISPLAY          VERSION   REPLACES                            PHASE
 gitlab-runner-operator.v1.49.0      GitLab Runner    1.49.0    gitlab-runner-operator.v1.48.3      Succeeded
 ----
@@ -80,7 +80,7 @@ Deploy a GitLab runner to run pipelines:
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-envsubst < ./content/modules/ROOT/examples/exercises/gitlab-runner-8.yaml | oc apply -n gitlab-system -f -
+envsubst < ./content/modules/ROOT/examples/exercises/gitlab-runner-8.yaml | oc apply -n {gitlab_namespace} -f -
 ----
 
 GitLab requires a set of CI variables to run successfully the techdocs pipelines.

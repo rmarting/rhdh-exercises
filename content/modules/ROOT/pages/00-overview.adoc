@@ -20,32 +20,6 @@ your teams need for day-to-day development.
 **The objective**: A working Red Hat Developer Hub instance where users authenticate with GitLab, the catalog discovers repositories and
 teams, and optional modules extend the platform with templates, plugins, documentation, and automation.
 
-== Success criteria
-
-By the end of this workshop, you will have:
-
-* Deployed Red Hat Developer Hub {rhdh_version} on OpenShift {ocp_version}
-* Configured GitLab authentication and catalog autodiscovery
-* Applied RBAC policies and imported software templates
-* Extended the portal with dynamic plugins, TechDocs, High-Availability, monitoring, and notifications
-* Explored Orchestrator, AI enabled (MCP and Developer Lightspeed), external database, and CI/CD integrations
-
-== Target audience
-
-This workshop is designed for:
-
-* Platform engineers and cluster administrators installing Red Hat Developer Hub
-* Developer experience teams evaluating internal developer portals
-* Developers who want hands-on experience with Red Hat Developer Hub and its integration capabilities
-
-== Prerequisites
-
-You should have:
-
-* `cluster-admin` access on an OpenShift {ocp_version} cluster
-* Familiarity with `oc`, ConfigMaps, Secrets, and the Backstage custom resource
-* A clone of this repository (or raw URLs from your GitLab fork)
-
 == Project challenges
 
 **The situation**: Teams store code in GitLab but onboarding is manual. There is no standard way to scaffold components,
@@ -60,3 +34,29 @@ publish TechDocs, or enforce who can run self-service actions.
 
 **The opportunity**: Red Hat Developer Hub provides a Backstage-based portal with dynamic plugins, GitLab integration, and
 enterprise options for HA, monitoring, and external databases.
+
+== Success criteria
+
+By the end of this workshop, you will have:
+
+* Deployed Red Hat Developer Hub {rhdh_version} on OpenShift {ocp_version}
+* Configured GitLab authentication and catalog autodiscovery
+* Applied RBAC policies and imported software templates
+* Extended the portal with dynamic plugins, TechDocs, High-Availability, monitoring, and notifications
+* Explored Orchestrator, AI enabled (MCP and Developer Lightspeed), use of an external database, and CI/CD integrations
+
+== Target audience
+
+This workshop is designed for:
+
+* Platform engineers and cluster administrators installing Red Hat Developer Hub
+* Developer experienced teams evaluating internal developer portals
+* Developers who want hands-on experience with Red Hat Developer Hub and its integration capabilities
+
+== Prerequisites
+
+You should have:
+
+* `cluster-admin` access on an OpenShift {ocp_version} cluster
+* Familiarity with `oc`, ConfigMaps, Secrets, and the Backstage custom resource
+* A clone of this repository (or raw URLs from your GitLab fork)

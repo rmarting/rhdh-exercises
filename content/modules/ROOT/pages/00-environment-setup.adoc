@@ -8,23 +8,30 @@ include::partial$_attributes.adoc[]
 
 Before configuring Red Hat Developer Hub, install the operators and base platform services on OpenShift. This module prepares cert-manager, GitLab, and the Red Hat Developer Hub operator, then deploys an initial Developer Hub instance in the `{rhdh_namespace}` namespace.
 
-== Learning objectives
-By the end of this module, you will be able to:
+== Set up your local environment
 
-* Install cert-manager, GitLab, and Red Hat Developer Hub operators
-* Deploy GitLab and run initial group/user/repository setup
-* Deploy a base Backstage CR and verify the Red Hat Developer Hub route
+Cloning this repository will give you access to the examples and the workshop content
+to run into your OpenShift cluster:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+mkdir -p ~/workshops
+cd ~/workshops
+git clone {workshop_repo_url}
+----
 
 == Login OpenShift
 
-. Using the admin credentials, login to the OpenShift console:
+. Using the admin credentials provided for your environment, login to the OpenShift:
 +
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-oc login -u admin 
-oc login --token=sha256~p5UOTmRrdoLBiMmdIiFyWgiCL8XL7UIPC8qcsSsCAnk --server=https://api.cluster-8pn7c.dynamic2.redhatworkshops.io:6443
+oc login -u admin --server=<OPENSHIFT_API_URL>
 ----
+
+WARNING: Replace `<OPENSHIFT_API_URL>` with the actual API URL provided for your environment.
 
 == Install platform operators
 
@@ -58,7 +65,7 @@ oc apply -f ./content/modules/ROOT/examples/lab-prep/cert-manager-operator.yaml
 [source,bash,subs="+macros,+attributes"]
 ----
 oc apply -f ./content/modules/ROOT/examples/lab-prep/gitlab-operator.yaml
-oc get csv -n gitlab-system
+oc get csv -n {gitlab_namespace}
 ----
 +
 This should be the output after the operator installation:
@@ -102,7 +109,7 @@ envsubst < ./content/modules/ROOT/examples/lab-prep/gitlab.yaml | oc apply -f -
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-oc get gitlabs gitlab -o jsonpath='{.status.phase}' -n gitlab-system
+oc get gitlabs gitlab -o jsonpath='{.status.phase}' -n {gitlab_namespace}
 ----
 
 . Retrieve root password:
@@ -110,7 +117,7 @@ oc get gitlabs gitlab -o jsonpath='{.status.phase}' -n gitlab-system
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-oc get secret gitlab-gitlab-initial-root-password -o jsonpath='{.data.password}' -n gitlab-system | base64 -d
+oc get secret gitlab-gitlab-initial-root-password -o jsonpath='{.data.password}' -n {gitlab_namespace} | base64 -d
 ----
 +
 IMPORTANT: You will need this password to setup GitLab in future steps.

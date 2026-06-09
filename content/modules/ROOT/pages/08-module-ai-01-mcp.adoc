@@ -7,7 +7,8 @@
 include::partial$_attributes.adoc[]
 
 Since Red Hat Developer Hub 1.9, there is a Developer Preview feature to integrate it with AI
-clients by Model Context Protocol (MCP) server. This feature provides a standardized method
+clients by https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/interacting_with_model_context_protocol_tools_for_red_hat_developer_hub/index[Model Context Protocol (MCP)] server.
+This feature provides a standardized method
 for AI applications to access Red Hat Developer Hub information and workflows through defined MCP tools.
 
 MCP is a standardized method for linking AI models and applications (MCP clients) with external
@@ -145,10 +146,9 @@ from the Red Hat AI BU. This is not an official Red Hat Service. It is for Red H
 internal demo purposes only, provided 'as-is' without support or SLA.
 
 * Access the URL and sign in with your Red Hat account: https://litellm-prod-frontend.apps.maas.redhatworkshops.io/[MaaS website].
-* Click **Sign in** and **Authenticate with RH SSO**.
-* Click **Google** to sign in to RHOAI, where the model is deployed with your account.
-* Click **Applications** and **Create an Application**.
-* Click the `llama-3-2-3b` model.
+* Click **Log in with SSO**.
+* Access **Models** and btn:[Subscribe] the `llama-3-2-3b` model.
+* Access **API Keys** and **Create API Key**.
 * Save the **API Key** and the **Endpoint URL** for later usage.
 
 Back to your IDE to add your LLM model:
@@ -264,10 +264,6 @@ Let's try some of the next queries:
 * Fetch page `index.html` from techdoc with reference `component:default/my-sample`
 
 Try your own queries.
-
-== References
-
-* https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/interacting_with_model_context_protocol_tools_for_red_hat_developer_hub/index[Interacting with MCP tools for Red Hat Developer Hub]
 
 == Learning outcomes
 

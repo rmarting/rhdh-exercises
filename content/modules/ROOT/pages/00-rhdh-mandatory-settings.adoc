@@ -15,6 +15,13 @@ Customizing the instance requires a custom application file defined in a ConfigM
 Secret object to store sensitive data required by Red Hat Developer Hub. An example of sensitive data required is
 the `BACKEND_SECRET` variable. That variable contains a mandatory backend authentication key.
 
+Here a sample of that secret file:
+
+[source,yaml,subs="+macros,+attributes"]
+----
+include::example$exercises/rhdh-secrets.yaml[]
+----
+
 Creating a Secret including that variable, and adding the base domain of our instance can be done running:
 
 . Apply `rhdh-secrets` template:
@@ -40,8 +47,7 @@ More details https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.6/
 
 This is the structure of the `app-config-rhdh` ConfigMap to customize the configuration of our Red Hat Developer Hub instance:
 
-[.console-input]
-[source, yaml, subs="+macros,+attributes"]
+[source,yaml,subs="+macros,+attributes"]
 ----
 include::example$exercises/rhdh-app-configmap-0.yaml[]
 ----

@@ -13,6 +13,13 @@ dynamic plugin provided by Red Hat Developer Hub.
 
 We will use a new ConfigMap to enable the dynamic plugins:
 
+[source,yaml,subs="+macros,+attributes"]
+----
+include::example$exercises/dynamic-plugins-3.yaml[]
+----
+
+We can create the ConfigMap running:
+
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
@@ -21,8 +28,7 @@ oc apply -f ./content/modules/ROOT/examples/exercises/dynamic-plugins-3.yaml -n 
 
 Add this to the `app-config-rhdh` ConfigMap:
 
-[.console-input]
-[source, yaml, subs="+macros,+attributes"]
+[source,yaml,subs="+macros,+attributes"]
 ----
 catalog:
   providers:
@@ -44,8 +50,7 @@ catalog:
 
 Update the Red Hat Developer Hub manifest to use the new ConfigMap for plugins:
 
-[.console-input]
-[source, yaml, subs="+macros,+attributes"]
+[source,yaml,subs="+macros,+attributes"]
 ----
 spec:
   application:
@@ -66,7 +71,7 @@ Verify that the `sample-app` component is located on the `Catalog` page.
 
 TIP: A similar message is registered in the Red Hat Developer Hub pod to confirm the number of projects scanned:
 
-[source, text, subs="+macros,+attributes"]
+[source,json,subs="+macros,+attributes"]
 ----
 {"class":"GitlabDiscoveryEntityProvider","level":"\u001b[32minfo\u001b[39m","message":"Processed 1 from scanned 1 projects.","plugin":"catalog","service":"backstage","span_id":"f957c3084bb63955","target":"GitlabDiscoveryEntityProvider:myGitLab","taskId":"GitlabDiscoveryEntityProvider:myGitLab:refresh","taskInstanceId":"06e6c7f9-1f7f-4f2e-a61b-52bc2614b279","timestamp":"2025-03-05 09:27:24","trace_flags":"01","trace_id":"cb4b00f3c9465893e015c5c4b2233d36"}
 ----
@@ -74,8 +79,7 @@ TIP: A similar message is registered in the Red Hat Developer Hub pod to confirm
 NOTE: Enabling the following plugins shows some tabs in each component published in a GitLab server. Those
 tabs shows the issues, merge requests and other useful information from the repository hosted in the GitLab server.
 
-[.console-input]
-[source, yaml, subs="+macros,+attributes"]
+[source,yaml,subs="+macros,+attributes"]
 ----
       # GitLab Integration Plugins
       - package: 'oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/immobiliarelabs-backstage-plugin-gitlab:bs_1.45.3__6.13.0'
@@ -92,6 +96,6 @@ Open Catalog in Red Hat Developer Hub and confirm the `sample-app` component fro
 
 By completing this module, you should understand:
 
-* How to enable backstage-plugin-catalog-backend-module-gitlab-dynamic
-* How to configure catalog.providers.gitlab in app-config
-* How to verify sample-app appears in the Software Catalog
+* How to enable `backstage-plugin-catalog-backend-module-gitlab-dynamic`
+* How to configure `catalog.providers.gitlab` in app-config
+* How to verify `sample-app` appears in the Software Catalog

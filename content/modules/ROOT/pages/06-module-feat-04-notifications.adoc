@@ -35,13 +35,10 @@ image::rhdh-component-template-relation.png[Dependency between a component and a
 
 === Bonus Track
 
-If we change the version of the template used, a notification will appear similar to:
+If we change the version of the template used, a https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/customizing_red_hat_developer_hub/index#enable-software-template-version-update-notifications-in-rhdh_about-software-templates[notification]
+will appear similar to:
 
 image::rhdh-notifications.png[Notifications]
-
-References: 
-
-* https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/customizing_red_hat_developer_hub/index#enable-software-template-version-update-notifications-in-rhdh_about-software-templates[Enabling Software Template version update notifications in Red Hat Developer Hub]
 
 == Learning outcomes
 

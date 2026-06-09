@@ -329,17 +329,6 @@ metadata:
     argocd/app-name: 'angular-app'
 ----
 
-== References
-
-- https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/configuring_dynamic_plugins/index[Configuring dynamic plugins (Red Hat Developer Hub 1.9)]
-- https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/configuring_dynamic_plugins/index#install-and-configure-argo-cd_configuring-dynamic-plugins[Installing and configuring Argo CD]
-- https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/dynamic_plugins_reference/index#supported-plugins_dynamic-plugins-reference[Dynamic plugins reference (Tekton, Argo CD, Kubernetes)]
-- https://docs.redhat.com/en/documentation/red_hat_openshift_pipelines/[Red Hat OpenShift Pipelines]
-- https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/[Red Hat OpenShift GitOps]
-- https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/1.20/html-single/installing_gitops/[Installing Red Hat OpenShift GitOps]
-- https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/1.20/html-single/argo_cd_instance/[Setting up an Argo CD instance] (default instance is in `openshift-gitops`)
-- https://backstage.io/docs/features/kubernetes/configuration#clustersserviceaccounttoken-optional[Backstage Kubernetes plugin — cluster service account token]
-
 == Learning outcomes
 
 By completing this module, you should understand:

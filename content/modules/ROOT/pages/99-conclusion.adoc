@@ -1,50 +1,90 @@
-= Conclusion and references
-:navtitle: Conclusion and references
-:toc:
+= Wrap up
+:navtitle: Wrap up
+:toc: macro
 :icons: font
 
 include::partial$_attributes.adoc[]
 
-== Workshop summary
+Congratulations — you made it through the workshop.
 
-You configured Red Hat Developer Hub on OpenShift with GitLab integration across twenty hands-on modules:
+You started with an empty OpenShift cluster and built a working internal developer portal (IDP) step by step.
+Along the way you installed operators, integrated GitLab, applied security policies, extended the platform with plugins,
+and explored advanced capabilities. That is a substantial amount of hands-on work, and you should feel confident
+about what you configured.
 
-* **Foundation** — Operators, GitLab, base Red Hat Developer Hub instance, mandatory secrets and app-config
-* **Identity and catalog** — GitLab auth, API integration, project and org autodiscovery
-* **Governance and self-service** — RBAC, software templates, component scaffolding
-* **Platform extensions** — Dynamic plugins, TechDocs, HA, plugin cache, monitoring, notifications
-* **Advanced topics** — Orchestrator, MCP, Lightspeed, external database, CI/CD visibility
+== What you did in this workshop
 
-Manifests remain in `lab-prep/` (bootstrap) and `./content/modules/ROOT/examples/exercises/` (numbered steps 0–17) for reuse outside Showroom.
+=== Foundation and IDP setup
 
-== What you accomplished
+* Installed cert-manager, GitLab, and the Red Hat Developer Hub operator
+* Deployed GitLab and bootstrapped users, groups, and sample repositories
+* Deployed a base Red Hat Developer Hub instance and applied mandatory secrets and app-config
 
-* Deployed Red Hat Developer Hub {rhdh_version} with the GitLab provider on OpenShift {ocp_version}
-* Connected GitLab OAuth, PAT integration, and catalog providers
-* Applied RBAC and validated team-scoped self-service access
-* Extended the portal with plugins, documentation, and observability features
-* Explored enterprise and AI integration paths appropriate to your environment
+=== GitLab integration
 
-== References
+* Enabled GitLab OAuth sign-in
+* Connected GitLab API integration with a Personal Access Token
+* Turned on catalog autodiscovery for GitLab projects
+* Mirrored GitLab users and groups in the software catalog
+
+=== Authorization and self-service
+
+* Enabled RBAC and validated team-scoped access for different GitLab users
+* Registered software templates and scaffolded a new component from the portal
+
+=== Platform extensions
+
+* Deployed a custom dynamic plugin
+* Configured TechDocs with object storage, GitLab Pipelines, and external publishing
+* Scaled Red Hat Developer Hub for high availability
+* Enabled dynamic plugins cache, monitoring, observability, and notifications
+
+=== Advanced and enterprise topics
+
+* Installed Orchestrator and ran SonataFlow workflows from the portal
+* Explored Model Context Protocol (MCP) and Red Hat Developer Lightspeed integrations
+* Recreated Red Hat Developer Hub with an external PostgreSQL database
+* Integrated Tekton, Kubernetes, and Argo CD visibility for CI/CD on entity pages
+
+== Keep learning
+
+Use the references below to go deeper on topics that matter most to your team. You do not need to read everything at once
+— pick the area you plan to implement next in your organization.
+
+=== Core platform
 
 * link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/[Red Hat Developer Hub documentation]
 * link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/configuring_red_hat_developer_hub/index[Configuring Red Hat Developer Hub]
+* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/about_red_hat_developer_hub/index#rhdh-sizing_about-rhdh[Sizing Red Hat Developer Hub]
+* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html/installing_red_hat_developer_hub_on_openshift_container_platform/assembly-install-rhdh-ocp-operator#proc-install-operator_assembly-install-rhdh-ocp-operator[Installing Red Hat Developer Hub via the operator on OpenShift]
+* link:https://backstage.io/docs/[Backstage documentation]
+
+=== Security, RBAC, and governance
+
 * link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/authorization_in_red_hat_developer_hub/index[Authorization in Red Hat Developer Hub]
-* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/adoption_insights_in_red_hat_developer_hub/index[Adoption Insights]
-* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/monitoring_and_logging/index[Monitoring and logging]
-* link:https://rhdhorchestrator.io/[Orchestrator for Red Hat Developer Hub]
 * link:https://backstage.io/docs/auth/gitlab/provider[Backstage GitLab auth provider]
 
-== Legacy documentation
+=== Dynamic plugins and portal customization
 
-The original Markdown exercise track is preserved for reference:
+* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/configuring_dynamic_plugins/index[Configuring dynamic plugins]
+* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/dynamic_plugins_reference/index#supported-plugins_dynamic-plugins-reference[Dynamic plugins reference (Tekton, Argo CD, Kubernetes)]
+* link:https://developers.redhat.com/products/rhdh/plugins[Supported Red Hat Developer Hub plugins]
 
-* `README-preparation.md` — cluster bootstrap details
-* `README-gitlab.md` — full exercise narrative and YAML excerpts
-* `README-orchestrator.md`, `README-ai-mcp.md`, `README-ai-ls.md`, `README-ee-database.md`, `README-ee-cicd.md` — extended labs
+=== Observability and operations
 
-== Next steps
+* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/adoption_insights_in_red_hat_developer_hub/index[Adoption Insights in Red Hat Developer Hub]
+* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/monitoring_and_logging/index[Monitoring and logging in Red Hat Developer Hub]
 
-* Run `/verify-content` (Showroom skill) for a full quality review of AsciiDoc modules
-* Publish this repository as Showroom content with `site.yml` and an AgnosticV catalog entry
-* Customize RBAC policies and templates for your organization's GitLab groups
+=== Orchestrator and workflows
+
+* link:https://rhdhorchestrator.io/[Orchestrator for Red Hat Developer Hub]
+
+=== Enterprise CI/CD integration
+
+* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/configuring_dynamic_plugins/index#install-and-configure-argo-cd_configuring-dynamic-plugins[Installing and configuring the Argo CD dynamic plugin]
+* link:https://docs.redhat.com/en/documentation/red_hat_openshift_pipelines/[Red Hat OpenShift Pipelines]
+* link:https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/[Red Hat OpenShift GitOps]
+* link:https://backstage.io/docs/features/kubernetes/configuration#clustersserviceaccounttoken-optional[Backstage Kubernetes plugin — cluster service account token]
+
+Thank you for working through the exercises. Your Red Hat Developer Hub instance is now a solid starting point for
+a production internal developer portal — keep iterating from here.

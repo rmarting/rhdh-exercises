@@ -14,18 +14,26 @@ More information about Dynamic Plugins https://docs.redhat.com/en/documentation/
 
 To enable the GitLab integration and discovery capabilities a Personal Access Token (aka PAT) is required.
 
-Create new Personal Access Token (aka PAT) in menu `Access Tokens` of the GitLab user profile:
+Create new Personal Access Token (aka PAT) in menu `Personal Access Tokens` of the GitLab user profile:
 
-- GitLab UI navigation: Edit Profile -> Access Tokens -> Add new token
-- name: `pat-rhdh-exercises`
-- expiration date: Disabled it or just one in the future
-- set the scopes: `api`, `read_api`, `read_repository`, `write_repository`
+- GitLab UI navigation: menu:Profile[Personal Access Tokens > Add new token]
+- Name: `pat-rhdh-exercises`
+- Expiration date: Disabled it or just one in the future
+- Set the scopes: `api`, `read_api`, `read_repository`, `write_repository`
 
-NOTE: Use the `root` user of GitLab to create this application.
+[NOTE]
+====
+Use the `root` user of GitLab to create this application. If you need the `root` password, run:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc get secret gitlab-gitlab-initial-root-password -o jsonpath='{.data.password}' -n {gitlab_namespace} | base64 -d
+----
+====
 
 Add the PAT to the previously created `gitlab-secrets` secret:
 
-[.console-input]
 [source, yaml, subs="+macros,+attributes"]
 ----
 kind: Secret
@@ -42,7 +50,6 @@ type: Opaque
 
 Add the following to the `app-config-rhdh` ConfigMap:
 
-[.console-input]
 [source, yaml, subs="+macros,+attributes"]
 ----
 kind: ConfigMap
@@ -77,5 +84,5 @@ GitLab integration backend starts without auth errors in logs.
 By completing this module, you should understand:
 
 * How to create a GitLab PAT with required scopes
-* How to add GITLAB_TOKEN to gitlab-secrets
-* How to configure integrations.gitlab in app-config
+* How to add `GITLAB_TOKEN` to gitlab-secrets
+* How to configure integrations.GitLab in app-config

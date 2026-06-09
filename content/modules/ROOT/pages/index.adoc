@@ -31,10 +31,10 @@ integrated with the most common features and use cases.
 | Operators, GitLab, base Red Hat Developer Hub
 
 | xref:00-rhdh-mandatory-settings.adoc[IDP Settings]
-| Set up application configuration and secrets
+| Set up Red Hat Developer Hub configuration and secrets
 
 | xref:01-module-gitlab-01-authentication.adoc[GitLab Integration]
-| Authentication, Catalog and users/teams autodiscovery
+| Authentication, catalog, and users and groups autodiscovery
 
 | xref:02-module-rbac.adoc[Authorization]
 | Role-based access control (RBAC)
@@ -49,7 +49,7 @@ integrated with the most common features and use cases.
 | Installation and configuration of TechDocs
 
 | xref:06-module-feat-01-high-availability.adoc[Extended features]
-| High availability, Dynamic plugins cache, Monitoring and observability and Notifications
+| High availability, dynamic plugins cache, monitoring, observability, and notifications
 
 | xref:07-module-orchestrator.adoc[Orchestrator]
 | Workflows creation and execution

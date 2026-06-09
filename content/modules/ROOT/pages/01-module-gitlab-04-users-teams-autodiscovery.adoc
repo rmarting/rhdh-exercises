@@ -23,8 +23,7 @@ oc apply -f ./content/modules/ROOT/examples/exercises/dynamic-plugins-4.yaml -n 
 
 Add this to the ConfigMap:
 
-[.console-input]
-[source, yaml, subs="+macros,+attributes"]
+[source,yaml,subs="+macros,+attributes"]
 ----
   catalog:
     providers:
@@ -59,12 +58,12 @@ TIP: A similar message is registered in the Red Hat Developer Hub pod to confirm
 {"class":"GitlabOrgDiscoveryEntityProvider","level":"\u001b[32minfo\u001b[39m","message":"Scanned 2 groups and processed 2 groups","plugin":"catalog","service":"backstage","span_id":"2dcb52e328c672ad","target":"GitlabOrgDiscoveryEntityProvider:myGitLab","taskId":"GitlabOrgDiscoveryEntityProvider:myGitLab:refresh","taskInstanceId":"03798434-b9e9-45f0-8be6-330f0229e07a","timestamp":"2025-03-05 10:08:57","trace_flags":"01","trace_id":"f6b7b7e7a96250eeca0e1f2b355c00ac"}
 ----
 
-Catalog shows User and Group entities matching GitLab users (user1, user2) and groups (team-a, team-b).
+Catalog shows User and Group entities matching GitLab users (`user1`, `user2`) and groups (`team-a`, `team-b`).
 
 == Learning outcomes
 
 By completing this module, you should understand:
 
-* How to enable gitlab-org dynamic plugin
-* How to configure orgEnabled and group patterns
-* How to disable dangerouslyAllowSignInWithoutUserInCatalog for valid users only
+* How to enable GitLab discovery
+* How to configure to discover organizational data (users and groups)
+* How to disable `dangerouslyAllowSignInWithoutUserInCatalog` for valid users only

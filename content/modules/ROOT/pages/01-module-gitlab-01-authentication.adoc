@@ -10,18 +10,27 @@ Enabling GitLab authentication requires to create a GitLab application within ou
 process is described https://backstage.io/docs/auth/gitlab/provider[here], however, keep in mind to
 execute the actions in your GitLab instance:
 
-- GitLab UI navigation: Edit `Profile` -> `Applications` -> `Add new application`
-- name: `rhdh-exercises`
-- Redirect URI: copy output:
+- GitLab UI navigation: menu:Profile[Access > Applications > Add new application]
+- Name: `rhdh-exercises`
+- Redirect URI:
 +
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 echo https://backstage-developer-hub-rhdh-gitlab.${BASEDOMAIN}/api/auth/gitlab/handler/frame
 ----
-- set the correct permissions: `api`, `read_user`, `read_repository`, `write_repository`, `openid`, `profile`, `email`
+- Set the correct permissions: `api`, `read_user`, `read_repository`, `write_repository`, `openid`, `profile`, `email`
 
-NOTE: Use the `root` user of GitLab to create this application.
+[NOTE]
+====
+Use the `root` user of GitLab to create this application. If you need the `root` password, run:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc get secret gitlab-gitlab-initial-root-password -o jsonpath='{.data.password}' -n {gitlab_namespace} | base64 -d
+----
+====
 
 Create a secret with an app id and secret:
 
@@ -102,5 +111,5 @@ Verify that you can login with GitLab.
 By completing this module, you should understand:
 
 * How to register a GitLab OAuth application for Red Hat Developer Hub
-* How to store AUTH_GITLAB_CLIENT_ID and AUTH_GITLAB_CLIENT_SECRET securely
+* How to store `AUTH_GITLAB_CLIENT_ID` and `AUTH_GITLAB_CLIENT_SECRET` securely
 * How to configure signInPage and GitLab auth provider in app-config

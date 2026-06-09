@@ -11,7 +11,8 @@ what a Software Template can provide natively. For example, certain requests mig
 long-running, stateful processes - this is where the Orchestrator for Red Hat Developer Hub can help. It addresses the fact that
 regular Software Templates are stateless "run and done" processes.
 
-The Orchestrator feature extends Red Hat Developer Hub with support for workflows created using https://sonataflow.org/[SonataFlow].
+The https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/orchestrator_in_red_hat_developer_hub/index[Orchestrator]
+extends Red Hat Developer Hub with support for workflows created using https://sonataflow.org/[SonataFlow].
 The Orchestrator project website and documentation is available at https://rhdhorchestrator.io[rhdhorchestrator.io].
 
 The Orchestrator feature effectively acts as an interface between Red Hat Developer Hub and SonataFlow-powered workflows,
@@ -132,10 +133,6 @@ image::rhdh-orchestrator-workflow.png[Greeting Workflow in Red Hat Developer Hub
 Run it and verify the results. 
 
 NOTE: If you are logged as a `team-b` member, then you are not allowed to run it.
-
-== References
-
-* https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/orchestrator_in_red_hat_developer_hub/index[Orchestrator in Red Hat Developer Hub]
 
 == Learning outcomes
 

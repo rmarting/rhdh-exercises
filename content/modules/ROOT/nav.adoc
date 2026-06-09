@@ -7,7 +7,7 @@
 ** xref:01-module-gitlab-01-authentication.adoc[Authentication]
 ** xref:01-module-gitlab-02-plugin-integration.adoc[Integration]
 ** xref:01-module-gitlab-03-catalog-autodiscovery.adoc[Catalog Discovery]
-** xref:01-module-gitlab-04-users-teams-autodiscovery.adoc[Users and teams autodiscovery]
+** xref:01-module-gitlab-04-users-teams-autodiscovery.adoc[Users and groups discovery]
 
 * Module: Authorization
 ** xref:02-module-rbac.adoc[RBAC]
@@ -39,4 +39,4 @@
 ** xref:09-module-enterprise-01-external-database.adoc[External database]
 ** xref:09-module-enterprise-02-cicd-pipelines.adoc[CI/CD pipelines]
 
-* xref:99-conclusion.adoc[Conclusion and references]
+* xref:99-conclusion.adoc[Wrap up]

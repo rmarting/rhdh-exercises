@@ -6,7 +6,8 @@
 
 include::partial$_attributes.adoc[]
 
-Red Hat Developer Lightspeed is an AI-powered assistant integrated into Red Hat Developer Hub that helps developers
+https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/interacting_with_red_hat_developer_lightspeed_for_red_hat_developer_hub/index[Red Hat Developer Lightspeed]
+is an AI-powered assistant integrated into Red Hat Developer Hub that helps developers
 interact with the Software Catalog, TechDocs, and other Developer Hub features through natural language queries.
 This exercise walks you through the integration process.
 
@@ -203,14 +204,15 @@ oc logs deployment/backstage-developer-hub -c backstage-backend -n rhdh-gitlab |
 ----
 
 . **Access the Lightspeed UI**:
-  +
-  - Navigate to your Red Hat Developer Hub URL
-  - Look for the "Lightspeed" menu item in the navigation
-  - Click on it to open the chat interface
-  +
-  A similar interface like this one should appear:
-  +
-  image::rhdh-ls-ui.png[Red Hat Lightspeed Developer UI]
++
+- Navigate to your Red Hat Developer Hub URL
+- Look for the "Lightspeed" menu item in the navigation
+- An floating icon should appear in the bottom right corner of the page:
++
+image::rhdh-ls-icon.png[Red Hat Lightspeed Developer icon]
+- Clicking in shows the chat area:
++
+image::rhdh-ls-ui.png[Red Hat Lightspeed Developer UI]
 
 == Test Developer Lightspeed
 
@@ -236,11 +238,6 @@ by asking questions in the chat interface. Here are some example queries you can
 
 These queries demonstrate how Lightspeed can interact with the Developer Hub catalog and TechDocs through
 the MCP tools, providing AI-powered assistance for navigating and understanding your software catalog.
-
-== References
-
-- https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/interacting_with_red_hat_developer_lightspeed_for_red_hat_developer_hub/index[Interacting with Red Hat Developer Lightspeed for Red Hat Developer Hub]
-- https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/interacting_with_red_hat_developer_lightspeed_for_red_hat_developer_hub/index#con-about-developer-lightspeed_developer-lightspeed[About Developer Lightspeed]
 
 == Learning outcomes
 

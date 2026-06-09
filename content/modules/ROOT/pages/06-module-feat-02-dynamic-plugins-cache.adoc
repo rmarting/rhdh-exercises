@@ -6,8 +6,8 @@
 
 include::partial$_attributes.adoc[]
 
-
-The dynamic plugins cache in Red Hat Developer Hub enhances the installation process and reduces platform
+The https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/configuring_red_hat_developer_hub/index#use-the-dynamic-plugins-cache_configuring-rhdh[dynamic plugins cache]
+in Red Hat Developer Hub enhances the installation process and reduces platform
 boot time by storing previously installed plugins. If the configuration remains unchanged, this feature prevents
 the need to re-download plugins on subsequent boots. This provides several benefits:
 
@@ -36,10 +36,6 @@ We patch the deployment definition to add this new storage for the init containe
 ----
 oc apply -f ./content/modules/ROOT/examples/exercises/rhdh-instance-10.yaml -n {rhdh_namespace}
 ----
-
-References:
-
-* https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/configuring_red_hat_developer_hub/index#use-the-dynamic-plugins-cache_configuring-rhdh[Enabling the dynamic plugins cache]
 
 == Learning outcomes
 

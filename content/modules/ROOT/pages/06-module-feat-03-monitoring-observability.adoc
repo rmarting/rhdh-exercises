@@ -7,9 +7,9 @@
 include::partial$_attributes.adoc[]
 
 Our Red Hat Developer Hub instance has a lot of content and provides services to their users. However, how could we
-measure it? Easy! There are a set of plugins to monitor the behavior of the users of Red Hat Developer Hub. Using
-the Adoption Insights plugins, we can enable a dashboard to visualize some interested metrics about the usage
-of the instance.
+measure it? Easy! There are a set of plugins to https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/monitoring_and_logging/index#proc-admin-enabling-metrics-ocp-operator_assembly-rhdh-observability[monitor the behavior]
+of the users of Red Hat Developer Hub. Using the https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/adoption_insights_in_red_hat_developer_hub/index#con-about-adoption-insights_title-adoption-insights[Adoption Insights] plugin,
+we can enable a dashboard to visualize some interested metrics about the usage of the instance.
 
 NOTE: Since Red Hat Developer Hub 1.7 this plugin is enabled by default.
 
@@ -22,10 +22,6 @@ oc apply -f ./content/modules/ROOT/examples/exercises/dynamic-plugins-11.yaml -n
 oc apply -f ./content/modules/ROOT/examples/exercises/rhdh-app-configmap-11.yaml -n {rhdh_namespace}
 ----
 
-References:
-
-* https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/adoption_insights_in_red_hat_developer_hub/index#con-about-adoption-insights_title-adoption-insights[About Adoption Insights]
-
 Since Red Hat Developer Hub 1.9 is easy to integrate it with the OpenShift Monitoring services using
 the user-defined projects. OpenShift can monitor user-defined projects in addition to the default platform monitoring.
 This feature allows monitoring your own projects in OpenShift without the need for an additional monitoring solution.
@@ -33,7 +29,7 @@ Using this feature centralizes monitoring for core platform components and user-
 
 For detailed information, check the https://docs.redhat.com/en/documentation/monitoring_stack_for_red_hat_openshift/4.21/html/configuring_user_workload_monitoring/index[official documentation].
 
-NOTE: As cluster-admin enable the user-monitoring capabilities of OpenShift adding the `enableUserWorkload` variable in
+NOTE: As `cluster-admin` enable the user-monitoring capabilities of OpenShift adding the `enableUserWorkload` variable in
 the configuration of the OpenShift Monitoring. This configuration is described in the `cluster-monitoring-config` ConfigMap
 of the `openshift-monitoring` namespace:
 
@@ -93,7 +89,7 @@ The metrics are exposed through an HTTP service endpoint under the `/metrics` ca
 the operator will create a `ServiceMonitor` object to scrape metrics from that service endpoint in a user-defined project.
 
 Once the ServiceMonitor is created, after some minutes to scrape some metrics, the user can visualize
-them from the **Developer** perspective in OpenShift in the menu **Observe -> Metrics**.
+them from the **Developer** perspective in OpenShift in the menu:Observe[Metrics].
 
 For example, the following metrics can be reviewed: `catalog_relations_count`, `catalog_entities_count`.
 
@@ -109,10 +105,6 @@ This procedure is similar to:
 3. From the pod panel, click the **Resources** tab.
 4. From the Pods section of the Resources tab, click **View logs**.
 5. From the **Logs view**, enter `isAuditLog` into the Search field to filter audit logs from other log types. You can use the arrows to browse the logs containing the `isAuditLog` field.
-
-References:
-
-* https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/monitoring_and_logging/index#proc-admin-enabling-metrics-ocp-operator_assembly-rhdh-observability[Monitoring and Logging]
 
 == Learning outcomes
 
