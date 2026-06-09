@@ -54,7 +54,8 @@ include::example$exercises/rhdh-app-configmap-0.yaml[]
 
 Once created the ConfigMap and Secret, we can add them into the `developer-hub` CR Red Hat Developer Hub manifest:
 
-```yaml
+[source,yaml,subs="+macros,+attributes"]
+----
 spec:
   application:
     appConfig:
@@ -63,7 +64,7 @@ spec:
     extraEnvs:
       secrets:
       - name: rhdh-secrets
-```
+----
 
 Or run this:
 
