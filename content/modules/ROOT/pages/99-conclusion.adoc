@@ -53,38 +53,38 @@ Use the references below to go deeper on topics that matter most to your team. Y
 
 === Core platform
 
-* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/[Red Hat Developer Hub documentation]
-* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/configuring_red_hat_developer_hub/index[Configuring Red Hat Developer Hub]
-* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/about_red_hat_developer_hub/index#rhdh-sizing_about-rhdh[Sizing Red Hat Developer Hub]
-* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html/installing_red_hat_developer_hub_on_openshift_container_platform/assembly-install-rhdh-ocp-operator#proc-install-operator_assembly-install-rhdh-ocp-operator[Installing Red Hat Developer Hub via the operator on OpenShift]
-* link:https://backstage.io/docs/[Backstage documentation]
+* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/[Red Hat Developer Hub documentation^]
+* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/configuring_red_hat_developer_hub/index[Configuring Red Hat Developer Hub^]
+* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/about_red_hat_developer_hub/index#rhdh-sizing_about-rhdh[Sizing Red Hat Developer Hub^]
+* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html/installing_red_hat_developer_hub_on_openshift_container_platform/assembly-install-rhdh-ocp-operator#proc-install-operator_assembly-install-rhdh-ocp-operator[Installing Red Hat Developer Hub via the operator on OpenShift^]
+* link:https://backstage.io/docs/[Backstage documentation^]
 
 === Security, RBAC, and governance
 
-* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/authorization_in_red_hat_developer_hub/index[Authorization in Red Hat Developer Hub]
-* link:https://backstage.io/docs/auth/gitlab/provider[Backstage GitLab auth provider]
+* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/authorization_in_red_hat_developer_hub/index[Authorization in Red Hat Developer Hub^]
+* link:https://backstage.io/docs/auth/gitlab/provider[Backstage GitLab auth provider^]
 
 === Dynamic plugins and portal customization
 
-* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/configuring_dynamic_plugins/index[Configuring dynamic plugins]
-* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/dynamic_plugins_reference/index#supported-plugins_dynamic-plugins-reference[Dynamic plugins reference (Tekton, Argo CD, Kubernetes)]
-* link:https://developers.redhat.com/products/rhdh/plugins[Supported Red Hat Developer Hub plugins]
+* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/configuring_dynamic_plugins/index[Configuring dynamic plugins^]
+* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/dynamic_plugins_reference/index#supported-plugins_dynamic-plugins-reference[Dynamic plugins reference (Tekton, Argo CD, Kubernetes)^]
+* link:https://developers.redhat.com/products/rhdh/plugins[Supported Red Hat Developer Hub plugins^]
 
 === Observability and operations
 
-* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/adoption_insights_in_red_hat_developer_hub/index[Adoption Insights in Red Hat Developer Hub]
-* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/monitoring_and_logging/index[Monitoring and logging in Red Hat Developer Hub]
+* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/adoption_insights_in_red_hat_developer_hub/index[Adoption Insights in Red Hat Developer Hub^]
+* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/monitoring_and_logging/index[Monitoring and logging in Red Hat Developer Hub^]
 
 === Orchestrator and workflows
 
-* link:https://rhdhorchestrator.io/[Orchestrator for Red Hat Developer Hub]
+* link:https://rhdhorchestrator.io/[Orchestrator for Red Hat Developer Hub^]
 
 === Enterprise CI/CD integration
 
-* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/configuring_dynamic_plugins/index#install-and-configure-argo-cd_configuring-dynamic-plugins[Installing and configuring the Argo CD dynamic plugin]
-* link:https://docs.redhat.com/en/documentation/red_hat_openshift_pipelines/[Red Hat OpenShift Pipelines]
-* link:https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/[Red Hat OpenShift GitOps]
-* link:https://backstage.io/docs/features/kubernetes/configuration#clustersserviceaccounttoken-optional[Backstage Kubernetes plugin — cluster service account token]
+* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/configuring_dynamic_plugins/index#install-and-configure-argo-cd_configuring-dynamic-plugins[Installing and configuring the Argo CD dynamic plugin^]
+* link:https://docs.redhat.com/en/documentation/red_hat_openshift_pipelines/[Red Hat OpenShift Pipelines^]
+* link:https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/[Red Hat OpenShift GitOps^]
+* link:https://backstage.io/docs/features/kubernetes/configuration#clustersserviceaccounttoken-optional[Backstage Kubernetes plugin — cluster service account token^]
 
 Thank you for working through the exercises. Your Red Hat Developer Hub instance is now a solid starting point for
 a production internal developer portal — keep iterating from here.

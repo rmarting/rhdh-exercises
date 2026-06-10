@@ -7,7 +7,7 @@
 include::partial$_attributes.adoc[]
 
 Software templates are the way to create standard components integrated with the platform, and any tool
-related to that component. This https://github.com/rmarting/rhdh-exercises-software-templates/blob/main/templates.yaml[template]
+related to that component. This https://github.com/rmarting/rhdh-exercises-software-templates/blob/main/templates.yaml[template^]
 is a simple case of this kind of component.
 
 Templates can be registered from the `Self-service` menu. The `Import an existing Git repository` button opens a wizard to register the component

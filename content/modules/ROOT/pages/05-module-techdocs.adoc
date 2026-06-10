@@ -29,11 +29,11 @@ rook-ceph-operator.v4.21.0-rhodf                  Rook-Ceph                     
 ----
 
 If you get a similar output, then your system is already prepared to continue. Otherwise, you must install following
-this https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation/4.21/html-single/deploying_openshift_data_foundation_using_amazon_web_services/index#installing-openshift-data-foundation-operator-using-the-operator-hub_cloud-storage[instructions].
+this https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation/4.21/html-single/deploying_openshift_data_foundation_using_amazon_web_services/index#installing-openshift-data-foundation-operator-using-the-operator-hub_cloud-storage[instructions^].
 
 Installing this operator takes a while, so, wait until all of them are successfully installed before continuing with the next step.
 
-Create the storage system following this https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation/4.21/html/deploying_openshift_data_foundation_using_amazon_web_services/deploy-using-dynamic-storage-devices-aws#creating-an-openshift-data-foundation-service_cloud-storage[instructions].
+Create the storage system following this https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation/4.21/html/deploying_openshift_data_foundation_using_amazon_web_services/deploy-using-dynamic-storage-devices-aws#creating-an-openshift-data-foundation-service_cloud-storage[instructions^].
 
 == Create Storage
 

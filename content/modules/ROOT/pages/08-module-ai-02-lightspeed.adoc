@@ -6,12 +6,12 @@
 
 include::partial$_attributes.adoc[]
 
-https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/interacting_with_red_hat_developer_lightspeed_for_red_hat_developer_hub/index[Red Hat Developer Lightspeed]
+https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/interacting_with_red_hat_developer_lightspeed_for_red_hat_developer_hub/index[Red Hat Developer Lightspeed^]
 is an AI-powered assistant integrated into Red Hat Developer Hub that helps developers
 interact with the Software Catalog, TechDocs, and other Developer Hub features through natural language queries.
 This exercise walks you through the integration process.
 
-For detailed information, refer to the https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/interacting_with_red_hat_developer_lightspeed_for_red_hat_developer_hub/index#con-about-developer-lightspeed_developer-lightspeed[official documentation].
+For detailed information, refer to the https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/interacting_with_red_hat_developer_lightspeed_for_red_hat_developer_hub/index#con-about-developer-lightspeed_developer-lightspeed[official documentation^].
 
 == Overview
 

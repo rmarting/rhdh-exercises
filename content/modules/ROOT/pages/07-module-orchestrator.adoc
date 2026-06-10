@@ -11,9 +11,9 @@ what a Software Template can provide natively. For example, certain requests mig
 long-running, stateful processes - this is where the Orchestrator for Red Hat Developer Hub can help. It addresses the fact that
 regular Software Templates are stateless "run and done" processes.
 
-The https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/orchestrator_in_red_hat_developer_hub/index[Orchestrator]
-extends Red Hat Developer Hub with support for workflows created using https://sonataflow.org/[SonataFlow].
-The Orchestrator project website and documentation is available at https://rhdhorchestrator.io[rhdhorchestrator.io].
+The https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/orchestrator_in_red_hat_developer_hub/index[Orchestrator^]
+extends Red Hat Developer Hub with support for workflows created using https://sonataflow.org/[SonataFlow^].
+The Orchestrator project website and documentation is available at https://rhdhorchestrator.io[rhdhorchestrator.io^].
 
 The Orchestrator feature effectively acts as an interface between Red Hat Developer Hub and SonataFlow-powered workflows,
 providing a listing and the ability view and run workflows directly from Red Hat Developer Hub.
@@ -54,7 +54,7 @@ the database to persist workflow results and other metadata.
 * `NetworkPolicies` that allow traffic between infrastructure resources (Knative, Serverless Logic Operator), monitoring traffic, and intra-namespace traffic.
 
 NOTE: The database configuration is loaded from the `backstage-psql-secret-developer-hub` secret
-and the connectivity will be by the `backstage-psql-developer-hub` service. Details https://github.com/redhat-developer/rhdh-operator/blob/main/config/profile/rhdh/plugin-deps/sonataflow.yaml#L121[Here].
+and the connectivity will be by the `backstage-psql-developer-hub` service. Details https://github.com/redhat-developer/rhdh-operator/blob/main/config/profile/rhdh/plugin-deps/sonataflow.yaml#L121[Here^].
 
 As RBAC is enabled, it is needed to add some extra rules to manage the new plugin to allow users to operate with the workflows
 installed. Basically we need to extend the RBAC configuration adding the `orchestrator` plugin:
@@ -92,7 +92,7 @@ but the users of `team-b` can't execute one of the workflows:
     p, role:default/team-b, orchestrator.workflow.use.greeting, update, deny
 ----
 
-For more details, review the https://github.com/redhat-developer/rhdh-plugins/blob/main/workspaces/orchestrator/docs/Permissions.md[permissions documentation] of the Orchestrator plugin.
+For more details, review the https://github.com/redhat-developer/rhdh-plugins/blob/main/workspaces/orchestrator/docs/Permissions.md[permissions documentation^] of the Orchestrator plugin.
 
 So, to complete the installation run:
 

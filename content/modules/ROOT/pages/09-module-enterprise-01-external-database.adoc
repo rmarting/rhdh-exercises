@@ -25,7 +25,7 @@ StatefulSet approach.
 > 3. Import the exported data into the new database.
 > 4. Reconfigure Red Hat Developer Hub to use the external database and validate.
 > 
-> **Data export/import and https://github.com/redhat-developer/rhdh-operator/blob/main/docs/db_migration.md[migration procedures]
+> **Data export/import and https://github.com/redhat-developer/rhdh-operator/blob/main/docs/db_migration.md[migration procedures^]
 > are out of scope for this exercise.** The destroy-and-recreate flow is intended only to illustrate configuration and ordering of
 > resources when using an external database (e.g. StatefulSet-based PostgreSQL).
 

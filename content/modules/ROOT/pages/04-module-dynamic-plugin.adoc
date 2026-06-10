@@ -7,7 +7,7 @@
 include::partial$_attributes.adoc[]
 
 Another capability of Red Hat Developer Hub is add dynamic plugins easily. This exercise will deploy a dynamic
-plugin defined in this https://github.com/rmarting/rhdh-dynamic-devquote-plugin[repo].
+plugin defined in this https://github.com/rmarting/rhdh-dynamic-devquote-plugin[repo^].
 
 Previously we added the definition of the GitLab catalog backend plugin, now we will extend the list of dynamic
 plugins including the new one with the following configuration:

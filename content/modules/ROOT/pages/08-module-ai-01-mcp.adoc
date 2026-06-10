@@ -7,7 +7,7 @@
 include::partial$_attributes.adoc[]
 
 Since Red Hat Developer Hub 1.9, there is a Developer Preview feature to integrate it with AI
-clients by https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/interacting_with_model_context_protocol_tools_for_red_hat_developer_hub/index[Model Context Protocol (MCP)] server.
+clients by https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/interacting_with_model_context_protocol_tools_for_red_hat_developer_hub/index[Model Context Protocol (MCP)^] server.
 This feature provides a standardized method
 for AI applications to access Red Hat Developer Hub information and workflows through defined MCP tools.
 
@@ -93,6 +93,7 @@ To install the Continue plugin just follow these steps:
 * Search for the `Continue` extension and install the **Pre-Release** version.
 * If you are asked, click the `Trust the Published and Install` button.
 * After a successful installation, you will se a screen similar to this:
++
 image::continue-extension.png[Continuer Extension]
 
 ==== Add Red Hat Developer Hub MCP configuration
@@ -145,7 +146,7 @@ and you are a Red Hatter, you can use an instance provided by the MaaS (Model as
 from the Red Hat AI BU. This is not an official Red Hat Service. It is for Red Hat associates'
 internal demo purposes only, provided 'as-is' without support or SLA.
 
-* Access the URL and sign in with your Red Hat account: https://litellm-prod-frontend.apps.maas.redhatworkshops.io/[MaaS website].
+* Access the URL and sign in with your Red Hat account: https://litellm-prod-frontend.apps.maas.redhatworkshops.io/[MaaS website^].
 * Click **Log in with SSO**.
 * Access **Models** and btn:[Subscribe] the `llama-3-2-3b` model.
 * Access **API Keys** and **Create API Key**.
@@ -195,7 +196,7 @@ Now, your AI assistant is ready to be used.
 
 === Using Cursor
 
-https://cursor.sh/[Cursor] is an AI-powered code editor that supports Model Context Protocol (MCP) servers. 
+https://cursor.sh/[Cursor^] is an AI-powered code editor that supports Model Context Protocol (MCP) servers. 
 You can integrate Cursor with your Red Hat Developer Hub MCP server to enable AI assistants to query your 
 software catalog, templates, and TechDocs directly from within Cursor.
 

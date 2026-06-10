@@ -7,7 +7,7 @@
 include::partial$_attributes.adoc[]
 
 Enabling GitLab authentication requires to create a GitLab application within our GitLab instance. This
-process is described https://backstage.io/docs/auth/gitlab/provider[here], however, keep in mind to
+process is described https://backstage.io/docs/auth/gitlab/provider[here^], however, keep in mind to
 execute the actions in your GitLab instance:
 
 - GitLab UI navigation: menu:Profile[Access > Applications > Add new application]

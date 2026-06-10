@@ -9,7 +9,7 @@ include::partial$_attributes.adoc[]
 Security is a core responsibility of any internal developer portal (IDP). After GitLab users and teams appear in the catalog,
 you must control who can run self-service actions, view sensitive data, and administer the platform.
 
-https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/authorization_in_red_hat_developer_hub/index[Role-based access control (RBAC)]
+https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/authorization_in_red_hat_developer_hub/index[Role-based access control (RBAC)^]
 maps users and groups to permissions on Red Hat Developer Hub resources.
 RBAC rules let platform teams grant the right level of access per team—for example, allowing `team-a` to scaffold components
 while restricting `team-b`—without giving every user the same capabilities. In this module you enable the Permissions framework,

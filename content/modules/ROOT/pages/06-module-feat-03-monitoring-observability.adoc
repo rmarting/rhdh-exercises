@@ -7,8 +7,8 @@
 include::partial$_attributes.adoc[]
 
 Our Red Hat Developer Hub instance has a lot of content and provides services to their users. However, how could we
-measure it? Easy! There are a set of plugins to https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/monitoring_and_logging/index#proc-admin-enabling-metrics-ocp-operator_assembly-rhdh-observability[monitor the behavior]
-of the users of Red Hat Developer Hub. Using the https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/adoption_insights_in_red_hat_developer_hub/index#con-about-adoption-insights_title-adoption-insights[Adoption Insights] plugin,
+measure it? Easy! There are a set of plugins to https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/monitoring_and_logging/index#proc-admin-enabling-metrics-ocp-operator_assembly-rhdh-observability[monitor the behavior^]
+of the users of Red Hat Developer Hub. Using the https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/adoption_insights_in_red_hat_developer_hub/index#con-about-adoption-insights_title-adoption-insights[Adoption Insights^] plugin,
 we can enable a dashboard to visualize some interested metrics about the usage of the instance.
 
 NOTE: Since Red Hat Developer Hub 1.7 this plugin is enabled by default.
@@ -27,7 +27,7 @@ the user-defined projects. OpenShift can monitor user-defined projects in additi
 This feature allows monitoring your own projects in OpenShift without the need for an additional monitoring solution.
 Using this feature centralizes monitoring for core platform components and user-defined projects.
 
-For detailed information, check the https://docs.redhat.com/en/documentation/monitoring_stack_for_red_hat_openshift/4.21/html/configuring_user_workload_monitoring/index[official documentation].
+For detailed information, check the https://docs.redhat.com/en/documentation/monitoring_stack_for_red_hat_openshift/4.21/html/configuring_user_workload_monitoring/index[official documentation^].
 
 NOTE: As `cluster-admin` enable the user-monitoring capabilities of OpenShift adding the `enableUserWorkload` variable in
 the configuration of the OpenShift Monitoring. This configuration is described in the `cluster-monitoring-config` ConfigMap

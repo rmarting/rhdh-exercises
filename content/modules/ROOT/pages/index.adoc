@@ -68,7 +68,7 @@ This workshop is designed to be completed in approximately one day.
 
 == Technical requirements
 
-This repository was tested and verified in the following environment provided by the link:https://demo.redhat.com/[Red Hat Demo Platform]:
+This repository was tested and verified in the following environment provided by the link:https://demo.redhat.com/[Red Hat Demo Platform^]:
 
 * link:https://catalog.demo.redhat.com/catalog/all?item=babylon-catalog-prod%2Fpublished.ocp4-cluster.prod[Red Hat OpenShift Container Platform Cluster (Multi-Cloud),window="_blank"]
 
@@ -86,7 +86,7 @@ Order a https://catalog.demo.redhat.com/catalog/babylon-catalog-prod/order/publi
 | Practice / Enablement
 
 | Purpose
-| Conduct internal training/enablement
+| Learning about the product
 
 | Cloud Provider
 | cnv
@@ -109,7 +109,7 @@ Once provisioning is complete you will receive an email with your cluster creden
 
 === Software versions
 
-The content of this repo was tested:
+The content of this workshop was tested:
 
 * Red Hat OpenShift Container Platform {ocp_version}
 * Red Hat Developer Hub Operator {rhdh_version}
@@ -119,7 +119,7 @@ The content of this repo was tested:
 
 === Environment access
 
-Participants need:
+Participants need to have:
 
 * OpenShift cluster with `cluster-admin` for operator installation
 * Terminal access (`oc`, `envsubst`, `git`)
@@ -134,5 +134,5 @@ Participants need:
 
 == Follow-up resources
 
-* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/[Red Hat Developer Hub documentation]
-* link:https://backstage.io/docs/[Backstage documentation]
+* link:https://docs.redhat.com/en/documentation/red_hat_developer_hub/[Red Hat Developer Hub documentation^]
+* link:https://backstage.io/docs/[Backstage documentation^]

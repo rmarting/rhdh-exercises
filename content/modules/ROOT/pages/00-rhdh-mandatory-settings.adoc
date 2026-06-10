@@ -76,12 +76,12 @@ oc apply -f ./content/modules/ROOT/examples/exercises/rhdh-instance-0.yaml -n {r
 ----
 
 IMPORTANT: Red Hat Developer Hub has a slow startup as it is building and loading the dynamic plugins. Every time
-we apply a https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.3/html-single/release_notes/index#feature-rhidp-3569[change in the configuration],
+we apply a https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.3/html-single/release_notes/index#feature-rhidp-3569[change in the configuration^],
 an automatic redeploy will start, and it will few minutes until
 the new pod is ready to serve request. Please, be patient after any change before confirming they are
 correctly applied.
 
-More detailed information about this step https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/configuring_red_hat_developer_hub/index#provision-and-use-your-custom-rhdh-configuration_configuring-rhdh[here].
+More detailed information about this step https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/configuring_red_hat_developer_hub/index#provision-and-use-your-custom-rhdh-configuration_configuring-rhdh[here^].
 
 Wait for the Red Hat Developer Hub pod to restart and become Ready and confirm the custom app title appears.
 

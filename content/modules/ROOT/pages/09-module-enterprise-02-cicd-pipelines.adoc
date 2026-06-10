@@ -19,7 +19,7 @@ sample **Angular application** and verifying the CI/CD and deployment tabs on it
 
 == Install Red Hat OpenShift Pipelines operator
 
-https://docs.redhat.com/en/documentation/red_hat_openshift_pipelines/[Red Hat OpenShift Pipelines] provides a cloud-native CI/CD solution based on Tekton.
+https://docs.redhat.com/en/documentation/red_hat_openshift_pipelines/[Red Hat OpenShift Pipelines^] provides a cloud-native CI/CD solution based on Tekton.
 The operator is installed in the `openshift-operators` namespace and is available cluster-wide.
 
 Run:
@@ -51,7 +51,7 @@ config   1.22.0    True
 
 == Install Red Hat OpenShift GitOps operator
 
-https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/[Red Hat OpenShift GitOps] uses Argo CD to implement continuous deployment for cloud-native applications.
+https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/[Red Hat OpenShift GitOps^] uses Argo CD to implement continuous deployment for cloud-native applications.
 The operator is installed in the `openshift-gitops-operator` namespace. After installation,
 it **automatically creates a default Argo CD instance** that is ready to use.
 
