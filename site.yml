@@ -21,7 +21,7 @@ antora:
       script_stem: header-scripts
       mermaid_initialize_options:
         start_on_load: true
-    - require: '@andrew-jones/antora-tabs-extension
-      
+    - require: '@andrew-jones/antora-tabs-extension'
+
 output:
   dir: ./www
