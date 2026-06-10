@@ -13,11 +13,6 @@ ui:
   bundle:
     url: https://github.com/rhpds/rhdp_showroom_theme/releases/download/latest/ui-bundle.zip
     snapshot: true
-  supplemental_files:
-    - path: ./content/supplemental-ui
-
-runtime:
-  cache_dir: ./.cache/antora
 
 antora:
   extensions:
@@ -26,10 +21,6 @@ antora:
       script_stem: header-scripts
       mermaid_initialize_options:
         start_on_load: true
-    #- require: '@andrew-jones/antora-tabs-extension'  
-    - id: dev-mode
-      require: ./content/lib/dev-mode.js
-      enabled: true
       
 output:
   dir: ./www

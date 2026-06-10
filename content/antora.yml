@@ -12,5 +12,11 @@ asciidoc:
     showroom-collection-version: v1.5.2
     workshop_repo_url: https://github.com/rmarting/rhdh-exercises.git
     page-links:
-      - url: https://redhat.com
-        text: Red Hat
+      - url: https://developers.redhat.com/products/rhdh
+        text: Product
+      - url: https://docs.redhat.com/en/documentation/red_hat_developer_hub/
+        text: Documentation
+      - url: https://developers.redhat.com/learn 
+        text: Learning
+      - url: https://www.redhat.com/en/resources/developer-experience-assessment-datasheet
+        text: DevEx Assessment
