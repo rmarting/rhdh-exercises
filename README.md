@@ -21,10 +21,13 @@
 
 ## Overview
 
-This repository is a hands-on workshop for installing and configuring **Red Hat Developer Hub (RHDH)**
-on **Red Hat OpenShift** with **GitLab** integration.
+This repository is a hands-on workshop for installing and configuring **Red Hat Developer Hub**
+on **Red Hat OpenShift** with some common integrations.
 
 ## Workshop content (Showroom)
+
+The workshop content is available on-line as GitHub Pages [here](http://blog.jromanmartin.io/rhdh-exercises/).
+Please, use to to run it and learn about Red Hat Developer Hub.
 
 The primary learner path is the Showroom workshop under `content/`:
 
@@ -60,6 +63,7 @@ On SELinux systems, append `:z` to the volume mount.
 
 == Create Content with AI
 
-The https://github.com/rhpds/rhdp-skills-marketplace[RHDP Skills Marketplace] provides skills for Cursor IDE and Claude Code that generate labs, demos, and validate content against Red Hat standards.
+The https://github.com/rhpds/rhdp-skills-marketplace[RHDP Skills Marketplace] provides skills for Cursor IDE and Claude Code
+that generate labs, demos, and validate content against Red Hat standards.
 
 See the https://rhpds.github.io/showroom_template_nookbag/modules/content-repo.html#_creating_content_with_ai_tools[AI Tools documentation] for details.
