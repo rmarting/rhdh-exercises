@@ -35,7 +35,7 @@ jobs:
         with:
           node-version: '20'
       - name: install antora
-        run: npm i -g @antora/cli@3.1 @antora/site-generator@3.1 @antora/lunr-extension @andrew-jones/antora-tabs-extension
+        run: npm i -g @antora/cli@3.1 @antora/site-generator@3.1 @antora/lunr-extension @andrew-jones/antora-tabs-extension @antora/lunr-extension
       - name: override ui bundle for gh-pages
         run: >-
           sed -i 's|url: .*ui-bundle.zip|url: https://github.com/rhpds/rhdp_showroom_theme/releases/download/showroom-template/ui-bundle.zip|'
