@@ -35,14 +35,14 @@ jobs:
         with:
           node-version: '20'
       - name: install antora
-        run: npm i -g @antora/cli@3.1 @antora/site-generator@3.1 @antora/lunr-extension @andrew-jones/antora-tabs-extension @antora/lunr-extension
+        run: npm i -g @antora/cli@3.1 @antora/site-generator@3.1 @sntke/antora-mermaid-extension@0.0.9 @antora/lunr-extension @andrew-jones/antora-tabs-extension
       - name: override ui bundle for gh-pages
         run: >-
           sed -i 's|url: .*ui-bundle.zip|url: https://github.com/rhpds/rhdp_showroom_theme/releases/download/showroom-template/ui-bundle.zip|'
-          site.yml        
+          site.yml
       - name: inject lunr search extension
         run: |
-          sed -i "/^output:/i\\    - require: '@antora/lunr-extension'\n      index_by_heading: true" site.yml          
+          sed -i "/^output:/i\\    - require: '@antora/lunr-extension'\n      index_by_heading: true" site.yml
       - name: antora generate
         run: antora --fetch site.yml
       - name: upload pages artifact
