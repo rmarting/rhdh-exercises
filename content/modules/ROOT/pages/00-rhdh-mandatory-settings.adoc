@@ -32,7 +32,7 @@ Creating a Secret including that variable, and adding the base domain of our ins
 oc apply -f ./content/modules/ROOT/examples/exercises/rhdh-secrets.yaml -n {rhdh_namespace}
 ----
 
-. Patch BASEDOMAIN into the secret:
+. Patch `BASEDOMAIN` into the secret:
 +
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
