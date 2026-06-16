@@ -1,6 +1,6 @@
 # Red Hat Developer Hub Workshop
 
-![License](https://img.shields.io/github/license/rmarting/rhdh-exercises?style=flat-square)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 ![Tag](https://img.shields.io/github/v/tag/rmarting/rhdh-exercises?style=flat-square)
 ![Last Commit](https://img.shields.io/github/last-commit/rmarting/rhdh-exercises?style=flat-square)
 ![Technology](https://img.shields.io/badge/tech-Red%20Hat%20Developer%20Hub-red?style=flat-square)
