@@ -11,11 +11,8 @@
 
 1. [Overview](#overview)
 2. [Workshop content (Showroom)](#workshop-content-showroom)
-3. [Topology](#topology)
-4. [Exercise modules](#exercise-modules)
-5. [Legacy Markdown track](#legacy-markdown-track)
-6. [FAQ](#faq)
-7. [Contributing](#contributing)
+3. [FAQ](#faq)
+4. [Contributing](#contributing)
 
 ---
 
@@ -47,7 +44,7 @@ If you are facing some issues, please, review our [FAQ.md](./FAQ.md).
 We welcome contributions! Please see our [Contributing Guide](./CONTRIBUTING.md) for details on
 how to contribute to this project. This project follows the [Contributor Covenant Code of Conduct](./CODE_OF_CONDUCT.md).
 
-## Quick Start
+### Quick Start
 
 - Clone your new repo and preview locally:
 
@@ -60,7 +57,7 @@ On SELinux systems, append `:z` to the volume mount.
 - Edit content in `content/modules/ROOT/pages/`
 - See the [Content Repository](https://rhpds.github.io/showroom_template_nookbag/modules/content-repo.html) docs for directory layout, Podman Compose with live reload, dev mode, and more.
 
-## Create Content with AI
+### Create Content with AI
 
 The [RHDP Skills Marketplace](https://github.com/rhpds/rhdp-skills-marketplace) provides skills for Cursor IDE and Claude Code
 that generate labs, demos, and validate content against Red Hat standards.
