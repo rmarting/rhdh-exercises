@@ -47,23 +47,22 @@ If you are facing some issues, please, review our [FAQ.md](./FAQ.md).
 We welcome contributions! Please see our [Contributing Guide](./CONTRIBUTING.md) for details on
 how to contribute to this project. This project follows the [Contributor Covenant Code of Conduct](./CODE_OF_CONDUCT.md).
 
-== Quick Start
+## Quick Start
 
-. Clone your new repo and preview locally:
-+
-[source,sh]
-----
+- Clone your new repo and preview locally:
+
+```bash
 podman run --rm --name antora -v $PWD:/antora -p 8080:8080 -i -t ghcr.io/juliaaano/antora-viewer
-----
-+
+```
+
 On SELinux systems, append `:z` to the volume mount.
 
-. Edit content in `content/modules/ROOT/pages/`
-. See the https://rhpds.github.io/showroom_template_nookbag/modules/content-repo.html[Content Repository] docs for directory layout, Podman Compose with live reload, dev mode, and more.
+- Edit content in `content/modules/ROOT/pages/`
+- See the [Content Repository](https://rhpds.github.io/showroom_template_nookbag/modules/content-repo.html) docs for directory layout, Podman Compose with live reload, dev mode, and more.
 
-== Create Content with AI
+## Create Content with AI
 
-The https://github.com/rhpds/rhdp-skills-marketplace[RHDP Skills Marketplace] provides skills for Cursor IDE and Claude Code
+The [RHDP Skills Marketplace](https://github.com/rhpds/rhdp-skills-marketplace) provides skills for Cursor IDE and Claude Code
 that generate labs, demos, and validate content against Red Hat standards.
 
-See the https://rhpds.github.io/showroom_template_nookbag/modules/content-repo.html#_creating_content_with_ai_tools[AI Tools documentation] for details.
+See the [AI Tools documentation](https://rhpds.github.io/showroom_template_nookbag/modules/content-repo.html#_creating_content_with_ai_tools) for details.
