@@ -11,6 +11,9 @@ asciidoc:
     page-pagination: true
     showroom-collection-version: v1.5.6
     workshop_repo_url: https://github.com/rmarting/rhdh-exercises.git
+    keys:
+      google_analytics: 'G-GTQST35P22'
+      googleAnalytics: 'G-GTQST35P22'
     page-links:
       - url: https://developers.redhat.com/products/rhdh
         text: Product
