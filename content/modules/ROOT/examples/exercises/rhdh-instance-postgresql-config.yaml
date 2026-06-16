@@ -50,3 +50,6 @@ spec:
     enabled: true
   rawRuntimeConfig:
     localDbConfig: postgresql-config
+  flavours:
+    - name: lightspeed
+      enabled: false

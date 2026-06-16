@@ -48,3 +48,6 @@ spec:
     enableLocalDb: true
   monitoring:
     enabled: true
+  flavours:
+    - name: lightspeed
+      enabled: false

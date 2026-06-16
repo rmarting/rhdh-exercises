@@ -45,6 +45,7 @@ data:
     #p, role:default/admins, scaffolder-template, read, allow
     #p, role:default/admins, scaffolder.template.parameter.read, read, allow
     #p, role:default/admins, scaffolder.template.step.read, read, allow
+    #p, role:default/admins, scaffolder.template.management, use, allow
     #p, role:default/admins, scaffolder.task.create, create, allow
     #p, role:default/admins, scaffolder.task.cancel, use, allow
     #p, role:default/admins, scaffolder.task.read, read, allow
@@ -64,6 +65,21 @@ data:
     #p, role:default/admins, bulk-import, use, allow
     # Adoption Insights permissions
     #p, role:default/admins, adoption-insights.events.read, read, allow
+    # Argo CD permissions
+    #p, role:default/admins, argocd.view.read, read, allow
+    # Quay permissions
+    #p, role:default/admins, quay.view.read, read, allow
+    # Extensions permissions
+    #p, role:default/admins, extensions.plugin.configuration.read, read, allow
+    #p, role:default/admins, extensions.plugin.configuration.write, create, allow
+    # Lightspeed permissions
+    #p, role:default/admins, lightspeed.chat.read, read, allow
+    #p, role:default/admins, lightspeed.chat.create, create, allow
+    #p, role:default/admins, lightspeed.chat.delete, delete, allow
+    # Kubernetes permissions
+    #p, role:default/admins, kubernetes.clusters.read, read, allow
+    #p, role:default/admins, kubernetes.resources.read, read, allow
+    #p, role:default/admins, kubernetes.proxy, use, allow
 
     # Admin User
     # this is not needed now with the new superUser setting
@@ -79,15 +95,18 @@ data:
     p, role:default/team-a, catalog.location.read, read, allow
     p, role:default/team-a, catalog.location.create, create, allow
     p, role:default/team-a, catalog.location.delete, delete, allow
+    # Bulk Import permissions
+    p, role:default/team-a, bulk-import, use, allow
     # Scaffolder permissions
     p, role:default/team-a, scaffolder-template, read, allow
     p, role:default/team-a, scaffolder.template.parameter.read, read, allow
     p, role:default/team-a, scaffolder.template.step.read, read, allow
+    p, role:default/team-a, scaffolder.template.management, use, allow
     p, role:default/team-a, scaffolder-action, use, allow
     p, role:default/team-a, scaffolder.action.execute, use, allow
     p, role:default/team-a, scaffolder.task.read, read, allow
     p, role:default/team-a, scaffolder.task.create, create, allow
-    p, role:default/team-a, scaffolder.task.cancel, use, allow
+    p, role:default/team-a, scaffolder.task.cancel, use, allow    
     # Adoption Insights permissions
     p, role:default/team-a, adoption-insights.events.read, read, allow
     # Orchestrator permissions

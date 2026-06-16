@@ -10,8 +10,11 @@ data:
       #baseUrl: https://backstage-developer-hub-rhdh-gitlab.${BASEDOMAIN}
     backend:
       auth:
-        keys:
-          - secret: ${BACKEND_SECRET}
+        externalAccess:
+          - type: legacy
+            options:
+              subject: legacy-default-config
+              secret: ${BACKEND_SECRET}
       #baseUrl: https://backstage-developer-hub-rhdh-gitlab.${BASEDOMAIN}
       #cors:
       #  origin: https://backstage-developer-hub-rhdh-gitlab.${BASEDOMAIN}
@@ -45,7 +48,7 @@ data:
         - allow: [Component, System, Group, Resource, Location, Template, API, User, Domain, Type]
       providers:
         gitlab:
-          myGitLab:
+          default:
             host: gitlab.${BASEDOMAIN} # Identifies one of the hosts set up in the integrations
             apiBaseUrl: https://gitlab.${BASEDOMAIN}/api/v4
             branch: main # Optional. Used to discover on a specific branch
@@ -58,11 +61,16 @@ data:
               frequency: { minutes: 5 }
               # supports ISO duration, "human duration" as used in code
               timeout: { minutes: 15 }
-            orgEnabled: true
+          orgProvider:
+            host: gitlab.${BASEDOMAIN}
+            orgEnabled: true            
             #group: org/teams # Required for gitlab.com when `orgEnabled: true`. Optional for self managed. Must not end with slash. Accepts only groups under the provided path (which will be stripped)
             allowInherited: true # Allow groups to be ingested even if there are no direct members.
             groupPattern: '[\s\S]*'
             restrictUsersToGroup: false
+            schedule: # optional
+              frequency: { minutes: 5 }
+              timeout: { minutes: 15 }
     permission:
       enabled: true
       rbac:

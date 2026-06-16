@@ -26,3 +26,6 @@ spec:
       enabled: true
   database:
     enableLocalDb: true
+  flavours:
+    - name: lightspeed
+      enabled: false

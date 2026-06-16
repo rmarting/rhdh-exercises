@@ -4,26 +4,28 @@ metadata:
   name: lightspeed-stack
 data:
   lightspeed-stack.yaml: |
-    name: Lightspeed Core Service (LCS)
+    name: lightspeed-core-stack
     service:
-      host: 0.0.0.0
-      # Use ${LIGHTSPEED_SERVICE_PORT} if you are not running the Service on port `8080`
-      # port: ${LIGHTSPEED_SERVICE_PORT}
+      host: ${env.SERVICE_HOST:=127.0.0.1}
+      port: 8080
       auth_enabled: false
       workers: 1
       color_log: true
       access_log: true
     llama_stack:
-      use_as_library_client: false
-      url: http://localhost:8321
+      use_as_library_client: true
+      library_client_config_path: /app-root/config.yaml
     user_data_collection:
       feedback_enabled: true
       feedback_storage: "/tmp/data/feedback"
-      transcripts_enabled: true
+      transcripts_enabled: false
       transcripts_storage: "/tmp/data/transcripts"
     authentication:
       module: "noop"
     conversation_cache:
+      #type: "sqlite"
+      #sqlite:
+      #  db_path: '/tmp/cache.db'
       type: "postgres"
       postgres:
         host: "${env.POSTGRES_HOST}"
@@ -31,7 +33,11 @@ data:
         user: "${env.POSTGRES_USER}"
         password: "${env.POSTGRES_PASSWORD}"
         db: "rhdh-ls"
+    customization:
+      profile_path: '/app-root/rhdh-profile.py'      
     mcp_servers:
       - name: mcp::backstage
-        provider_id: model-context-protocol
-        url: https://backstage-developer-hub-rhdh-gitlab.${env.BASEDOMAIN}/api/mcp-actions/v1
+        provider_id: model-context-protocol             
+        url: http://backstage-developer-hub.rhdh-gitlab.svc.cluster.local/api/mcp-actions/v1
+        authorization_headers:
+          Authorization: "client"

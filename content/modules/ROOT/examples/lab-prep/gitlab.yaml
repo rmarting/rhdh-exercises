@@ -22,4 +22,4 @@ spec:
             route.openshift.io/termination: edge
           tls:
             enabled: false
-    version: "9.10.6"
+    version: "9.10.7"
