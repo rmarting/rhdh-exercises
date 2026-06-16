@@ -1,6 +1,7 @@
 # Local secret files
 gitlab-secrets.yaml
 ls-llama-stack-secrets.yaml
+rhdh-lightspeed-auth-secrets.yaml
 
 # MPC clients and credentials
 .continue/mcpServers/
