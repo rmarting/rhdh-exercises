@@ -10,13 +10,13 @@ The GitLab integration has a special entity provider for discovering catalog ent
 will crawl the GitLab instance and register entities matching the configured paths. This can be useful as an alternative
 to static locations or manually adding things to the catalog.
 
-More information about Dynamic Plugins https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/installing_and_viewing_plugins_in_red_hat_developer_hub/index[here^].
+More information about Dynamic Plugins https://docs.redhat.com/en/documentation/red_hat_developer_hub/{rhdh_version}/html-single/installing_and_viewing_plugins_in_red_hat_developer_hub/index[here^].
 
 To enable the GitLab integration and discovery capabilities a Personal Access Token (aka PAT) is required.
 
 Create new Personal Access Token (aka PAT) in menu `Personal Access Tokens` of the GitLab user profile:
 
-- GitLab UI navigation: menu:Profile[Personal Access Tokens > Add new token]
+- GitLab UI navigation: menu:Profile[Access > Personal Access Tokens > Add new token]
 - Name: `pat-rhdh-exercises`
 - Expiration date: Disabled it or just one in the future
 - Set the scopes: `api`, `read_api`, `read_repository`, `write_repository`

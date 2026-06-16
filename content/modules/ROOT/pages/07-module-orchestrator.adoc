@@ -11,7 +11,7 @@ what a Software Template can provide natively. For example, certain requests mig
 long-running, stateful processes - this is where the Orchestrator for Red Hat Developer Hub can help. It addresses the fact that
 regular Software Templates are stateless "run and done" processes.
 
-The https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/orchestrator_in_red_hat_developer_hub/index[Orchestrator^]
+The https://docs.redhat.com/en/documentation/red_hat_developer_hub/{rhdh_version}/html-single/orchestrator_in_red_hat_developer_hub/index[Orchestrator^]
 extends Red Hat Developer Hub with support for workflows created using https://sonataflow.org/[SonataFlow^].
 The Orchestrator project website and documentation is available at https://rhdhorchestrator.io[rhdhorchestrator.io^].
 
@@ -32,12 +32,11 @@ oc apply -f ./content/modules/ROOT/examples/lab-prep/logic-operator-rhel8-operat
 
 And confirm its successful installation:
 
-[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 on 🎩 ❯ oc get csv -n openshift-serverless-logic
-NAME                            DISPLAY                               VERSION   REPLACES                              PHASE
-logic-operator-rhel8.v1.37.1    OpenShift Serverless Logic Operator   1.37.0    logic-operator-rhel8.v1.37.0          Succeeded
+NAME                     DISPLAY                               VERSION   REPLACES                 PHASE
+logic-operator.v1.38.0   OpenShift Serverless Logic Operator   1.38.0    logic-operator.v1.37.2   Succeeded
 ----
 
 To enable the Orchestrator feature, we need to enable the following dynamic plugins (OCI images; `{{inherit}}` resolves to the Red Hat Developer Hub 1.9 version provided by the operator):

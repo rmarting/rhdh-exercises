@@ -30,7 +30,7 @@ Another option:
 echo gitlab.$(oc get ingresscontroller -n openshift-ingress-operator default -o jsonpath='{.status.domain}')
 ----
 +
-NOTE: Note that `https://` is not included.
+WARNING: Note that `https://` is not included.
 
 Verify that your new component is listed on the `Catalog` page.
 

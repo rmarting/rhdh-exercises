@@ -7,8 +7,8 @@
 include::partial$_attributes.adoc[]
 
 Our Red Hat Developer Hub instance has a lot of content and provides services to their users. However, how could we
-measure it? Easy! There are a set of plugins to https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/monitoring_and_logging/index#proc-admin-enabling-metrics-ocp-operator_assembly-rhdh-observability[monitor the behavior^]
-of the users of Red Hat Developer Hub. Using the https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/adoption_insights_in_red_hat_developer_hub/index#con-about-adoption-insights_title-adoption-insights[Adoption Insights^] plugin,
+measure it? Easy! There are a set of plugins to https://docs.redhat.com/en/documentation/red_hat_developer_hub/{rhdh_version}/html-single/monitoring_and_logging/index#proc-admin-enabling-metrics-ocp-operator_assembly-rhdh-observability[monitor the behavior^]
+of the users of Red Hat Developer Hub. Using the https://docs.redhat.com/en/documentation/red_hat_developer_hub/{rhdh_version}/html-single/adoption_insights_in_red_hat_developer_hub/index#con-about-adoption-insights_title-adoption-insights[Adoption Insights^] plugin,
 we can enable a dashboard to visualize some interested metrics about the usage of the instance.
 
 NOTE: Since Red Hat Developer Hub 1.7 this plugin is enabled by default.
@@ -44,7 +44,6 @@ oc apply -f ./content/modules/ROOT/examples/exercises/cluster-monitoring-config-
 This new configuration will create the `openshift-user-workload-monitoring` namespace and a set of new components
 will be deployed to capture the metrics of the user-defined projects. This command can check the status of those deployments:
 
-[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 on 🎩 ❯ oc get pod -n openshift-user-workload-monitoring

@@ -43,7 +43,7 @@ oc patch secret rhdh-secrets -n {rhdh_namespace} -p '{"stringData":{"BASEDOMAIN"
 
 TIP: Since Red Hat Developer Hub 1.6 is not longer required to define base URL for the instance. The operator will
 calculate the correct value an inject in the default configuration. If you need it, you can still override these settings.
-More details https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.6/html-single/red_hat_developer_hub_release_notes/index#enhancement-rhidp-6173[here].
+More details https://docs.redhat.com/en/documentation/red_hat_developer_hub/{rhdh_version}/html-single/red_hat_developer_hub_release_notes/index#enhancement-rhidp-6173[here^].
 
 This is the structure of the `app-config-rhdh` ConfigMap to customize the configuration of our Red Hat Developer Hub instance:
 
@@ -81,7 +81,7 @@ an automatic redeploy will start, and it will few minutes until
 the new pod is ready to serve request. Please, be patient after any change before confirming they are
 correctly applied.
 
-More detailed information about this step https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/configuring_red_hat_developer_hub/index#provision-and-use-your-custom-rhdh-configuration_configuring-rhdh[here^].
+More detailed information about this step https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.6/html-single/configuring_red_hat_developer_hub/index#provision-and-use-your-custom-rhdh-configuration_configuring-rhdh[here^].
 
 Wait for the Red Hat Developer Hub pod to restart and become Ready and confirm the custom app title appears.
 

@@ -41,7 +41,6 @@ oc get csv -n openshift-operators -l operators.coreos.com/openshift-pipelines-op
 Wait until the **PHASE** is `Succeeded` before continuing. You can also verify that the
 `TektonConfig` and related resources are created:
 
-[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 on 🎩 ❯ oc get tektonconfig -A
@@ -65,7 +64,6 @@ oc apply -f ./content/modules/ROOT/examples/exercises/gitops-operator-17.yaml
 
 The operator is installed in the `openshift-gitops-operator` namespace. Verify the operator status:
 
-[.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
 on 🎩 ❯ oc get csv -n openshift-gitops-operator
@@ -88,7 +86,7 @@ Verify that the default Argo CD instance and its pods are running:
 oc get pods -n openshift-gitops
 ----
 
-You should see pods such as `openshift-gitops-application-controller-0`, `openshift-gitops-server-*`, `openshift-gitops-repo-server-*`, and others.
+You should see pods such as `openshift-gitops-application-controller-0`, `openshift-gitops-server-xxxx`, `openshift-gitops-repo-server-xxxx`, and others.
 
 To access the Argo CD web UI from the OpenShift console: **Applications** (or the application launcher) → **OpenShift GitOps** → **Cluster Argo CD**.
 You can also obtain the Argo CD admin password from the secret in the `openshift-gitops` namespace:
@@ -188,6 +186,7 @@ oc create sa rhdh -n {rhdh_namespace}
 [source,bash,subs="+macros,+attributes"]
 ----
 oc adm policy add-cluster-role-to-user rhdh-read-only system:serviceaccount:rhdh-gitlab:rhdh
+oc adm policy add-cluster-role-to-user rhdh-delete-pods system:serviceaccount:rhdh-gitlab:rhdh
 ----
 
 . Create a secret to get a long-lived token to authenticate to OpenShift:

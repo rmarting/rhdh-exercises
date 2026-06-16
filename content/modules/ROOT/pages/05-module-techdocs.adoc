@@ -13,19 +13,19 @@ Verify first if the OpenShift Data Foundation operator is installed on your clus
 [source,bash,subs="+macros,+attributes"]
 ----
 on 🎩 ❯ oc get csv -n openshift-storage
-NAME                                              DISPLAY                            VERSION        REPLACES                                          PHASE
-cephcsi-operator.v4.21.0-rhodf                    CephCSI operator                   4.21.0-rhodf   cephcsi-operator.v4.21.0-rhodf                    Succeeded
-mcg-operator.v4.21.0-rhodf                        NooBaa Operator                    4.21.0-rhodf   mcg-operator.v4.21.0-rhodf                        Succeeded
-ocs-client-operator.v4.21.0-rhodf                 OpenShift Data Foundation Client   4.21.0-rhodf   ocs-client-operator.v4.21.0-rhodf                 Succeeded
-ocs-operator.v4.21.0-rhodf                        OpenShift Container Storage        4.21.0-rhodf   ocs-operator.v4.21.0-rhodf                        Succeeded
-odf-csi-addons-operator.v4.21.0-rhodf             CSI Addons                         4.21.0-rhodf   odf-csi-addons-operator.v4.21.0-rhodf             Succeeded
-odf-dependencies.v4.21.0-rhodf                    Data Foundation Dependencies       4.21.0-rhodf   odf-dependencies.v4.21.0-rhodf                    Succeeded
-odf-external-snapshotter-operator.v4.21.0-rhodf   Snapshot Controller                4.21.0-rhodf   odf-external-snapshotter-operator.v4.21.0-rhodf   Succeeded
-odf-operator.v4.21.0-rhodf                        OpenShift Data Foundation          4.21.0-rhodf   odf-operator.v4.21.0-rhodf                        Succeeded
-odf-prometheus-operator.v4.21.0-rhodf             Prometheus Operator                4.21.0-rhodf   odf-prometheus-operator.v4.21.0-rhodf             Succeeded
-recipe.v4.21.0-rhodf                              Recipe                             4.21.0-rhodf   recipe.v4.21.0-rhodf                              Succeeded
-rhdh-operator.v1.9.4                              Red Hat Developer Hub Operator     1.9.4          rhdh-operator.v1.9.3                              Succeeded
-rook-ceph-operator.v4.21.0-rhodf                  Rook-Ceph                          4.21.0-rhodf   rook-ceph-operator.v4.21.0-rhodf                  Succeeded
+NAME                                               DISPLAY                            VERSION         REPLACES                         PHASE
+cephcsi-operator.v4.20.13-rhodf                    CephCSI operator                   4.20.13-rhodf   cephcsi-operator.v4.20.12-rhodf                    Succeeded
+mcg-operator.v4.20.13-rhodf                        NooBaa Operator                    4.20.13-rhodf   mcg-operator.v4.20.12-rhodf                        Succeeded
+ocs-client-operator.v4.20.13-rhodf                 OpenShift Data Foundation Client   4.20.13-rhodf   ocs-client-operator.v4.20.12-rhodf                 Succeeded
+ocs-operator.v4.20.13-rhodf                        OpenShift Container Storage        4.20.13-rhodf   ocs-operator.v4.20.12-rhodf                        Succeeded
+odf-csi-addons-operator.v4.20.13-rhodf             CSI Addons                         4.20.13-rhodf   odf-csi-addons-operator.v4.20.12-rhodf             Succeeded
+odf-dependencies.v4.20.13-rhodf                    Data Foundation Dependencies       4.20.13-rhodf   odf-dependencies.v4.20.12-rhodf                    Succeeded
+odf-external-snapshotter-operator.v4.20.13-rhodf   Snapshot Controller                4.20.13-rhodf   odf-external-snapshotter-operator.v4.20.12-rhodf   Succeeded
+odf-operator.v4.20.13-rhodf                        OpenShift Data Foundation          4.20.13-rhodf   odf-operator.v4.20.12-rhodf                        Succeeded
+odf-prometheus-operator.v4.20.13-rhodf             Prometheus Operator                4.20.13-rhodf   odf-prometheus-operator.v4.20.12-rhodf             Succeeded
+recipe.v4.20.13-rhodf                              Recipe                             4.20.13-rhodf   recipe.v4.20.12-rhodf                              Succeeded
+rhdh-operator.v1.10.0                              Red Hat Developer Hub Operator     1.10.0          rhdh-operator.v1.9.4                               Succeeded
+rook-ceph-operator.v4.20.13-rhodf                  Rook-Ceph                          4.20.13-rhodf   rook-ceph-operator.v4.20.12-rhodf                  Succeeded
 ----
 
 If you get a similar output, then your system is already prepared to continue. Otherwise, you must install following
@@ -68,7 +68,7 @@ oc apply -f ./content/modules/ROOT/examples/exercises/gitlab-runner-operator-8.y
 ----
 on 🎩 ❯ oc get csv -n {gitlab_namespace}
 NAME                                DISPLAY          VERSION   REPLACES                            PHASE
-gitlab-runner-operator.v1.49.0      GitLab Runner    1.49.0    gitlab-runner-operator.v1.48.3      Succeeded
+gitlab-runner-operator.v1.49.1      GitLab Runner    1.49.1    gitlab-runner-operator.v1.49.0      Succeeded
 ----
 
 The technical docs will be created as part of the CI pipelines of the components, so
@@ -84,7 +84,7 @@ envsubst < ./content/modules/ROOT/examples/exercises/gitlab-runner-8.yaml | oc a
 ----
 
 GitLab requires a set of CI variables to run successfully the techdocs pipelines.
-Login as `root` into GitLab and add these variables in `Admin Area / Settings / CI/CD / Variables`:
+Login as `root` into GitLab and add these variables in menu:Admin[Settings > CI/CD > Variables > Add variable]:
 
 * `AWS_ENDPOINT`: Output of the command
 +

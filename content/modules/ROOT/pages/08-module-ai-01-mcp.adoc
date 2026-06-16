@@ -7,7 +7,7 @@
 include::partial$_attributes.adoc[]
 
 Since Red Hat Developer Hub 1.9, there is a Developer Preview feature to integrate it with AI
-clients by https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/interacting_with_model_context_protocol_tools_for_red_hat_developer_hub/index[Model Context Protocol (MCP)^] server.
+clients by https://docs.redhat.com/en/documentation/red_hat_developer_hub/{rhdh_version}/html-single/interacting_with_model_context_protocol_tools_for_red_hat_developer_hub/index[Model Context Protocol (MCP)^] server.
 This feature provides a standardized method
 for AI applications to access Red Hat Developer Hub information and workflows through defined MCP tools.
 
@@ -79,12 +79,12 @@ oc apply -f ./content/modules/ROOT/examples/exercises/rhdh-app-configmap-14.yaml
 
 === Using Continue
 
-For this example, we will use https://www.continue.dev/[Continue] as our AI client to
+For this example, we will use https://www.continue.dev/[Continue^] as our AI client to
 verify the integration with the Red Hat Developer Hub MCP feature. As part of this
 exercise we will use the VSCode extension.
 
 NOTE: If you don't have a local VSCode instance running, you can use it a default workspace
-provided by https://developers.redhat.com/developer-sandbox[Red Hat OpenShift Dev Spaces sandbox].
+provided by https://developers.redhat.com/developer-sandbox[Red Hat OpenShift Dev Spaces sandbox^].
 Just create a "empty workspace" or just create importing this GitHub repository.
 
 To install the Continue plugin just follow these steps:
@@ -146,9 +146,9 @@ and you are a Red Hatter, you can use an instance provided by the MaaS (Model as
 from the Red Hat AI BU. This is not an official Red Hat Service. It is for Red Hat associates'
 internal demo purposes only, provided 'as-is' without support or SLA.
 
-* Access the URL and sign in with your Red Hat account: https://litellm-prod-frontend.apps.maas.redhatworkshops.io/[MaaS website^].
+* Access the URL and sign in with your Red Hat account: https://maas-rhdp-frontend.apps.maas.redhatworkshops.io/[MaaS website^].
 * Click **Log in with SSO**.
-* Access **Models** and btn:[Subscribe] the `llama-3-2-3b` model.
+* Access **Models** and btn:[Subscribe] the `qwen3-14b` model.
 * Access **API Keys** and **Create API Key**.
 * Save the **API Key** and the **Endpoint URL** for later usage.
 
@@ -165,11 +165,11 @@ name: Local Assistant
 version: 1.0.0
 schema: v1
 models:
-  - name: llama-3-2-3b
+  - name: qwen3-14b
     provider: openai
-    model: llama-3-2-3b
-    apiBase:
-    apiKey: ""
+    model: qwen3-14b
+    apiBase: <ADD_API_BASE_URL>
+    apiKey: <ADD_API_KEY>
     roles:
       - chat
       - edit

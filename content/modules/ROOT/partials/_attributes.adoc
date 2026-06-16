@@ -4,6 +4,6 @@
 :gitlab_server_version: 18.12.0
 :gitlab_namespace: gitlab-system
 
-:rhdh_version: 1.9.4
+:rhdh_version: 1.10
 :rhdh_operator_namespace: rhdh-operator
 :rhdh_namespace: rhdh-gitlab
